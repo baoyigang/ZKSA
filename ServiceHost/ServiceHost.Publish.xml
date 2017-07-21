@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<publishData>
+  <publishProfile publishUrl="C:\Users\Administrator\Desktop\ServiceHost" deleteExistingFiles="True" ftpAnonymousLogin="False" ftpPassiveMode="True" msdeploySite="" msdeploySiteID="" msdeployRemoteSitePhysicalPath="" msdeployAllowUntrustedCertificate="False" msdeploySkipExtraFilesOnServer="True" msdeployMarkAsApp="False" profileName="Profile1" publishMethod="FileSystem" replaceMatchingFiles="False" userName="" savePWD="False" userPWD="" SelectedForPublish="True">
+    <file relUrl="bin/IDAL.dll" publishTime="02/10/2017 09:34:25" />
+    <file relUrl="bin/ServiceHost.dll" publishTime="06/14/2017 21:07:20" />
+    <file relUrl="DB.xml" publishTime="12/22/2016 16:02:33" />
+    <file relUrl="SecurityService.svc" publishTime="11/15/2016 16:04:03" />
+    <file relUrl="BLLBaseService.svc" publishTime="11/15/2016 16:04:03" />
+    <file relUrl="Web.config" publishTime="06/14/2017 21:11:50" />
+    <file relUrl="bin/SQLDAL.dll" publishTime="06/14/2017 21:07:18" />
+    <file relUrl="bin/IServices.dll" publishTime="02/10/2017 09:34:25" />
+    <file relUrl="bin/Services.dll" publishTime="02/10/2017 09:34:25" />
+    <file relUrl="bin/Util.dll" publishTime="02/10/2017 09:34:25" />
+    <file relUrl="bin/BLL.dll" publishTime="02/10/2017 09:34:25" />
+  </publishProfile>
+</publishData>

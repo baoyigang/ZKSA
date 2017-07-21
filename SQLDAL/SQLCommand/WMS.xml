@@ -1,0 +1,277 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<SqlCommand>
+  <!--订单 -->
+  <Command ID="SelectOrder">
+    <CommandString>
+      select main.*,cust.CustomerName,Rout.RouteName,SUBSTRING(main.BATCHNO,7,3) as SubBatchNo from SC_I_ORDERMASTER main
+      left join CMD_Customer cust on main.CustomerCode=cust.CustomerCode
+      left join CMD_Route Rout on main.RouteCode=rout.RouteCode
+      where {0}
+      order by {1}
+    </CommandString>
+  </Command>
+
+  <Command ID="InsertOrder">
+    <CommandString>
+      insert into SC_I_ORDERMASTER(OrderDate, DeliveryDate, BatchNo, OrderId, RouteCode, CustomerCode, DeliveryAdd, Creator, CreateDate, Updater, UpdateDate)
+      values(@OrderDate, @DeliveryDate, @BatchNo, @OrderId, @RouteCode, @CustomerCode, @DeliveryAdd, @Creator, getdate(), @Updater, getdate())
+    </CommandString>
+  </Command>
+
+  <Command ID="UpdateOrder">
+    <CommandString>
+      update SC_I_ORDERMASTER set OrderDate=@OrderDate, DeliveryDate=@DeliveryDate, BatchNo=@BatchNo, RouteCode=@RouteCode, CustomerCode=@CustomerCode, DeliveryAdd=@DeliveryAdd,Updater=@Updater, UpdateDate=getdate() where OrderId=@OrderID
+    </CommandString>
+  </Command>
+
+  <Command ID="DeleteOrder">
+    <CommandString>
+      delete from  SC_I_ORDERMASTER  where OrderId in ({0})
+    </CommandString>
+  </Command>
+
+  <Command ID="SelectOrderDetail">
+    <CommandString>
+      select * from SC_I_ORDERDETAIL
+      where {0}
+      order by RowID
+    </CommandString>
+  </Command>
+
+  <Command ID="SelectBillMaster">
+    <CommandString>
+      select * from View_WMS_BillMaster
+      where {0}
+      order by {1}
+    </CommandString>
+  </Command>
+
+  <Command ID="SelectBillDetail">
+    <CommandString>
+      select * from View_BillDetailProduct
+      where {0}
+      order by {1}
+    </CommandString>
+  </Command>
+
+  <Command ID="SelectInventoryBillDetail">
+    <CommandString>
+      select detail.*,cell.CellName,area.AreaName,shelf.ShelfName from WMS_BillDetail detail
+      inner join CMD_Cell cell on detail.CellCode=cell.CellCode
+      inner join CMD_Area area on cell.AreaCode=area.AreaCode
+      inner join CMD_Shelf shelf on cell.ShelfCode=shelf.ShelfCode
+      where {0}
+      order by {1}
+    </CommandString>
+  </Command>
+
+  <Command ID="InsertOrderDetail">
+    <CommandString>
+      insert into SC_I_ORDERDETAIL( OrderId, RowID, ProductCode, ProductName, Quantity, OrderDate, DeliveryDate, BatchNo, Price, Amount, Memo)
+      values(@OrderId, @RowID, @ProductCode, @ProductName, @Quantity, @OrderDate, @DeliveryDate, @BatchNo, @Price, @Amount, @Memo)
+    </CommandString>
+  </Command>
+
+  <Command ID="DeleteOrderDetail">
+    <CommandString>
+      delete from  SC_I_ORDERDETAIL  where OrderId in ({0})
+    </CommandString>
+  </Command>
+
+  <Command ID="DeleteBillMaster">
+    <CommandString>
+      delete from  WMS_BillMaster where BillId in ({0})
+    </CommandString>
+  </Command>
+  <Command ID="DeleteBillDetail">
+    <CommandString>
+      delete from WMS_BillDetail  where BillId in ({0})
+    </CommandString>
+  </Command>
+
+  <Command ID="UpdateCheckBillMaster">
+    <CommandString>
+      update WMS_BillMaster set Checker=@Checker,CheckDate=getdate(),State=@State  where {0}
+    </CommandString>
+  </Command>
+ 
+  <!--出库单-->
+  <Command ID="SpOutStockTask">
+    <CommandString>
+      Sp_OutstockTask
+    </CommandString>
+  </Command>
+  <Command ID="SpCancelOutstockTask">
+    <CommandString>
+      Sp_OutstockCancelTask
+    </CommandString>
+  </Command>  
+  <Command ID="InsertOutStockBill">
+    <CommandString>
+      insert into WMS_BillMaster(BillID, BillDate,  BillTypeCode,Memo,Creator, CreateDate, Updater, UpdateDate)
+      values( @BillID,@BillDate, @BillTypeCode,@Memo,@Creator, getdate(), @Updater, getdate())
+    </CommandString>
+  </Command> 
+  <Command ID="InsertOutStockDetail">
+    <CommandString>
+      insert into WMS_BillDetail(BillID,RowID, ProductCode,Quantity,Memo)
+      values(@BillID,@RowID, @ProductCode,@Quantity,@Memo)
+    </CommandString>
+  </Command> 
+  <Command ID="UpdateOutStock">
+    <CommandString>
+      update WMS_BillMaster set BillDate=@BillDate, BillTypeCode=@BillTypeCode , Memo=@Memo, Updater=@Updater, UpdateDate=getdate() where BillID=@BillID
+    </CommandString>
+  </Command>  
+  <Command ID="DeleteBillDetail">
+    <CommandString>
+      delete from  WMS_BillDetail  where BillID in ({0})
+    </CommandString>
+  </Command>
+
+  <!--盘库单-->
+  <Command ID="InsertInventoryStockBill">
+    <CommandString>
+      insert into WMS_BillMaster(BillID,BillDate,AreaCode,BillTypeCode,Memo,Creator,CreateDate,Updater,UpdateDate)
+      values(@BillID,@BillDate,@AreaCode,@BillTypeCode,@Memo,@Creator,getdate(),@Updater,getdate())
+    </CommandString>
+  </Command>
+  <Command ID="UpdateInventoryStock">
+    <CommandString>
+      update WMS_BillMaster set BillDate=@BillDate, AreaCode=@AreaCode,BillTypeCode=@BillTypeCode,Memo=@Memo,Updater=@Updater,UpdateDate=getdate() where BillID=@BillID
+    </CommandString>
+  </Command>
+  <Command ID="InsertInventoryStockDetail">
+    <CommandString>
+      insert into WMS_BillDetail(BillID,RowID,Quantity,CellCode,Memo)
+      values(@BillID,@RowID,@Quantity,@CellCode,@Memo)
+    </CommandString>
+  </Command>
+  <Command ID="SpInventoryStockTask">
+    <CommandString>
+      Sp_InventorystockTask
+    </CommandString>
+  </Command>
+  <Command ID="SpCancelInventoryStockTask">
+    <CommandString>
+      Sp_InventorystockCancelTask
+    </CommandString>
+  </Command>
+  <!--入库单-->
+  <Command ID="SpInStockTask">
+    <CommandString>
+      Sp_OutstockTask
+    </CommandString>
+  </Command>
+  <Command ID="SpCancelInstockTask">
+    <CommandString>
+      Sp_OutstockCancelTask
+    </CommandString>
+  </Command>
+  <Command ID="InsertInStockBill">
+    <CommandString>
+      insert into WMS_BillMaster(BillID, BillDate,  BillTypeCode,Memo,Creator, CreateDate, Updater, UpdateDate)
+      values( @BillID,@BillDate, @BillTypeCode,@Memo,@Creator, getdate(), @Updater, getdate())
+    </CommandString>
+  </Command>
+  <Command ID="InsertInStockDetail">
+    <CommandString>
+      insert into WMS_BillDetail(BillID,RowID, ProductCode,Quantity,Memo)
+      values(@BillID,@RowID, @ProductCode,@Quantity,@Memo)
+    </CommandString>
+  </Command>
+  <Command ID="UpdateInStock">
+    <CommandString>
+      update WMS_BillMaster set BillDate=@BillDate, BillTypeCode=@BillTypeCode , Memo=@Memo, Updater=@Updater, UpdateDate=getdate() where BillID=@BillID
+    </CommandString>
+  </Command>
+
+
+
+  <!--现有库存明细查询-->
+  <Command ID="SelectProductDetailQuery">
+    <CommandString>
+      select  cell.AreaName,cell.ShelfName,cell.CellName, product.CategoryName,product.ProductName,Product.ProductNo,
+      product.Spec,product.Unit,product.ValidPeriod,product.Description,product.Memo as M,product.PartNo,pallet.*,CONVERT(nvarchar, pallet.InDate,120) as SIndate
+      from WMS_Pallet pallet
+      left join VCMD_Product product on pallet.ProductCode=product.ProductCode
+      left join View_CMD_CELL_ALL Cell on pallet.CellCode=Cell.CellCode
+      where {0}
+    </CommandString>
+  </Command>
+  <!--任务查询-->
+  <Command ID="SelectTaskQuery">
+    <CommandString>
+      SELECT Task.*,BillType.BillTypeName,Product.ProductName,Product.ProductCode,Product.ProductNo,Product.CategoryName,Product.Unit,TableState.StateDesc,crane.CraneName,detail.BillID,detail.Quantity,
+      (case when Task.TaskType='11' then TASK.StationNo when Task.TaskType in('12','13','14') then Task.CellCode end) FromStation,convert(nvarchar,task.StartDate,120) as SStartDate,convert(nvarchar,task.FinishDate,120) as SFinishDate,
+      (case when Task.TaskType in ('11','14') then Task.CellCode when Task.TaskType='12' then TASK.StationNo when Task.TaskType='13' then Task.ToCellCode end) ToStation
+      FROM WCS_TASK  Task
+      left join  WCS_TaskProductDetail detail on Task.TaskNo=detail.TaskNo
+      left join  VCMD_Product product on detail.ProductCode=Product.ProductCode
+      left join  CMD_Crane Crane on Task.CraneNo=crane.CraneNo
+      left join  CMD_BillType BillType on task.BillTypeCode=billtype.BillTypeCode
+      left join  Sys_TableState TableState on TableState.TableName='WCS_TASK' and TableState.FieldName='State' and Task.State=TableState.State
+      where {0}
+    </CommandString>
+   
+    
+    
+    <!--出库明细查询-->
+    <Command ID="SelectOutStockQuery">
+      <CommandString>
+        select task.PalletCode,CellCode,task.FinishDate,Detail.ProductCode,Detail.Barcode,detail.Quantity,Product.CategoryName,Product.ProductNo,
+        product.ProductName,product.Spec,product.Unit,product.ValidPeriod,product.Description,product.Memo as M,product.PartNo,main.SourceBillNo,detail.BillID,convert(nvarchar,task.FinishDate,120) as SFinishDate
+        from WCS_TASK Task
+        left join WCS_TaskProductDetail Detail on Task.TaskNo=Detail.TaskNo
+        left join VCMD_Product Product  on Detail.ProductCode=Product.ProductCode
+        left join WMS_BillMaster Main on Detail.BillID=main.BillID
+        where task.TaskType='12' and task.State=7 and {0}
+      </CommandString>
+     </Command>
+  </Command>
+  <!--组盘-->
+  <Command ID="SelectWmsPallet">
+    <CommandString>
+      select pallet.*,product.ProductName,product.Unit,product.ModelNo from WMS_Pallet pallet
+      left join CMD_Product product on pallet.ProductCode=product.ProductCode
+      where {0}
+    </CommandString>
+  </Command>
+  <Command ID="InsertPallet">
+    <CommandString>
+      insert into WMS_Pallet(PalletCode,RowID,ProductCode,Quantity,Weight,Memo,Creator,CreateDate,Updater,UpdateDate)
+      values(@PalletCode,@RowID,@ProductCode,@Quantity,@Weight,@Memo,@Creator,getdate(),@Updater,getdate())
+    </CommandString>
+  </Command>
+  <Command ID="UpdatePallet">
+    <CommandString>
+      update wms_pallet set productcode=@productCode,Quantity=@Quantity,Weight=@Weight,Memo=@Memo,Updater=@Updater,UpdateDate=getdate() where PalletCode=@PalletCode and RowID=@RowID
+    </CommandString>
+  </Command>
+  <Command ID="SpCreateTaskByPallet">
+    <CommandString>
+      Sp_CreateTaskByPallet
+    </CommandString>
+  </Command>
+  <!--超过冲程-->
+  <Command ID="SelectProductOutWeight">
+    <CommandString>
+      select product.*,tmp.quantity from (
+      select ProductCode,SUM(Quantity) as quantity from WCS_Task task
+      inner join WCS_TaskProductDetail detail on task.TaskNo=detail.TaskNo
+      where task.TaskType='11' and SubSate=0 and State='7'
+      group by ProductCode ) tmp inner join CMD_Product product on tmp.ProductCode=product.ProductCode
+      where tmp.quantity&gt;=product.Weight and product.Weight!=0 and {0}
+    </CommandString>
+  </Command> 
+  <!--显示冲程-->
+  <Command ID="SelectProductAllWeight">
+    <CommandString>
+      select product.*,isnull(tmp.quantity,0)quantity from CMD_Product product left join (select ProductCode,SUM(Quantity) as quantity from WCS_Task task
+      inner join WCS_TaskProductDetail detail on task.TaskNo=detail.TaskNo
+      where task.TaskType='11'and State='7'and SubSate=0
+      group by ProductCode)tmp on product.ProductCode=tmp.ProductCode
+      where  product.Weight!=0 and {0}
+    </CommandString>
+  </Command>
+</SqlCommand>

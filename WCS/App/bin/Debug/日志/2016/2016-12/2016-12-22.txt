@@ -1,0 +1,42 @@
+2016/12/22 16:10:08 [INFO]2016/12/22 16:10:08退出系统 
+2016/12/22 19:07:02 [ERROR]2016/12/22 19:07:02读OPC数据失败，原因：Timeout, e.g. due to a broken connection. 
+2016/12/22 19:07:17 [ERROR]2016/12/22 19:07:17读OPC数据失败，原因：Timeout, e.g. due to a broken connection. 
+2016/12/22 19:07:32 [ERROR]2016/12/22 19:07:32读OPC数据失败，原因：Timeout, e.g. due to a broken connection. 
+2016/12/22 19:07:48 [ERROR]2016/12/22 19:07:48读OPC数据失败，原因：Timeout, e.g. due to a broken connection. 
+2016/12/22 19:08:03 [ERROR]2016/12/22 19:08:03读OPC数据失败，原因：Timeout, e.g. due to a broken connection. 
+2016/12/22 19:08:18 [ERROR]2016/12/22 19:08:18读OPC数据失败，原因：Timeout, e.g. due to a broken connection. 
+2016/12/22 19:08:33 [ERROR]2016/12/22 19:08:33读OPC数据失败，原因：Timeout, e.g. due to a broken connection. 
+2016/12/22 19:08:48 [ERROR]2016/12/22 19:08:48读OPC数据失败，原因：Timeout, e.g. due to a broken connection. 
+2016/12/22 19:09:03 [ERROR]2016/12/22 19:09:03读OPC数据失败，原因：Timeout, e.g. due to a broken connection. 
+2016/12/22 19:09:18 [ERROR]2016/12/22 19:09:18读OPC数据失败，原因：Timeout, e.g. due to a broken connection. 
+2016/12/22 19:09:33 [ERROR]2016/12/22 19:09:33读OPC数据失败，原因：Timeout, e.g. due to a broken connection. 
+2016/12/22 19:11:14 [ERROR]2016/12/22 19:11:14读OPC数据失败，原因：Timeout, e.g. due to a broken connection. 
+2016/12/22 19:11:19 [ERROR]2016/12/22 19:11:19读OPC数据失败，原因：Timeout, e.g. due to a broken connection. 
+2016/12/22 19:11:34 [ERROR]2016/12/22 19:11:34读OPC数据失败，原因：Timeout, e.g. due to a broken connection. 
+2016/12/22 19:11:48 [INFO]2016/12/22 19:11:48退出系统 
+2016/12/22 19:12:39 [INFO]2016/12/22 19:12:39退出系统 
+2016/12/22 19:13:22 [INFO]2016/12/22 19:13:22退出系统 
+2016/12/22 19:16:07 [ERROR]2016/12/22 19:16:07读OPC数据失败，原因：Timeout, e.g. due to a broken connection. 
+2016/12/22 19:16:17 [INFO]2016/12/22 19:16:17退出系统 
+2016/12/22 19:19:29 [ERROR]2016/12/22 19:19:29读OPC数据失败，原因：Timeout, e.g. due to a broken connection. 
+2016/12/22 19:19:44 [ERROR]2016/12/22 19:19:44读OPC数据失败，原因：Timeout, e.g. due to a broken connection. 
+2016/12/22 19:20:10 [ERROR]2016/12/22 19:20:10读OPC数据失败，原因：Timeout, e.g. due to a broken connection. 
+2016/12/22 19:20:15 [ERROR]2016/12/22 19:20:15读OPC数据失败，原因：Timeout, e.g. due to a broken connection. 
+2016/12/22 19:22:00 [ERROR]2016/12/22 19:22:00读OPC数据失败，原因：Timeout, e.g. due to a broken connection. 
+2016/12/22 19:22:15 [ERROR]2016/12/22 19:22:15读OPC数据失败，原因：Timeout, e.g. due to a broken connection. 
+2016/12/22 19:22:30 [ERROR]2016/12/22 19:22:30读OPC数据失败，原因：Timeout, e.g. due to a broken connection. 
+2016/12/22 19:22:45 [ERROR]2016/12/22 19:22:45读OPC数据失败，原因：Timeout, e.g. due to a broken connection. 
+2016/12/22 19:32:38 [ERROR]2016/12/22 19:32:38读OPC数据失败，原因：Timeout, e.g. due to a broken connection. 
+2016/12/22 19:32:53 [ERROR]2016/12/22 19:32:53读OPC数据失败，原因：Timeout, e.g. due to a broken connection. 
+2016/12/22 19:33:08 [ERROR]2016/12/22 19:33:08读OPC数据失败，原因：Timeout, e.g. due to a broken connection. 
+2016/12/22 19:33:23 [ERROR]2016/12/22 19:33:23读OPC数据失败，原因：Timeout, e.g. due to a broken connection. 
+2016/12/22 19:33:38 [ERROR]2016/12/22 19:33:38读OPC数据失败，原因：Timeout, e.g. due to a broken connection. 
+2016/12/22 19:33:53 [ERROR]2016/12/22 19:33:53读OPC数据失败，原因：Timeout, e.g. due to a broken connection. 
+2016/12/22 19:34:08 [ERROR]2016/12/22 19:34:08读OPC数据失败，原因：Timeout, e.g. due to a broken connection. 
+2016/12/22 19:34:23 [ERROR]2016/12/22 19:34:23读OPC数据失败，原因：Timeout, e.g. due to a broken connection. 
+2016/12/22 19:34:39 [ERROR]2016/12/22 19:34:39读OPC数据失败，原因：Timeout, e.g. due to a broken connection. 
+2016/12/22 19:34:54 [ERROR]2016/12/22 19:34:54读OPC数据失败，原因：Timeout, e.g. due to a broken connection. 
+2016/12/22 19:35:09 [ERROR]2016/12/22 19:35:09读OPC数据失败，原因：Timeout, e.g. due to a broken connection. 
+2016/12/22 19:35:22 [INFO]2016/12/22 19:35:22退出系统 
+2016/12/22 19:47:47 [ERROR]2016/12/22 19:47:47读OPC数据失败，原因：Timeout, e.g. due to a broken connection. 
+2016/12/22 19:47:55 [INFO]2016/12/22 19:47:55退出系统 

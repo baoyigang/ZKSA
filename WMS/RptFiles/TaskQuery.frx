@@ -1,0 +1,138 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="10/16/2015 17:59:10" ReportInfo.Modified="12/27/2016 08:59:30" ReportInfo.CreatorVersion="1.6.2.0">
+  <Dictionary>
+    <TableDataSource Name="TaskQuery" ReferenceName="TaskQuery" DataType="System.Int32" Enabled="true">
+      <Column Name="TaskNo" DataType="System.String"/>
+      <Column Name="BillTypeCode" DataType="System.String"/>
+      <Column Name="TaskType" DataType="System.String"/>
+      <Column Name="TaskLevel" DataType="System.Byte"/>
+      <Column Name="PalletCode" DataType="System.String"/>
+      <Column Name="BillID" DataType="System.String"/>
+      <Column Name="ProductCode" DataType="System.String"/>
+      <Column Name="ProductNo" DataType="System.String"/>
+      <Column Name="Quantity" DataType="System.Int32"/>
+      <Column Name="CraneNo" DataType="System.String"/>
+      <Column Name="CellCode" DataType="System.String"/>
+      <Column Name="ToCellCode" DataType="System.String"/>
+      <Column Name="State" DataType="System.Byte"/>
+      <Column Name="Tasker" DataType="System.String"/>
+      <Column Name="TaskDate" DataType="System.DateTime"/>
+      <Column Name="RequestDate" DataType="System.DateTime"/>
+      <Column Name="StartDate" DataType="System.DateTime"/>
+      <Column Name="FinishDate" DataType="System.DateTime"/>
+      <Column Name="CraneErrCode" DataType="System.String"/>
+      <Column Name="CraneErrDesc" DataType="System.String"/>
+      <Column Name="AreaCode" DataType="System.String"/>
+      <Column Name="BillTypeName" DataType="System.String"/>
+      <Column Name="ProductName" DataType="System.String"/>
+      <Column Name="StateDesc" DataType="System.String"/>
+      <Column Name="CraneName" DataType="System.String"/>
+      <Column Name="FromStation" DataType="System.String"/>
+      <Column Name="ToStation" DataType="System.String"/>
+      <Column Name="BarCode" DataType="System.String"/>
+      <Column Name="StationNo" DataType="System.String"/>
+      <Column Name="CategoryName" DataType="System.String"/>
+      <Column Name="Unit" DataType="System.String"/>
+      <Column Name="TaskID" DataType="System.String"/>
+      <Column Name="CarNo" DataType="System.String"/>
+      <Column Name="BillID1" DataType="System.String"/>
+      <Column Name="SStartDate" DataType="System.String"/>
+      <Column Name="SFinishDate" DataType="System.String"/>
+    </TableDataSource>
+    <Total Name="TotalQuantity" Expression="[TaskQuery.Quantity]" Evaluator="Data1" PrintOn="ReportSummary1"/>
+  </Dictionary>
+  <ReportPage Name="Page1" Landscape="true" PaperWidth="297" PaperHeight="210" LeftMargin="3" RightMargin="3">
+    <PageHeaderBand Name="PageHeader1" Width="1099.98" Height="69.01">
+      <TextObject Name="Text1" Left="-0.02" Top="7.5" Width="1094.31" Height="26.48" Text="任务查询表" HorzAlign="Center" VertAlign="Center" Font="宋体, 12pt, style=Bold"/>
+      <TableObject Name="Table1" Top="35.35" Width="1065.61" Height="33.66">
+        <TableColumn Name="Column1" Width="76.27"/>
+        <TableColumn Name="Column2" Width="58.11"/>
+        <TableColumn Name="Column3" Width="58.88"/>
+        <TableColumn Name="Column4" Width="126.17"/>
+        <TableColumn Name="Column5" Width="126.17"/>
+        <TableColumn Name="Column8" Width="68.73"/>
+        <TableColumn Name="Column9" Width="68.71"/>
+        <TableColumn Name="Column10" Width="104.62"/>
+        <TableColumn Name="Column12" Width="95.17"/>
+        <TableColumn Name="Column14" Width="95.17"/>
+        <TableColumn Name="Column13" Width="122.48"/>
+        <TableColumn Name="Column15" Width="65.13"/>
+        <TableRow Name="Row1" Height="33.66">
+          <TableCell Name="Cell1" Border.Lines="All" Text="任务号" VertAlign="Center" Font="宋体, 9pt"/>
+          <TableCell Name="Cell2" Border.Lines="All" Text="任务状态" VertAlign="Center" Font="宋体, 9pt"/>
+          <TableCell Name="Cell3" Border.Lines="All" Text="单据类型" VertAlign="Center" Font="宋体, 9pt"/>
+          <TableCell Name="Cell4" Border.Lines="All" Text="开始时间" VertAlign="Center" Font="宋体, 9pt"/>
+          <TableCell Name="Cell5" Border.Lines="All" Text="结束时间" VertAlign="Center" Font="宋体, 9pt"/>
+          <TableCell Name="Cell28" Border.Lines="All" Text="起始位置" VertAlign="Center" Font="宋体, 9pt"/>
+          <TableCell Name="Cell29" Border.Lines="All" Text="目标位置" VertAlign="Center" Font="宋体, 9pt"/>
+          <TableCell Name="Cell30" Border.Lines="All" Text="单据编号" VertAlign="Center" Font="宋体, 9pt"/>
+          <TableCell Name="Cell32" Border.Lines="All" Text="模具编号" VertAlign="Center" Font="宋体, 9pt"/>
+          <TableCell Name="Cell32" Border.Lines="All" Text="产品编号" VertAlign="Center" Font="宋体, 9pt"/>
+          <TableCell Name="Cell33" Border.Lines="All" Text="品名" VertAlign="Center" Font="宋体, 9pt"/>
+          <TableCell Name="Cell35" Border.Lines="All" Text="冲程数" HorzAlign="Right" VertAlign="Center" Font="宋体, 9pt"/>
+        </TableRow>
+      </TableObject>
+    </PageHeaderBand>
+    <DataBand Name="Data1" Top="73.01" Width="1099.98" Height="28.75" DataSource="TaskQuery">
+      <TableObject Name="Table2" Width="1065.46" Height="28.75">
+        <TableColumn Name="Column17" Width="76.27"/>
+        <TableColumn Name="Column18" Width="58.13"/>
+        <TableColumn Name="Column19" Width="58.88"/>
+        <TableColumn Name="Column20" Width="126.17"/>
+        <TableColumn Name="Column21" Width="126.17"/>
+        <TableColumn Name="Column24" Width="68.73"/>
+        <TableColumn Name="Column25" Width="68.71"/>
+        <TableColumn Name="Column26" Width="104.62"/>
+        <TableColumn Name="Column28" Width="95.17"/>
+        <TableColumn Name="Column32" Width="95.12"/>
+        <TableColumn Name="Column29" Width="122.47"/>
+        <TableColumn Name="Column31" Width="65.02"/>
+        <TableRow Name="Row2" Height="28.75">
+          <TableCell Name="Cell37" Border.Lines="All" Text="[TaskQuery.TaskNo]" VertAlign="Center" Font="宋体, 9pt"/>
+          <TableCell Name="Cell38" Border.Lines="All" Text="[TaskQuery.StateDesc]" VertAlign="Center" Font="宋体, 9pt"/>
+          <TableCell Name="Cell39" Border.Lines="All" Text="[TaskQuery.BillTypeName]" VertAlign="Center" Font="宋体, 9pt"/>
+          <TableCell Name="Cell40" Border.Lines="All" Text="[TaskQuery.SStartDate]" VertAlign="Center" Font="宋体, 9pt"/>
+          <TableCell Name="Cell41" Border.Lines="All" Text="[TaskQuery.SFinishDate]" VertAlign="Center" Font="宋体, 9pt"/>
+          <TableCell Name="Cell44" Border.Lines="All" Text="[TaskQuery.FromStation]" VertAlign="Center" Font="宋体, 9pt"/>
+          <TableCell Name="Cell45" Border.Lines="All" Text="[TaskQuery.ToStation]" VertAlign="Center" Font="宋体, 9pt"/>
+          <TableCell Name="Cell46" Border.Lines="All" Text="[TaskQuery.BillID]" VertAlign="Center" Font="宋体, 9pt"/>
+          <TableCell Name="Cell48" Border.Lines="All" Text="[TaskQuery.ProductCode]" VertAlign="Center" Font="宋体, 9pt"/>
+          <TableCell Name="Cell48" Border.Lines="All" Text="[TaskQuery.ProductNo]" VertAlign="Center" Font="宋体, 9pt"/>
+          <TableCell Name="Cell49" Border.Lines="All" Text="[TaskQuery.ProductName]" VertAlign="Center" Font="宋体, 9pt"/>
+          <TableCell Name="Cell51" Border.Lines="All" Text="[TaskQuery.Quantity]" HorzAlign="Right" VertAlign="Center" Font="宋体, 9pt"/>
+        </TableRow>
+      </TableObject>
+    </DataBand>
+    <ReportSummaryBand Name="ReportSummary1" Top="105.76" Width="1099.98" Height="33.66">
+      <TableObject Name="Table3" Width="1065.49" Height="33.66">
+        <TableColumn Name="Column33" Width="76.27"/>
+        <TableColumn Name="Column34" Width="58.11"/>
+        <TableColumn Name="Column35" Width="58.88"/>
+        <TableColumn Name="Column36" Width="126.17"/>
+        <TableColumn Name="Column37" Width="126.17"/>
+        <TableColumn Name="Column39" Width="68.73"/>
+        <TableColumn Name="Column40" Width="68.71"/>
+        <TableColumn Name="Column41" Width="104.62"/>
+        <TableColumn Name="Column43" Width="95.17"/>
+        <TableColumn Name="Column44" Width="95.17"/>
+        <TableColumn Name="Column45" Width="122.47"/>
+        <TableColumn Name="Column46" Width="65.02"/>
+        <TableRow Name="Row3" Height="33.66">
+          <TableCell Name="Cell52" Border.Lines="All" VertAlign="Center" Font="宋体, 9pt" ColSpan="11"/>
+          <TableCell Name="Cell53" Border.Lines="All" VertAlign="Center" Font="宋体, 9pt"/>
+          <TableCell Name="Cell54" Border.Lines="All" VertAlign="Center" Font="宋体, 9pt"/>
+          <TableCell Name="Cell55" Border.Lines="All" VertAlign="Center" Font="宋体, 9pt"/>
+          <TableCell Name="Cell56" Border.Lines="All" VertAlign="Center" Font="宋体, 9pt"/>
+          <TableCell Name="Cell58" Border.Lines="All" VertAlign="Center" Font="宋体, 9pt"/>
+          <TableCell Name="Cell59" Border.Lines="All" VertAlign="Center" Font="宋体, 9pt"/>
+          <TableCell Name="Cell60" Border.Lines="All" VertAlign="Center" Font="宋体, 9pt"/>
+          <TableCell Name="Cell62" Border.Lines="All" VertAlign="Center" Font="宋体, 9pt"/>
+          <TableCell Name="Cell63" Border.Lines="All" VertAlign="Center" Font="宋体, 9pt"/>
+          <TableCell Name="Cell64" Border.Lines="All" VertAlign="Center" Font="宋体, 9pt"/>
+          <TableCell Name="Cell65" Border.Lines="All" Text="[TotalQuantity]" HorzAlign="Right" VertAlign="Center" Font="宋体, 9pt"/>
+        </TableRow>
+      </TableObject>
+    </ReportSummaryBand>
+    <PageFooterBand Name="PageFooter1" Top="143.42" Width="1099.98"/>
+  </ReportPage>
+</Report>

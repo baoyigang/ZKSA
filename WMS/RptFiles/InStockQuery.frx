@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="10/14/2015 18:04:58" ReportInfo.Modified="08/10/2016 16:07:51" ReportInfo.CreatorVersion="1.9.9.0">
+  <Dictionary>
+    <TableDataSource Name="InStockQuery" ReferenceName="InStockQuery" DataType="System.Int32" Enabled="true">
+      <Column Name="TaskDate" DataType="System.DateTime"/>
+      <Column Name="Tasker" DataType="System.String"/>
+      <Column Name="WarehouseCode" DataType="System.String"/>
+      <Column Name="BatchNo" DataType="System.String"/>
+      <Column Name="ProductCode" DataType="System.String"/>
+      <Column Name="Quantity" DataType="System.Int32"/>
+      <Column Name="Barcode" DataType="System.String"/>
+      <Column Name="CategoryName" DataType="System.String"/>
+      <Column Name="Spec" DataType="System.String"/>
+      <Column Name="Unit" DataType="System.String"/>
+      <Column Name="WarehouseName" DataType="System.String"/>
+      <Column Name="ProductName" DataType="System.String"/>
+    </TableDataSource>
+  </Dictionary>
+  <ReportPage Name="Page1" Landscape="true" PaperWidth="297" PaperHeight="210">
+    <PageHeaderBand Name="PageHeader1" Width="1047.06" Height="69.56">
+      <TextObject Name="Text1" Width="1030.05" Height="37.8" Text="入库明细表" HorzAlign="Center" VertAlign="Center" Font="宋体, 12pt, style=Bold"/>
+      <TableObject Name="Table1" Left="143.98" Top="50.66" Width="762.81" Height="18.9" Border.Lines="All">
+        <TableColumn Name="Column1" Width="92.95"/>
+        <TableColumn Name="Column4"/>
+        <TableColumn Name="Column6" Width="102.86"/>
+        <TableColumn Name="Column19" Width="122.85"/>
+        <TableColumn Name="Column38"/>
+        <TableColumn Name="Column22"/>
+        <TableColumn Name="Column40"/>
+        <TableColumn Name="Column42"/>
+        <TableColumn Name="Column8" Width="113.4"/>
+        <TableRow Name="Row1">
+          <TableCell Name="Cell1" Border.Lines="Right" Text="仓库" VertAlign="Center" Font="宋体, 9pt"/>
+          <TableCell Name="Cell4" Border.Lines="Right" Text="托盘" VertAlign="Center" Font="宋体, 9pt"/>
+          <TableCell Name="Cell6" Border.Lines="Right" Text="产品编码" VertAlign="Center" Font="宋体, 9pt"/>
+          <TableCell Name="Cell19" Border.Lines="Right" Text="产品名称" VertAlign="Center" Font="宋体, 9pt"/>
+          <TableCell Name="Cell38" Border.Lines="Right" Text="生产批次" VertAlign="Center" Font="宋体, 9pt"/>
+          <TableCell Name="Cell22" Border.Lines="Right" Text="入库数量" HorzAlign="Right" VertAlign="Center" Font="宋体, 9pt"/>
+          <TableCell Name="Cell40" Border.Lines="Right" Text="单位" VertAlign="Center" Font="宋体, 9pt"/>
+          <TableCell Name="Cell42" Border.Lines="Right" Text="入库人员" VertAlign="Center" Font="宋体, 9pt"/>
+          <TableCell Name="Cell8" Border.Lines="Right" Text="入库时间" VertAlign="Center" Font="宋体, 9pt"/>
+        </TableRow>
+      </TableObject>
+    </PageHeaderBand>
+    <DataBand Name="Data1" Top="73.56" Width="1047.06" Height="28.35" DataSource="InStockQuery">
+      <TableObject Name="Table2" Left="143.98" Width="762.81" Height="28.35" Border.Lines="All">
+        <TableColumn Name="Column24" Width="92.95"/>
+        <TableColumn Name="Column27"/>
+        <TableColumn Name="Column29" Width="102.86"/>
+        <TableColumn Name="Column30" Width="122.85"/>
+        <TableColumn Name="Column39"/>
+        <TableColumn Name="Column33"/>
+        <TableColumn Name="Column41"/>
+        <TableColumn Name="Column43"/>
+        <TableColumn Name="Column35" Width="113.4"/>
+        <TableRow Name="Row2" Height="28.35">
+          <TableCell Name="Cell24" Border.Lines="Right" Text="[InStockQuery.WarehouseName]" VertAlign="Center" Font="宋体, 9pt"/>
+          <TableCell Name="Cell27" Border.Lines="Right" Text="[InStockQuery.BatchNo]" VertAlign="Center" Font="宋体, 9pt"/>
+          <TableCell Name="Cell29" Border.Lines="Right" Text="[InStockQuery.ProductCode]" VertAlign="Center" Font="宋体, 9pt"/>
+          <TableCell Name="Cell30" Border.Lines="Right" Text="[InStockQuery.ProductName]" VertAlign="Center" Font="宋体, 9pt"/>
+          <TableCell Name="Cell39" Text="[InStockQuery.Barcode]" VertAlign="Center" Font="宋体, 9pt"/>
+          <TableCell Name="Cell33" Border.Lines="All" Text="[InStockQuery.Quantity]" HorzAlign="Right" VertAlign="Center" Font="宋体, 9pt"/>
+          <TableCell Name="Cell41" Border.Lines="Right" Text="[InStockQuery.Unit]" VertAlign="Center" Font="宋体, 9pt"/>
+          <TableCell Name="Cell43" Border.Lines="Right" Text="[InStockQuery.Tasker]" VertAlign="Center" Font="宋体, 9pt"/>
+          <TableCell Name="Cell35" Border.Lines="Right" Text="[IIf(Year([InStockQuery.TaskDate])==1,&quot;&quot;,FormatDateTime([InStockQuery.TaskDate],&quot;yyyy/MM/dd&quot;))]&#13;&#10;" VertAlign="Center" Font="宋体, 9pt"/>
+        </TableRow>
+      </TableObject>
+      <Sort>
+        <Sort Expression="[InStockQuery.TaskDate]"/>
+        <Sort Expression="[InStockQuery.WarehouseCode]"/>
+        <Sort Expression="[InStockQuery.BatchNo]"/>
+      </Sort>
+    </DataBand>
+    <PageFooterBand Name="PageFooter1" Top="105.91" Width="1047.06"/>
+  </ReportPage>
+</Report>

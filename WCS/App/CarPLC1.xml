@@ -1,0 +1,22 @@
+﻿<?xml version='1.0' ?>
+<Config>
+  <OPCServer ConnectionString="OPC.SimaticNET">
+    <OPCGroup GroupName="PLCGroup" GroupString="S7:[PLC02]" UpdateRate="350">
+      <!--握手信号-->
+      <OPCItem ItemName="ReadFinished" ClientHandler="2" OPCItemName="DB23,X0.0,1" ItemType="READ" IsActive="true"/>
+      
+      
+      <OPCItem ItemName="BarCode" ClientHandler="3" OPCItemName="DB23,B1,20"  ItemType="READ" IsActive="false"/>
+      <OPCItem ItemName="PalletType" ClientHandler="6" OPCItemName="DB23,X0.2,1"  ItemType="READ" IsActive="false"/>
+      
+      <OPCItem ItemName="AlarmCode" ClientHandler="7" OPCItemName="DB23,B22,1"  ItemType="READ" IsActive="true"/>
+      <!--堆垛机负载-->
+      <OPCItem ItemName="HasProduct" ClientHandler="8" OPCItemName="DB23,X0.1,1"  ItemType="READ" IsActive="false"/>
+      
+      <!--任务标识-->
+      <OPCItem ItemName="StockFinished" ClientHandler="18" OPCItemName="DB22,B0,1"  ItemType="WRITE"/>
+      <OPCItem ItemName="WriteFinished" ClientHandler="19" OPCItemName="DB22,B1,1"  ItemType="WRITE"/>
+       
+    </OPCGroup>
+  </OPCServer>
+</Config>

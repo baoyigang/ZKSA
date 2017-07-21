@@ -1,0 +1,12 @@
+D:\Work\XHY\ServiceHost\bin\ServiceHost.dll
+D:\Work\XHY\ServiceHost\bin\ServiceHost.pdb
+D:\Work\XHY\ServiceHost\bin\BLL.dll
+D:\Work\XHY\ServiceHost\bin\IDAL.dll
+D:\Work\XHY\ServiceHost\bin\IServices.dll
+D:\Work\XHY\ServiceHost\bin\Services.dll
+D:\Work\XHY\ServiceHost\bin\SQLDAL.dll
+D:\Work\XHY\ServiceHost\bin\Util.dll
+D:\Work\XHY\ServiceHost\bin\SQLDAL.pdb
+D:\Work\XHY\ServiceHost\obj\Debug\ResolveAssemblyReference.cache
+D:\Work\XHY\ServiceHost\obj\Debug\ServiceHost.dll
+D:\Work\XHY\ServiceHost\obj\Debug\ServiceHost.pdb

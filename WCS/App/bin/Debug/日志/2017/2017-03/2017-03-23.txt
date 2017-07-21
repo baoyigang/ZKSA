@@ -1,0 +1,2 @@
+2017/3/23 14:02:37 [ERROR]2017/3/23 14:02:37初始化处理失败请检查配置，原因：To add an item to a group is not successful ,Reason：The item definition does not exist in the server address space. 
+2017/3/23 14:04:12 [INFO]2017/3/23 14:04:12退出系统 
