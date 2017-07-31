@@ -285,6 +285,12 @@
       values(@ProductCode, @ProductName, @CategoryCode,'','','','','','',@Memo,'',@Creator, getdate(), @Updater, getdate())
     </CommandString>
   </Command>
+  <Command ID="InsertProductDetail">
+    <CommandString>
+      INSERT INTO CMD_PRODUCT(ProductCode, ProductName, CategoryCode,ModelNo,StandardNo,ProductNo,Weight,ValidPeriod,Description,Memo,PartNo,Creator, CreateDate, Updater, UpdateDate)
+      values(@ProductCode, @ProductName, @CategoryCode,'','','','','','',@Memo,'',@Creator, getdate(), @Updater, getdate())
+    </CommandString>
+  </Command>
   <Command ID="UpdateProduct">
     <CommandString>
       Update CMD_PRODUCT Set ProductName=@ProductName, CategoryCode=@CategoryCode, ModelNo=@ModelNo, StandardNo=@StandardNo, ProductNo=@ProductNo, Weight=@Weight,ValidPeriod=@ValidPeriod,Description=@Description,Memo=@Memo,PartNo=@PartNo,

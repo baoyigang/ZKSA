@@ -196,7 +196,8 @@
             if (!$("#fm").form('validate')) {
                 return false;
             }
-            var query = createParam();
+            var MainQuery = createParam();
+            var SubQuery = createSubParam();
             var test = $('#txtPageState').val();
             var data;
 
@@ -204,17 +205,16 @@
                 //判断单号是否存在
                 if (HasExists('cmd_product', "ProductCode='" + $('#txtProductCode').textbox('getValue') + "'", '产品编号已经存在，请重新修改！'))
                     return false;
-               data = { Action: 'Add', Comd: 'cmd.InsertProduct', json: query };
+                data = { Action: 'AddMainDetail', MainComd: 'Cmd.InsertProduct', SubComd: 'WMS.InsertInStockDetail', MainJson: MainQuery, SubJson: SubQuery };
                 $.post(url, data, function (result) {
                     if (result.status == 1) {
-                        ReloadGrid('dg');
+                        ReloadGrid("dg");
                         $('#AddWin').window('close');
-                        
+
                     } else {
                         $.messager.alert('错误', result.msg, 'error');
                     }
                 }, 'json');
-
             }
             else {//修改
                 if (OldStandardNoValue != '' && OldStandardNoValue != StandardNoValue) {
