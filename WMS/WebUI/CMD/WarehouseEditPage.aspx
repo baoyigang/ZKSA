@@ -54,8 +54,8 @@
                 <td colspan="4">&nbsp;<asp:TextBox ID="txtWHID" runat="server" CssClass="HiddenControl" ></asp:TextBox>
                     </td>
             </tr>
-            <tr><td colspan="4" style="height:30px">仓库</td></tr>
-            <tr>
+            <tr><td colspan="4" style="height:30px"  >
+                仓库<tr>
                 <td align="center" class="musttitle" style="width:15%;">
                     仓库编码
                 </td>

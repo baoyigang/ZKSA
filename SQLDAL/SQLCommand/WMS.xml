@@ -54,6 +54,15 @@
     </CommandString>
   </Command>
 
+  <Command ID="SelectProductDetailView">
+    <CommandString>
+      select * from View_ProductDetail
+      where {0}
+      order by {1}
+    </CommandString>
+  </Command>
+  
+  
   <Command ID="SelectInventoryBillDetail">
     <CommandString>
       select detail.*,cell.CellName,area.AreaName,shelf.ShelfName from WMS_BillDetail detail

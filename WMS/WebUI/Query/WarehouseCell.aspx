@@ -213,7 +213,7 @@
                 <table  class="maintable" style="width:100%" id="tbProduct">
                     <tr>
                          
-                        <td class="musttitle"  style="width:13%;">
+                        <td class="musttitle"  style="width: 13%;">
                             产品编码
                         </td>
                         <td class="musttitle"  style="width:15%;">
