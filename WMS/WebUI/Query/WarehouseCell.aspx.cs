@@ -76,7 +76,7 @@ public partial class WebUI_Query_WarehouseCell : BasePage
 
         int Rows = int.Parse(ShelfCell.Rows[0]["Rows"].ToString());
         int Columns = int.Parse(ShelfCell.Rows[0]["Columns"].ToString());
-        string Width = (90 / Columns) + "%";
+        string Width = (90.0 / (double)Columns) + "%";
         Table tb = new Table();
         string tbstyle = "width:100%";
         tb.Attributes.Add("style", tbstyle);
@@ -98,7 +98,7 @@ public partial class WebUI_Query_WarehouseCell : BasePage
                     cell.ID = drs[0]["CellCode"].ToString();
 
                     string style = "height:25px;width:" + Width + ";border:2px solid #008B8B;";
-                    string backColor = ReturnColorFlag(drs[0]["PalletCode"].ToString(), drs[0]["IsActive"].ToString(), drs[0]["IsLock"].ToString(), drs[0]["ErrorFlag"].ToString(),drs[0]["IsTurnover"].ToString(), ToYMD(drs[0]["InDate"]));
+                    string backColor = ReturnColorFlag(drs[0]["BarCode"].ToString(), drs[0]["IsActive"].ToString(), drs[0]["IsLock"].ToString(), drs[0]["ErrorFlag"].ToString(),drs[0]["IsTurnover"].ToString(), ToYMD(drs[0]["InDate"]));
                     style += "background-color:" + backColor + ";";
                     /*if (drs[0]["PalletCode"].ToString() != "")
                     {

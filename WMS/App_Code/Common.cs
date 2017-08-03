@@ -40,6 +40,8 @@ public class Common
             {
                 if (dt.Columns[K].ColumnName.IndexOf("Date") > 0 && dt.Rows[j][K].ToString() == "")
                     AddPara[K] = new DataParameter("@" + dt.Columns[K].ColumnName, null);
+                else if (dt.Columns[K].ColumnName.IndexOf("{") >= 0)
+                    AddPara[K] = new DataParameter(dt.Columns[K].ColumnName, dt.Rows[j][K]);
                 else
                     AddPara[K] = new DataParameter("@" + dt.Columns[K].ColumnName, dt.Rows[j][K]);
             }

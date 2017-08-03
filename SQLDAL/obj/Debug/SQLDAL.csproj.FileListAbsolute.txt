@@ -8,3 +8,11 @@ D:\Work\XHY\SQLDAL\obj\Debug\GenerateResource.read.1.tlog
 D:\Work\XHY\SQLDAL\obj\Debug\GenerateResource.write.1.tlog
 D:\Work\XHY\SQLDAL\obj\Debug\SQLDAL.dll
 D:\Work\XHY\SQLDAL\obj\Debug\SQLDAL.pdb
+D:\bba\ZKSA\SQLDAL\bin\Debug\SQLDAL.dll
+D:\bba\ZKSA\SQLDAL\bin\Debug\SQLDAL.pdb
+D:\bba\ZKSA\SQLDAL\bin\Debug\IDAL.dll
+D:\bba\ZKSA\SQLDAL\bin\Debug\Util.dll
+D:\bba\ZKSA\SQLDAL\obj\Debug\SQLDAL.Properties.Resources.resources
+D:\bba\ZKSA\SQLDAL\obj\Debug\SQLDAL.csproj.GenerateResource.Cache
+D:\bba\ZKSA\SQLDAL\obj\Debug\SQLDAL.dll
+D:\bba\ZKSA\SQLDAL\obj\Debug\SQLDAL.pdb

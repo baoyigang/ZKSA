@@ -3,9 +3,8 @@
   <!--根据用户名，获取用户信息，登陆时使用-->
   <Command ID="SelectUserInfoByUserName">
     <CommandString>
-      select a.*,e.ParameterValue as SessionTimeOut
+      select a.*
       from sys_UserList a
-      left join sys_SystemParameter e on e.ParameterName='sys_SessionTimeOut'
       where UserName=@UserName
     </CommandString>
   </Command>

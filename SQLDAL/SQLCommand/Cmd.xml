@@ -81,12 +81,17 @@
   </Command>
 
 
+  <Command ID="SelectCellRegion">
+    <CommandString>
+      SELECT * FROM VCell_CMD_Region where {0} ORDER BY RegionCode,AreaCode
+    </CommandString>
+  </Command>
+
   <Command ID="SelectCellShelf">
     <CommandString>
       SELECT * FROM VCell_CMD_Shelf where {0} ORDER BY ShelfCode,AreaCode
     </CommandString>
   </Command>
-
   <!--货架列信息-->
   <Command ID="SelectColumn">
     <CommandString>
@@ -96,7 +101,7 @@
   <!--货位信息-->
   <Command ID="SelectCell">
     <CommandString>
-      select * from CMD_Cell WHERE {0} ORDER BY AreaCode,ShelfCode,CellCode
+      select * from CMD_Cell WHERE {0} ORDER BY AreaCode,RegionCode,CellCode
     </CommandString>
   </Command>
   <!--货位信息-->
@@ -150,11 +155,78 @@
       Update CMD_BillType Set BillTypeName=@BillTypeName,Memo=@Memo,Updater=@Updater, UpdateDate=getdate() where BillTypeCode=@BillTypeCode
     </CommandString>
   </Command>
+
+  <Command ID="SelectCellEdit">
+    <CommandString>
+      select c.CellCode,c.CellName,c.AreaCode,c.RegionCode,c.Memo,c.Depth,CMD_Region.RegionName from CMD_Cell  c
+      left join CMD_Region on CMD_Region.RegionCode=c.RegionCode
+      WHERE {0} ORDER BY c.AreaCode,c.RegionCode,CellCode
+    </CommandString>
+  </Command>
+
+  <Command ID="UpdateCellEdit">
+    <CommandString>
+      update CMD_Cell set AreaCode=@AreaCode,RegionCode=@RegionCode  where CellCode in ({0})
+    </CommandString> 
+  </Command>
+
+
+
+
+
+  <Command ID="SelectAreaEdit">
+    <CommandString>
+      select * from CMD_Area Where {0}
+    </CommandString>
+  </Command>
+
+  <Command ID="UpdateAreaEdit">
+    <CommandString>
+      update CMD_Area set AreaName=@AreaName,Memo=@Memo Where AreaCode=@AreaCode
+    </CommandString>
+  </Command>
+
+  <Command ID="DeleteAreaEdit">
+    <CommandString>
+      delete from  CMD_Area  Where AreaCode in({0})
+    </CommandString>
+  </Command>
   
-  
-  
-  
-  
+  <Command ID="InsertAreaEdit">
+    <CommandString>
+      insert into CMD_Area(WareHouseCode,AreaCode,AreaName,Memo)
+      values('01',@AreaCode,@AreaName,@Memo)
+    </CommandString>
+  </Command>
+
+
+  <Command ID="SelectRegionEdit">
+    <CommandString>
+      select R.*,a.AreaName from CMD_Region R
+      left join CMD_Area A on A.AreaCode=r.AreaCode
+      where {0}
+    </CommandString>
+  </Command>
+
+  <Command ID="InsertRegionEdit">
+    <CommandString>
+      insert into CMD_Region(WareHouseCode,AreaCode,RegionCode,RegionName,Memo)
+      values(@WareHouseCode,@AreaCode,@RegionCode,@RegionName,@Memo)
+    </CommandString>
+  </Command>
+
+  <Command ID="UpdateRegionEdit">
+    <CommandString>
+      update CMD_Region set AreaCode=@AreaCode,RegionCode=@RegionCode,RegionName=@RegionName,Memo=@Memo Where RegionCode=@RegionCode
+    </CommandString>
+  </Command>
+
+  <Command ID="DeleteRegionEdit">
+    <CommandString>
+      delete from  CMD_Region  Where RegionCode in({0})
+    </CommandString>
+  </Command>
+
   <Command ID="SelectProductQty">
     <CommandString>
       select *
@@ -210,16 +282,35 @@
   <Command ID="InsertProduct">
     <CommandString>
       INSERT INTO CMD_PRODUCT(ProductCode, ProductName, CategoryCode,ModelNo,StandardNo,ProductNo,Weight,ValidPeriod,Description,Memo,PartNo,Creator, CreateDate, Updater, UpdateDate)
-      values(@ProductCode, @ProductName, @CategoryCode,@ModelNo,@StandardNo,@ProductNo,@Weight,@ValidPeriod,@Description,@Memo,@PartNo,@Creator, getdate(), @Updater, getdate())
+      values(@ProductCode, @ProductName, @CategoryCode,'','','','','','',@Memo,'',@Creator, getdate(), @Updater, getdate())
     </CommandString>
   </Command>
+  <Command ID="InsertProductDetail">
+    <CommandString>
+      INSERT INTO CMD_PRODUCTDetail(ProductCode, RowID, RegionCode,SectionName,GrowDay,PreQty)
+      values(@ProductCode, @RowID, @RegionCode,@SectionName,@GrowDay,@PreQty)
+    </CommandString>
+  </Command>
+  
   <Command ID="UpdateProduct">
     <CommandString>
-      Update CMD_PRODUCT Set ProductName=@ProductName, CategoryCode=@CategoryCode, ModelNo=@ModelNo, StandardNo=@StandardNo, ProductNo=@ProductNo, Weight=@Weight,ValidPeriod=@ValidPeriod,Description=@Description,Memo=@Memo,PartNo=@PartNo,
+      Update CMD_PRODUCT Set ProductName=@ProductName, CategoryCode=@CategoryCode,Memo=@Memo,
       Updater=@Updater,UpdateDate=getdate() where ProductCode=@ProductCode
     </CommandString>
   </Command>
-
+  <Command ID="SelectProductDetail">
+    <CommandString>
+      Select a.AreaName,r.RegionName,p.* from CMD_PRODUCTDetail  p
+      left join CMD_Region as r on p.RegionCode=r.RegionCode
+      left join CMD_Area as a on a.AreaCode=r.AreaCode
+      WHERE {0}
+    </CommandString>
+  </Command>
+  <Command ID="DeleteProductDetail">
+    <CommandString>
+      delete from CMD_PRODUCTDetail WHERE ProductCode in({0})
+    </CommandString>
+  </Command>
   <Command ID="SelectTaskQueryProduct">
     <CommandString>
       select * from CMD_PRODUCT

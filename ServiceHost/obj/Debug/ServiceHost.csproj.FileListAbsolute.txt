@@ -10,3 +10,15 @@ D:\Work\XHY\ServiceHost\bin\SQLDAL.pdb
 D:\Work\XHY\ServiceHost\obj\Debug\ResolveAssemblyReference.cache
 D:\Work\XHY\ServiceHost\obj\Debug\ServiceHost.dll
 D:\Work\XHY\ServiceHost\obj\Debug\ServiceHost.pdb
+D:\bba\ZKSA\ServiceHost\bin\ServiceHost.dll
+D:\bba\ZKSA\ServiceHost\bin\ServiceHost.pdb
+D:\bba\ZKSA\ServiceHost\bin\BLL.dll
+D:\bba\ZKSA\ServiceHost\bin\IDAL.dll
+D:\bba\ZKSA\ServiceHost\bin\IServices.dll
+D:\bba\ZKSA\ServiceHost\bin\Services.dll
+D:\bba\ZKSA\ServiceHost\bin\Util.dll
+D:\bba\ZKSA\ServiceHost\obj\Debug\ServiceHost.dll
+D:\bba\ZKSA\ServiceHost\obj\Debug\ServiceHost.pdb
+D:\bba\ZKSA\ServiceHost\bin\SQLDAL.dll
+D:\bba\ZKSA\ServiceHost\bin\SQLDAL.pdb
+D:\bba\ZKSA\ServiceHost\obj\Debug\ServiceHost.csprojResolveAssemblyReference.cache

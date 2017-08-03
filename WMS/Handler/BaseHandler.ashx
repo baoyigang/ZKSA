@@ -294,7 +294,7 @@ public class BaseHandler : IHttpHandler, IRequiresSessionState
             
             //删除明细
             comds.Add(SubDelComd);
-            paras.Add(new DataParameter[] { new DataParameter("{0}", string.Format("'{0}'", dtMain.Rows[0]["BillID"].ToString())) });
+            paras.Add(new DataParameter[] { new DataParameter("{0}", string.Format("'{0}'", dtMain.Rows[0][0].ToString())) });
             Common.SetPara(SubComd, dtSub, ref comds, ref paras);
 
 

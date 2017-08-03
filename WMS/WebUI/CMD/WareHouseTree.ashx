@@ -146,48 +146,48 @@ public class WareHouseTree : IHttpHandler, IRequiresSessionState
     {
         string json = "";
         BLL.BLLBase bll = new BLL.BLLBase();
-        DataTable dtShelf = bll.FillDataTable("Cmd.SelectCellShelf", new DataParameter[] { new DataParameter("{0}", string.Format("AreaCode='{0}'", AreaCode)) });
-        for (int j = 0; j < dtShelf.Rows.Count; j++)
+        DataTable dtRegion = bll.FillDataTable("Cmd.SelectCellRegion", new DataParameter[] { new DataParameter("{0}", string.Format("AreaCode='{0}'", AreaCode)) });
+        for (int j = 0; j < dtRegion.Rows.Count; j++)
         {
-            DataRow dr = dtShelf.Rows[j];
-           string shelfTree = GetShelfTree(AreaCode, dr["ShelfCode"].ToString());
+            DataRow dr = dtRegion.Rows[j];
+           string regionTree = GetShelfTree(AreaCode, dr["RegionCode"].ToString());
             if (j == 0)
             {
                 json += ",\"children\":[{";
-                json += "\"id\":\"" + dr["ShelfCode"].ToString() + "\"";
-                json += ",\"text\":\"" + dr["ShelfName"].ToString() + "\"";
+                json += "\"id\":\"" + dr["RegionCode"].ToString() + "\"";
+                json += ",\"text\":\"" + dr["RegionName"].ToString() + "\"";
 
-                if (dtShelf.Rows.Count == 1)
+                if (dtRegion.Rows.Count == 1)
                 {
-                    if (shelfTree.Length > 0)
-                        json += ",\"state\":\"closed\"" + shelfTree + "}]";
+                    if (regionTree.Length > 0)
+                        json += ",\"state\":\"closed\"" + regionTree + "}]";
                     else
                         json += ",\"state\":\"closed\" }]";
                 }
                 else
                 {
-                    if (shelfTree.Length > 0)
-                        json += ",\"state\":\"closed\"" + shelfTree + "}";
+                    if (regionTree.Length > 0)
+                        json += ",\"state\":\"closed\"" + regionTree + "}";
                     else
                         json += ",\"state\":\"closed\"}";
                 }
             }
-            else if (j > 0 && j < dtShelf.Rows.Count - 1)
+            else if (j > 0 && j < dtRegion.Rows.Count - 1)
             {
-                json += ",{\"id\":\"" + dr["ShelfCode"].ToString() + "\"";
-                json += ",\"text\":\"" + dr["ShelfName"].ToString() + "\"";
+                json += ",{\"id\":\"" + dr["RegionCode"].ToString() + "\"";
+                json += ",\"text\":\"" + dr["RegionName"].ToString() + "\"";
 
-                if (shelfTree.Length > 0)
-                    json += ",\"state\":\"closed\" " + shelfTree + "}";
+                if (regionTree.Length > 0)
+                    json += ",\"state\":\"closed\" " + regionTree + "}";
                 else
                     json += ",\"state\":\"closed\"}";
             }
             else
             {
-                json += ",{\"id\":\"" + dr["ShelfCode"].ToString() + "\"";
-                json += ",\"text\":\"" + dr["ShelfName"].ToString() + "\"";
-                if (shelfTree.Length > 0)
-                    json += ",\"state\":\"closed\" " + shelfTree + "}]";
+                json += ",{\"id\":\"" + dr["RegionCode"].ToString() + "\"";
+                json += ",\"text\":\"" + dr["RegionName"].ToString() + "\"";
+                if (regionTree.Length > 0)
+                    json += ",\"state\":\"closed\" " + regionTree + "}]";
                 else
                     json += ",\"state\":\"closed\"}]";
             }
@@ -202,21 +202,21 @@ public class WareHouseTree : IHttpHandler, IRequiresSessionState
     }
 
 
-    private string GetShelfTree(string AreaCode, string ShelfCode)
+    private string GetShelfTree(string AreaCode, string RegionCode)
     {
         string json = "";
         BLL.BLLBase bll = new BLL.BLLBase();
-        DataTable dtShelf = bll.FillDataTable("Cmd.SelectCell", new DataParameter[] { new DataParameter("{0}", string.Format("ShelfCode='{0}' and AreaCode='{1}'", ShelfCode, AreaCode)) });
-        for (int j = 0; j < dtShelf.Rows.Count; j++)
+        DataTable dtRegion = bll.FillDataTable("Cmd.SelectCell", new DataParameter[] { new DataParameter("{0}", string.Format("RegionCode='{0}' and AreaCode='{1}'", RegionCode, AreaCode)) });
+        for (int j = 0; j < dtRegion.Rows.Count; j++)
         {
-            DataRow dr = dtShelf.Rows[j];
+            DataRow dr = dtRegion.Rows[j];
 
             if (j == 0)
             {
                 json += ",\"children\":[{";
                 json += "\"id\":\"" + dr["CellCode"].ToString() + "\"";
                 json += ",\"text\":\"" + dr["CellName"].ToString() + "\"";
-                if (dtShelf.Rows.Count == 1)
+                if (dtRegion.Rows.Count == 1)
                 {
                     json += "}]";
                 }
@@ -226,7 +226,7 @@ public class WareHouseTree : IHttpHandler, IRequiresSessionState
                 }
 
             }
-            else if (j > 0 && j < dtShelf.Rows.Count - 1)
+            else if (j > 0 && j < dtRegion.Rows.Count - 1)
             {
                 json += ",{\"id\":\"" + dr["CellCode"].ToString() + "\"";
                 json += ",\"text\":\"" + dr["CellName"].ToString() + "\"";
