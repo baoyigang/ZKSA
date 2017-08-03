@@ -287,17 +287,30 @@
   </Command>
   <Command ID="InsertProductDetail">
     <CommandString>
-      INSERT INTO CMD_PRODUCT(ProductCode, ProductName, CategoryCode,ModelNo,StandardNo,ProductNo,Weight,ValidPeriod,Description,Memo,PartNo,Creator, CreateDate, Updater, UpdateDate)
-      values(@ProductCode, @ProductName, @CategoryCode,'','','','','','',@Memo,'',@Creator, getdate(), @Updater, getdate())
+      INSERT INTO CMD_PRODUCTDetail(ProductCode, RowID, RegionCode,SectionName,GrowDay,PreQty)
+      values(@ProductCode, @RowID, @RegionCode,@SectionName,@GrowDay,@PreQty)
     </CommandString>
   </Command>
+  
   <Command ID="UpdateProduct">
     <CommandString>
-      Update CMD_PRODUCT Set ProductName=@ProductName, CategoryCode=@CategoryCode, ModelNo=@ModelNo, StandardNo=@StandardNo, ProductNo=@ProductNo, Weight=@Weight,ValidPeriod=@ValidPeriod,Description=@Description,Memo=@Memo,PartNo=@PartNo,
+      Update CMD_PRODUCT Set ProductName=@ProductName, CategoryCode=@CategoryCode,Memo=@Memo,
       Updater=@Updater,UpdateDate=getdate() where ProductCode=@ProductCode
     </CommandString>
   </Command>
-
+  <Command ID="SelectProductDetail">
+    <CommandString>
+      Select a.AreaName,r.RegionName,p.* from CMD_PRODUCTDetail  p
+      left join CMD_Region as r on p.RegionCode=r.RegionCode
+      left join CMD_Area as a on a.AreaCode=r.AreaCode
+      WHERE {0}
+    </CommandString>
+  </Command>
+  <Command ID="DeleteProductDetail">
+    <CommandString>
+      delete from CMD_PRODUCTDetail WHERE ProductCode in({0})
+    </CommandString>
+  </Command>
   <Command ID="SelectTaskQueryProduct">
     <CommandString>
       select * from CMD_PRODUCT
