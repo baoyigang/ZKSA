@@ -9,183 +9,284 @@ using System.Windows.Forms;
 using Util;
 using DataGridViewAutoFilter;
 using MCP;
-
+using OPC;
+using MCP.Service.Siemens.Config;
 namespace App.View
 {
     public partial class frmMonitor : BaseForm
     {
-        private Point InitialP1;
-        private Point InitialP2;
-
-        float colDis = 20.75f;
-        float rowDis = 54.4f;
-        
         private System.Timers.Timer tmWorkTimer = new System.Timers.Timer();
-        private System.Timers.Timer tmCrane1 = new System.Timers.Timer();
         BLL.BLLBase bll = new BLL.BLLBase();
         Dictionary<int, string> dicCraneFork = new Dictionary<int, string>();
         Dictionary<int, string> dicCraneState = new Dictionary<int, string>();
-        Dictionary<int, string> dicCraneAction = new Dictionary<int, string>();
-        Dictionary<int, string> dicCraneError = new Dictionary<int, string>();
-        Dictionary<int, string> dicCraneOver = new Dictionary<int, string>();
+        Dictionary<int, string> dicCraneMode = new Dictionary<int, string>();
+        DataTable dtDeviceAlarm;
 
         public frmMonitor()
         {
             InitializeComponent();
         }
 
-        private void btnStop_Click(object sender, EventArgs e)
-        {
-            Point P2 = picCrane.Location;
-            P2.X = P2.X - 90;
-
-            this.picCrane.Location = P2;
-        }
-
         private void frmMonitor_Load(object sender, EventArgs e)
         {
-            MainData.OnTask += new TaskEventHandler(Data_OnTask);
-            Cranes.OnCrane += new CraneEventHandler(Monitor_OnCrane);
             AddDicKeyValue();
-
-            InitialP1 = picCrane.Location;
-            picCrane.Parent = pictureBox1;
-            picCrane.BackColor = Color.Transparent;
-            
-
-            this.BindData();
-            for (int i = 0; i < this.dgvMain.Columns.Count - 1; i++)
-                ((DataGridViewAutoFilterTextBoxColumn)this.dgvMain.Columns[i]).FilteringEnabled = true;
-
-            tmWorkTimer.Interval = 3000;
-            tmWorkTimer.Elapsed += new System.Timers.ElapsedEventHandler(tmWorker);
-            tmWorkTimer.Start();
-
-            tmCrane1.Interval = 1000;
-            tmCrane1.Elapsed += new System.Timers.ElapsedEventHandler(tmCraneWorker1);
-            tmCrane1.Start();
-        }
-        private void AddDicKeyValue()
-        {
-            dicCraneFork.Add(0, "非原点");
-            dicCraneFork.Add(1, "原点");
-
-            dicCraneState.Add(0, "空闲");
-            dicCraneState.Add(1, "等待");
-            dicCraneState.Add(2, "定位");
-            dicCraneState.Add(3, "取货");
-            dicCraneState.Add(4, "放货");
-            dicCraneState.Add(98, "维修");
-
-            dicCraneAction.Add(0, "非自动");
-            dicCraneAction.Add(1, "自动");
-
-            dicCraneError.Add(0, "");
-            dicCraneError.Add(1, "行走极限开关动作");
-            dicCraneError.Add(2, "载货台上极限开关动作");
-            dicCraneError.Add(3, "载货台下极限开关动作");
-            dicCraneError.Add(4, "电气柜门急停开关被按下");
-            dicCraneError.Add(5, "外部急停按钮被按下");
-            dicCraneError.Add(6, "载货台超速保护装置动作");
-            dicCraneError.Add(7, "载货台松绳装置动作");
-            dicCraneError.Add(8, "行走制动电阻保护器故障");
-            dicCraneError.Add(9, "过载开关动作");
-            dicCraneError.Add(10, "货叉扭矩检测异常");
-            dicCraneError.Add(11, "相序保护开关未正常工作");
-            dicCraneError.Add(12, "安全继电器开关未正常工作");
-            dicCraneError.Add(13, "行走变频器故障");
-            dicCraneError.Add(14, "起升变频器故障");
-            dicCraneError.Add(15, "货叉变频器故障");
-            dicCraneError.Add(16, "行走马达保护器故障");
-            dicCraneError.Add(17, "起升马达保护器故障");
-            dicCraneError.Add(18, "货叉马达保护器故障");
-            dicCraneError.Add(19, "行走电机抱闸供电故障");
-            dicCraneError.Add(20, "起升电机抱闸供电故障");
-            dicCraneError.Add(21, "货叉电机抱闸供电故障");
-            dicCraneError.Add(22, "220V 供电故障");
-            dicCraneError.Add(23, "起升制动电阻保护器故障");
-            dicCraneError.Add(24, "货叉制动电阻保护器故障");
-            dicCraneError.Add(28, "行走电机运行超时");
-            dicCraneError.Add(29, "起升电机运行超时");
-            dicCraneError.Add(30, "货叉电机运行超时");
-           
-            dicCraneError.Add(101, "行走激光丢失");
-            dicCraneError.Add(102, "起升激光丢失");
-            dicCraneError.Add(103, "货叉信号丢失");
-            dicCraneError.Add(104, "Profibus总线通讯故障");
-            dicCraneError.Add(105, "行走停准失败");
-            dicCraneError.Add(106, "起升停准失败");
-            dicCraneError.Add(107, "货叉停准失败");
-            dicCraneError.Add(108, "载货台货物左超长");
-            dicCraneError.Add(109, "载货台货物右超长");
-            dicCraneError.Add(110, "载货台货物左前超宽1");
-            dicCraneError.Add(111, "载货台货物左后超宽1");
-            dicCraneError.Add(112, "载货台货物右前超宽1");
-            dicCraneError.Add(113, "载货台货物右后超宽1");
-            dicCraneError.Add(114, "载货台货物左超高1");
-            dicCraneError.Add(115, "载货台货物右超高1");
-
-            dicCraneError.Add(116, "货叉位置错误");
-            dicCraneError.Add(117, "货叉左侧极限");
-            dicCraneError.Add(118, "货叉右侧极限");
-            dicCraneError.Add(119, "上位机下达急停指令");
-            dicCraneError.Add(120, "取货后载货台无货");
-            dicCraneError.Add(121, "放货时目标货位有货");
-            dicCraneError.Add(122, "放货后载货台有货");
-
-            dicCraneError.Add(123, "行走变频器通讯故障");
-            dicCraneError.Add(124, "起升变频器通讯故障");
-            dicCraneError.Add(125, "货叉变频器通讯故障");
-            dicCraneError.Add(126, "行走激光测距通讯故障");
-            dicCraneError.Add(127, "起升激光测距通讯故障");
-            dicCraneError.Add(128, "单伸货叉编码器通讯故障");
-            dicCraneError.Add(129, "双伸货叉编码器通讯故障");
-            dicCraneError.Add(130, "载货台货物左前超宽2");
-            dicCraneError.Add(131, "载货台货物左后超宽2");
-            dicCraneError.Add(132, "载货台货物右前超宽2");
-            dicCraneError.Add(133, "载货台货物右后超宽2");
-            dicCraneError.Add(134, "载货台货物左超高2");
-            dicCraneError.Add(135, "载货台货物右超高2");
-          
-
-            dicCraneError.Add(201, "放货或取货超时");
-            dicCraneError.Add(202, "输送机不允许取货");
-            dicCraneError.Add(203, "输送机不允许放货");
-            dicCraneError.Add(301, "自动模式下无任务，载货台有货");
-            dicCraneError.Add(302, "任务错误,任务地址错误");
-            dicCraneError.Add(303, "任务错误,没有卸货任务");
-            dicCraneError.Add(304, "任务错误,任务错误,载货台有货,有取货任务");
-            dicCraneError.Add(305, "任务错误,任务错误,载货台无货,无取货任务");
-            dicCraneError.Add(306, "任务错误,上一任务未完成");
-        }
-        void Data_OnTask(TaskEventArgs args)
-        {
-            if (InvokeRequired)
+            try
             {
-                BeginInvoke(new TaskEventHandler(Data_OnTask), args);
-            }
-            else
-            {
-                lock (this.dgvMain)
+                ServerInfo[] Servers = new MonitorConfig("Monitor.xml").Servers;
+                Miniloads.OnMiniload += new MiniloadEventHandler(Monitor_OnMiniload);
+                System.Threading.Thread.Sleep(300);
+                Cranes.OnCrane += new CraneEventHandler(Monitor_OnCrane);
+                for (int i = 0; i < Servers.Length; i++)
                 {
-                    DataTable dt = args.datatTable;
-                    this.bsMain.DataSource = dt;
-                    for (int i = 0; i < this.dgvMain.Rows.Count; i++)
-                    {
-                        if (dgvMain.Rows[i].Cells["colErrCode"].Value.ToString() != "0")
-                            this.dgvMain.Rows[i].DefaultCellStyle.BackColor = Color.Red;
-                        else
-                        {
-                            if(i%2==0)
-                                this.dgvMain.Rows[i].DefaultCellStyle.BackColor = Color.White;
-                            else
-                                this.dgvMain.Rows[i].DefaultCellStyle.BackColor = Color.FromArgb(192, 255, 192);
+                    OPCServer opcServer = new OPCServer(Servers[i].Name);
+                    opcServer.Connect(Servers[i].ProgID, Servers[i].ServerName);// opcServer.Connect(config.ConnectionString);
 
-                        }
+                    OPCGroup group = opcServer.AddGroup(Servers[i].GroupName, Servers[i].UpdateRate);
+                    foreach (ItemInfo item in Servers[i].Items)
+                    {
+                        group.AddItem(item.ItemName, item.OpcItemName, item.ClientHandler, item.IsActive);
+                    }
+                    //if (Servers[i].Name == "TranLineServer")
+                    //{
+                    //    opcServer.Groups.DefaultGroup.OnDataChanged += new OPCGroup.DataChangedEventHandler(Conveyor_OnDataChanged);
+                    //}
+                    //if (Servers[i].Name == "Car0101Server" || Servers[i].Name == "Car0102Server")
+                    //{
+                    //    //opcServer.Groups.DefaultGroup.OnDataChanged += new OPCGroup.DataChangedEventHandler(Car_OnDataChanged);
+                    //}
+                    if (Servers[i].Name.IndexOf("MiniloadServer")>=0)
+                    {
+                        opcServer.Groups.DefaultGroup.OnDataChanged += new OPCGroup.DataChangedEventHandler(Miniload_OnDataChanged);
+                    }
+                    if (Servers[i].Name.IndexOf("CraneServer")>=0)
+                    {
+                        opcServer.Groups.DefaultGroup.OnDataChanged += new OPCGroup.DataChangedEventHandler(Crane_OnDataChanged);
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                Logger.Error(ex.Message);
+            }
         }
+        #region Miniload监控
+
+        private Dictionary<string, Miniload> dicMiniload = new Dictionary<string, Miniload>();
+
+        void Miniload_OnDataChanged(object sender, DataChangedEventArgs e)
+        {
+            try
+            {
+                if (e.State == null)
+                    return;
+
+                string miniloadNo = e.ServerName.Replace("MiniloadServer", "");
+                GetMiniload(miniloadNo);
+                if  (e.ItemName.IndexOf("Mode") >= 0)
+                    dicMiniload[miniloadNo].Mode = int.Parse(e.State.ToString());
+                else if (e.ItemName.IndexOf("State1") >= 0)
+                    dicMiniload[miniloadNo].State1 = int.Parse(e.State.ToString());
+                else if (e.ItemName.IndexOf("Fork1") >= 0)
+                    dicMiniload[miniloadNo].Fork1 = int.Parse(e.State.ToString());
+                else if (e.ItemName.IndexOf("TaskNo1") >= 0)
+                    dicMiniload[miniloadNo].TaskNo1 =Util.ConvertStringChar.BytesToString(ObjectUtil.GetObjects(e.States));
+                else if (e.ItemName.IndexOf("State2") >= 0)
+                    dicMiniload[miniloadNo].State2 = int.Parse(e.State.ToString());
+                else if (e.ItemName.IndexOf("Fork2") >= 0)
+                    dicMiniload[miniloadNo].Fork2 = int.Parse(e.State.ToString());
+                else if (e.ItemName.IndexOf("TaskNo2") >= 0)
+                    dicMiniload[miniloadNo].TaskNo2 = Util.ConvertStringChar.BytesToString(ObjectUtil.GetObjects(e.States));
+                else if (e.ItemName.IndexOf("AlarmCode") >= 0)
+                    dicMiniload[miniloadNo].AlarmCode = int.Parse(e.State.ToString());
+                else if (e.ItemName.IndexOf("Station") >= 0)
+                    dicMiniload[miniloadNo].Station = e.States;
+
+                Miniloads.MiniloadInfo(dicMiniload[miniloadNo]);
+
+            }
+            catch (Exception ex)
+            {
+                MCP.Logger.Error("Miniload监控界面中Miniload_OnDataChanged出现异常" + ex.Message);
+            }
+        }
+
+        private Miniload GetMiniload(string miniloadNo)
+        {
+            Miniload miniload = null;
+            if (dicMiniload.ContainsKey(miniloadNo))
+            {
+                miniload = dicMiniload[miniloadNo];
+            }
+            else
+            {
+                miniload = new Miniload();
+                miniload.MiniloadNo = miniloadNo;
+                dicMiniload.Add(miniloadNo, miniload);
+            }
+            return miniload;
+        }
+
+        void Monitor_OnMiniload(MiniloadEventArgs args)
+        {
+            if (InvokeRequired)
+            {
+                BeginInvoke(new MiniloadEventHandler(Monitor_OnMiniload), args);
+            }
+            else
+            {
+                try
+                {
+                    Miniload miniload = args.miniload;
+                    SetTextBoxText("txtMMode{0}", miniload.MiniloadNo, dicCraneMode[miniload.Mode]);
+                    SetTextBoxText("txtMState{0}1", miniload.MiniloadNo, dicCraneState[miniload.State1]);
+                    SetTextBoxText("txtMFork{0}1", miniload.MiniloadNo, dicCraneFork[miniload.Fork1]);
+                    SetTextBoxText("txtMTaskNo{0}1", miniload.MiniloadNo, miniload.TaskNo1);
+
+                    SetTextBoxText("txtMState{0}2", miniload.MiniloadNo, dicCraneState[miniload.State2]);
+                    SetTextBoxText("txtMFork{0}2", miniload.MiniloadNo, dicCraneFork[miniload.Fork2]);
+                    SetTextBoxText("txtMTaskNo{0}2", miniload.MiniloadNo, miniload.TaskNo2);
+                    string strErrMsg = "";
+                    if (miniload.AlarmCode > 0)
+                    {
+                        DataRow[] drs = dtDeviceAlarm.Select(string.Format("Flag=1 and AlarmCode={0}", miniload.AlarmCode));
+                        if (drs.Length > 0)
+                            strErrMsg = drs[0]["AlarmDesc"].ToString();
+                        else
+                            strErrMsg = "設備未知錯誤！";
+                        SetControlColor("txtMAlarmCode{0}", miniload.MiniloadNo, Color.Red);
+                        SetControlColor("btnMClearAlarm{0}", miniload.MiniloadNo, Color.Red);
+                    }
+                    else
+                    {
+                        SetControlColor("txtMAlarmCode{0}", miniload.MiniloadNo, SystemColors.Control);
+                        SetControlColor("btnMClearAlarm{0}", miniload.MiniloadNo, SystemColors.Control);
+                    }
+                    SetTextBoxText("txtMAlarmCode{0}", miniload.MiniloadNo, miniload.AlarmCode.ToString());
+                    SetTextBoxText("txtMAlarmDesc{0}", miniload.MiniloadNo, strErrMsg);
+                    SetTextBoxText("txtMColumn{0}", miniload.MiniloadNo, miniload.Station[0].ToString());
+                    SetTextBoxText("txtMRow{0}", miniload.MiniloadNo, miniload.Station[1].ToString());
+                }
+                catch (Exception ex)
+                {
+                    MCP.Logger.Error("监控界面中Monitor_OnMiniload出现异常" + ex.Message);
+                }
+            }
+        }
+
+        #endregion
+
+        #region 输送线监控
+
+        //private Dictionary<string, Conveyor> dicConveyor = new Dictionary<string, Conveyor>();
+
+        //void Conveyor_OnDataChanged(object sender, DataChangedEventArgs e)
+        //{
+        //    try
+        //    {
+        //        if (e.State == null)
+        //            return;
+
+        //        string txt = e.ItemName.Split('_')[0];
+        //        Conveyor conveyor = GetConveyorByID(txt);
+        //        conveyor.value = e.State.ToString();
+
+        //        conveyor.ID = txt;
+
+
+        //        Conveyors.ConveyorInfo(conveyor);
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MCP.Logger.Error("输送线监控界面中Conveyor_OnDataChanged出现异常" + ex.Message);
+        //    }
+        //}
+
+        //private Conveyor GetConveyorByID(string ID)
+        //{
+        //    Conveyor conveyor = null;
+        //    if (dicConveyor.ContainsKey(ID))
+        //    {
+        //        conveyor = dicConveyor[ID];
+        //    }
+        //    else
+        //    {
+        //        conveyor = new Conveyor();
+        //        conveyor.ID = ID;
+        //        dicConveyor.Add(ID, conveyor);
+        //    }
+        //    return conveyor;
+        //}
+
+        //void Monitor_OnConveyor(ConveyorEventArgs args)
+        //{
+        //    if (InvokeRequired)
+        //    {
+        //        BeginInvoke(new ConveyorEventHandler(Monitor_OnConveyor), args);
+        //    }
+        //    else
+        //    {
+        //        try
+        //        {
+        //            Conveyor conveyor = args.conveyor;
+        //            Button btn = GetButton(conveyor.ID);
+
+        //            if (btn == null)
+        //                return;
+
+        //            if (conveyor.value == "0" && conveyor.ID.IndexOf("Conveyor") >= 0)
+        //                btn.Text = "";
+        //            else if (conveyor.value == "0" && conveyor.ID.IndexOf("UpDown") >= 0)
+        //                btn.Text = "◎";
+        //            else if (conveyor.value == "0" && conveyor.ID.IndexOf("Move") >= 0)
+        //                btn.Text = "";
+        //            else if (conveyor.value == "1" && conveyor.ID.IndexOf("Conveyor") >= 0) //有货未转
+        //                btn.Text = "■";
+        //            else if (conveyor.value == "1" && conveyor.ID.IndexOf("UpDown") >= 0) //有货未转
+        //                btn.Text = "●";
+        //            else if (conveyor.value == "1" && conveyor.ID.IndexOf("Move") >= 0)
+        //                btn.Text = btn.Tag.ToString();
+        //            else if (conveyor.value == "2") //无货未转
+        //                btn.Text = "";
+        //            else if (conveyor.value == "3") //转
+        //                btn.Text = btn.Tag.ToString();
+        //            else if (conveyor.value == "4")
+        //                btn.BackColor = Color.Red;
+        //            else
+        //                btn.Text = "";
+
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            MCP.Logger.Error("监控界面中Monitor_OnConveyor出现异常" + ex.Message);
+        //        }
+        //    }
+        //}
+
+        #endregion
+
+        #region 堆垛机监控
+        void Crane_OnDataChanged(object sender, DataChangedEventArgs e)
+        {
+            if (e.State == null)
+                return;
+            string CraneNo = e.ServerName.Replace("CraneServer", "");
+            GetCrane(CraneNo);
+            if (e.ItemName.IndexOf("Mode") >= 0)
+                dicCrane[CraneNo].Mode = int.Parse(e.State.ToString());
+            else if (e.ItemName.IndexOf("State") >= 0)
+                dicCrane[CraneNo].State = int.Parse(e.State.ToString());
+            else if (e.ItemName.IndexOf("Fork") >= 0)
+                dicCrane[CraneNo].Fork = int.Parse(e.State.ToString());
+            else if (e.ItemName.IndexOf("TaskNo") >= 0)
+                dicCrane[CraneNo].TaskNo = Util.ConvertStringChar.BytesToString(ObjectUtil.GetObjects(e.States));
+            else if (e.ItemName.IndexOf("AlarmCode") >= 0)
+                dicCrane[CraneNo].AlarmCode = int.Parse(e.State.ToString());
+            else if (e.ItemName.IndexOf("Station") >= 0)
+                dicCrane[CraneNo].Station = e.States;
+            Cranes.CraneInfo(dicCrane[CraneNo]);
+        }
+
         void Monitor_OnCrane(CraneEventArgs args)
         {
             if (InvokeRequired)
@@ -195,353 +296,228 @@ namespace App.View
             else
             {
                 Crane crane = args.crane;
-                TextBox txt = GetTextBox("txtTaskNo", crane.CraneNo);
-                if (txt != null)
-                    txt.Text = crane.TaskNo;
-
-                txt = GetTextBox("txtState", crane.CraneNo);
-                if (txt != null && dicCraneState.ContainsKey(crane.TaskType))
-                    txt.Text = dicCraneState[crane.TaskType];
-
-                txt = GetTextBox("txtCraneAction", crane.CraneNo);
-                if (txt != null && dicCraneAction.ContainsKey(crane.Action))
-                    txt.Text = dicCraneAction[crane.Action];
-
-                txt = GetTextBox("txtRow", crane.CraneNo);
-                if (txt != null)
-                    txt.Text = crane.Row.ToString();
-
-                txt = GetTextBox("txtColumn", crane.CraneNo);
-                if (txt != null)
-                    txt.Text = crane.Column.ToString();
-
-                //堆垛机位置
-                if (crane.CraneNo == 1)
+                try
                 {
-                    this.picCrane.Visible = true;
-                    Point P1 = InitialP1;
-                    if (crane.Column <= 6)
-                        P1.X = P1.X - (int)((crane.Column - 1) *57);
-                    else
-                        P1.X = P1.X - 320 - (int)((crane.Column - 7) * 33.9F);
-                    this.picCrane.Location = P1;
-                }                
 
-                txt = GetTextBox("txtHeight", crane.CraneNo);
-                if (txt != null)
-                    txt.Text = crane.Height.ToString();
-
-                txt = GetTextBox("txtForkStatus", crane.CraneNo);
-                if (txt != null && dicCraneFork.ContainsKey(crane.ForkStatus))
-                    txt.Text = dicCraneFork[crane.ForkStatus];
-               
-
-                txt = GetTextBox("txtErrorDesc", crane.CraneNo);
-                if (txt != null && dicCraneError.ContainsKey(crane.ErrCode))
-                {
-                    if (crane.ErrCode > 0 && crane.ErrCode != 202 && crane.ErrCode != 203)
+                    if (crane.Mode != null)
+                        SetTextBoxText("txtMode{0}", crane.CraneNo, dicCraneMode[crane.Mode]);
+                    if (crane.State != null)
+                        SetTextBoxText("txtState{0}", crane.CraneNo, dicCraneState[crane.State]);
+                    if (crane.Fork != null)
+                        SetTextBoxText("txtFork{0}", crane.CraneNo, dicCraneFork[crane.Fork]);
+                    if (crane.TaskNo == null)
+                        crane.TaskNo = "";
+                    SetTextBoxText("txtTaskNo{0}", crane.CraneNo, crane.TaskNo);
+                    string strErrMsg = "";
+                    if (crane.AlarmCode != null)
                     {
-                        txt.Text = dicCraneError[crane.ErrCode];
+                        if (crane.AlarmCode > 0)
+                        {
+                            DataRow[] drs = dtDeviceAlarm.Select(string.Format("Flag=1 and AlarmCode={0}", crane.AlarmCode));
+                            if (drs.Length > 0)
+                                strErrMsg = drs[0]["AlarmDesc"].ToString();
+                            else
+                                strErrMsg = "設備未知錯誤！";
+                            SetControlColor("txtAlarmCode{0}", crane.CraneNo, Color.Red);
+                            SetControlColor("btnClearAlarm{0}", crane.CraneNo, Color.Red);
+                        }
+                        else
+                        {
+                            SetControlColor("txtAlarmCode{0}", crane.CraneNo, SystemColors.Control);
+                            SetControlColor("btnClearAlarm{0}", crane.CraneNo, SystemColors.Control);
+                        }
                     }
-                    else
-                    {
-                        txt.Text = "";
-                    }
+                    SetTextBoxText("txtAlarmCode{0}", crane.CraneNo, crane.AlarmCode.ToString());
+                    SetTextBoxText("txtAlarmDesc{0}", crane.CraneNo, strErrMsg);
+                    SetTextBoxText("txtColumn{0}", crane.CraneNo, crane.Station[0].ToString());
+                    SetTextBoxText("txtRow{0}", crane.CraneNo, crane.Station[1].ToString());
+                    
                 }
-
-
-                //更新错误代码、错误描述
-                //更新任务状态为执行中
-                //bll.ExecNonQuery("WCS.UpdateTaskError", new DataParameter[] { new DataParameter("@CraneErrCode", crane.ErrCode.ToString()), new DataParameter("@CraneErrDesc", dicCraneError[crane.ErrCode]), new DataParameter("@TaskNo", crane.TaskNo) });
-                txt = GetTextBox("txtErrorNo", crane.CraneNo);
-                if (txt != null)
+                catch (Exception ex)
                 {
-                    if (crane.ErrCode > 0 && crane.ErrCode!=202 && crane.ErrCode!=203)
-                    {
-                        string strMsg="未知错误!";
-                        if (dicCraneError.ContainsKey(crane.ErrCode))
-                            strMsg = dicCraneError[crane.ErrCode];
-
-                        DataParameter[] param = new DataParameter[] { new DataParameter("@TaskNo", crane.TaskNo), new DataParameter("@CraneErrCode", crane.ErrCode.ToString()), new DataParameter("@CraneErrDesc", strMsg) };
-                        bll.ExecNonQueryTran("WCS.Sp_UpdateTaskError", param);
-                        if (txt.Text.Trim() == "")
-                            txt.Text = "0";
-                        if (crane.ErrCode != int.Parse(txt.Text))
-                            Logger.Error("堆垛机执行时出现错误,代码:" + crane.ErrCode.ToString() + ",描述:" + strMsg);
-                        txt.Text = crane.ErrCode.ToString();
-
-                    }
-                    else
-                    {
-                        txt.Text = "0";
-                    }
+                    MCP.Logger.Error("监控界面中Monitor_OnCrane出现异常UL" + crane.CraneNo + " 錯誤內容:" + ex.Message);
                 }
             }
         }
-        TextBox GetTextBox(string name, int CraneNo)
+        private Dictionary<string, Crane> dicCrane = new Dictionary<string, Crane>();
+        private Crane GetCrane(string craneno)
         {
-            Control[] ctl = this.Controls.Find(name + CraneNo.ToString(), true);
-            if (ctl.Length > 0)
-                return (TextBox)ctl[0];
+            Crane crane = null;
+            if (dicCrane.ContainsKey(craneno))
+            {
+                crane = dicCrane[craneno];
+            }
             else
-                return null;
+            {
+                crane = new Crane();
+                crane.CraneNo = craneno;
+                dicCrane.Add(craneno, crane);
+            }
+            return crane;
         }
-        
-        private void tmWorker(object sender, System.Timers.ElapsedEventArgs e)
+        #endregion
+
+        private void AddDicKeyValue()
         {
-            try
-            {
-                tmWorkTimer.Stop();
-                DataTable dt = GetMonitorData();
-                MainData.TaskInfo(dt);
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex.Message);
-            }
-            finally
-            {
-                tmWorkTimer.Start();
-            }
-        }
-        private void tmCraneWorker1(object sender, System.Timers.ElapsedEventArgs e)
-        {
-            try
-            {
-                tmCrane1.Stop();
-                string binary = Convert.ToString(255, 2).PadLeft(8, '0');
+            dicCraneFork.Add(0, "原點");
+            dicCraneFork.Add(1, "左側");
+            dicCraneFork.Add(2, "右側");
 
-                string serviceName = "CranePLC1";
-                string plcTaskNo = ObjectUtil.GetObject(Context.ProcessDispatcher.WriteToService(serviceName, "CraneTaskNo")).ToString();
-                if (plcTaskNo == "0")
-                    plcTaskNo = "";
+            dicCraneState.Add(0, "未知");
+            dicCraneState.Add(1, "空閒");
+            dicCraneState.Add(2, "檢查任務數據");
+            dicCraneState.Add(3, "定位到取貨位");
+            dicCraneState.Add(4, "取貨中");
+            dicCraneState.Add(7, "取貨完成");
+            dicCraneState.Add(8, "等待調度柜允許");
+            dicCraneState.Add(9, "移動到放貨位置");
+            dicCraneState.Add(10, "放貨中");
+            dicCraneState.Add(13, "搬運完成");
+            dicCraneState.Add(14, "空載避讓");
+            dicCraneState.Add(15, "檢查任務數據");
+            dicCraneState.Add(20, "檢查源位置");
+            dicCraneState.Add(21, "檢查目標位置");
+            dicCraneState.Add(99, "報警");
+         
+            dicCraneMode.Add(0, "關機模式");
+            dicCraneMode.Add(1, "自動模式");
+            dicCraneMode.Add(2, "手動模式");
+            dicCraneMode.Add(3, "半自動模式");
+            dicCraneMode.Add(4, "維修模式");
 
-                string craneMode = ObjectUtil.GetObject(Context.ProcessDispatcher.WriteToService(serviceName, "CraneMode")).ToString();
-                string craneFork = ObjectUtil.GetObject(Context.ProcessDispatcher.WriteToService(serviceName, "CraneFork")).ToString();
-                object[] obj = ObjectUtil.GetObjects(Context.ProcessDispatcher.WriteToService(serviceName, "CraneAlarmCode"));
-
-                Crane crane = new Crane();
-                crane.CraneNo = 1;
-                crane.Row = int.Parse(obj[4].ToString());
-                crane.Column = int.Parse(obj[2].ToString());
-                crane.Height = int.Parse(obj[3].ToString());
-                crane.ForkStatus = int.Parse(craneFork);
-                crane.Action = int.Parse(craneMode);
-                crane.TaskType = int.Parse(obj[1].ToString());
-                crane.ErrCode = int.Parse(obj[0].ToString());
-                crane.PalletCode = "";
-                crane.TaskNo = plcTaskNo;
-
-                Cranes.CraneInfo(crane);
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex.Message);
-            }
-            finally
-            {
-                tmCrane1.Start();
-            }
-        }        
-        
-        private void BindData()
-        {
-            bsMain.DataSource = GetMonitorData();
-        }
-        private DataTable GetMonitorData()
-        {
-            DataTable dt = bll.FillDataTable("WCS.SelectTask", new DataParameter[] { new DataParameter("{0}", "(WCS_TASK.TaskType='11' and WCS_TASK.State in('1','2','3')) OR (WCS_TASK.TaskType in('12','13') and WCS_TASK.State in('2','3')) OR (WCS_TASK.TaskType in('14') and WCS_TASK.State in('2','3','4','5','6')) ") });
-            return dt;
-        }
-       
-
-        private void btnBack1_Click(object sender, EventArgs e)
-        {
-            if (MessageBox.Show("是否要召回1号堆垛机到初始位置?", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
-            {
-                PutCommand("1", 0);
-                Logger.Info("1号堆垛机下发召回命令");
-            }
-        }
-        private void PutCommand(string craneNo, byte TaskType)
-        {
-            string serviceName = "CranePLC" + craneNo;
-            int[] cellAddr = new int[9];
-            cellAddr[TaskType] = 1;            
-
-            //cellAddr[3] = int.Parse(this.cbFromColumn.Text);
-            //cellAddr[4] = int.Parse(this.cbFromHeight.Text);
-            //cellAddr[5] = int.Parse(this.cbFromRow.Text.Substring(3, 3));
-            //cellAddr[6] = int.Parse(this.cbToColumn.Text);
-            //cellAddr[7] = int.Parse(this.cbToHeight.Text);
-            //cellAddr[8] = int.Parse(this.cbToRow.Text.Substring(3, 3));
-
-            Context.ProcessDispatcher.WriteToService(serviceName, "TaskAddress", cellAddr);
-            Context.ProcessDispatcher.WriteToService(serviceName, "WriteFinished", 0);
+            dtDeviceAlarm = bll.FillDataTable("WCS.SelectDeviceAlarm", new DataParameter[] { new DataParameter("{0}", "Flag=1") });
         }
 
-        private void btnStop1_Click(object sender, EventArgs e)
+        private void SetTextBoxText(string name, string CraneNo, string msg)
         {
-            if (MessageBox.Show("是否要急停1号堆垛机?", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
-            {
-                PutCommand("1", 2);
-                Logger.Info("1号堆垛机下发急停命令");
-            }
-        }       
-
-
-        private void dgvMain_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+            TextBox txt;
+            Control[] ctl = this.Controls.Find(string.Format(name, CraneNo), true);
+            if (ctl.Length > 0)
+                txt = (TextBox)ctl[0];
+            else
+                txt = null;
+            if (txt != null)
+                txt.Text = msg;
+        }
+        private void SetControlColor(string name, string CraneNo,Color red)
         {
-            if (e.Button == MouseButtons.Right)
-            {
-                if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
-                {
-                    //若行已是选中状态就不再进行设置
-                    if (dgvMain.Rows[e.RowIndex].Selected == false)
-                    {
-                        dgvMain.ClearSelection();
-                        dgvMain.Rows[e.RowIndex].Selected = true;
-                    }
-                    //只选中一行时设置活动单元格
-                    if (dgvMain.SelectedRows.Count == 1)
-                    {
-                        dgvMain.CurrentCell = dgvMain.Rows[e.RowIndex].Cells[e.ColumnIndex];
-                    }
-                    string TaskType = this.dgvMain.Rows[this.dgvMain.CurrentCell.RowIndex].Cells["colTaskType"].Value.ToString();
-                    if (TaskType == "11")
-                    {
-                         
-                        this.ToolStripMenuItem13.Visible = true;
-                        this.ToolStripMenuItem14.Visible = false;
-                        this.ToolStripMenuItem15.Visible = false;
-                        this.ToolStripMenuItem16.Visible = false;
-                    }
-                    else if (TaskType == "12" || TaskType == "13")
-                    {
-                        
-                        this.ToolStripMenuItem13.Visible = true;
-                        this.ToolStripMenuItem14.Visible = false;
-                        this.ToolStripMenuItem15.Visible = false;
-                        this.ToolStripMenuItem16.Visible = false;
-                    }
-                    else if (TaskType == "14")
-                    {
-                        this.ToolStripMenuItem10.Visible = true;
-                        this.ToolStripMenuItem13.Visible = true;
-                        this.ToolStripMenuItem14.Visible = false;
-                        this.ToolStripMenuItem15.Visible = true;
-                        this.ToolStripMenuItem16.Visible = true;
-                    }
-                    //弹出操作菜单
-                    contextMenuStrip1.Show(MousePosition.X, MousePosition.Y);
-                }
-            }
+            Control txt;
+            Control[] ctl = this.Controls.Find(string.Format(name, CraneNo), true);
+            if (ctl.Length > 0)
+                txt = ctl[0];
+            else
+                txt = null;
+            if (txt != null)
+                txt.BackColor = red;
         }
 
       
 
-        private void ToolStripMenuItemReassign_Click(object sender, EventArgs e)
+        private void btnStop_Click(object sender, EventArgs e)
         {
-            if (this.dgvMain.CurrentCell != null)
+            string PrefixName = "CranePLC";
+            string AreaCode = "UL";
+            string CraneNo = "";
+            string btnNam = ((Button)sender).Name;
+            if (btnNam.IndexOf("btnStop") >= 0)
             {
-                string serviceName = "CranePLC1";
-
-                int[] cellAddr = new int[9];
-                cellAddr[0] = 0;
-                cellAddr[1] = 1;
-
-                Context.ProcessDispatcher.WriteToService(serviceName, "TaskAddress", cellAddr);
-                Context.ProcessDispatcher.WriteToService(serviceName, "WriteFinished", 0);
-
-                DataRow dr = ((DataRowView)dgvMain.Rows[this.dgvMain.CurrentCell.RowIndex].DataBoundItem).Row;
-                string TaskNo = dr["TaskNo"].ToString();
-                string fromStation = dr["FromStation"].ToString();
-                string toStation = dr["ToStation"].ToString();
-                string CraneLoad = ObjectUtil.GetObject(Context.ProcessDispatcher.WriteToService(serviceName, "CraneLoad")).ToString();
-               
-                cellAddr[0] = 0;
-                cellAddr[1] = 0;
-                cellAddr[2] = 0;
-                int Flag = 1;
-                if (CraneLoad.Equals("0") || CraneLoad.Equals("False"))
-                {
-                    cellAddr[3] = byte.Parse(fromStation.Substring(3, 3));
-                    cellAddr[4] = byte.Parse(fromStation.Substring(6, 3));
-                    cellAddr[5] = byte.Parse(fromStation.Substring(0, 3));
-                }
-                else
-                {
-                    cellAddr[3] = 1;
-                    cellAddr[4] = 1;
-                    cellAddr[5] = 1;
-                    Flag = 3;
-                }
-                cellAddr[6] = byte.Parse(toStation.Substring(3, 3));
-                cellAddr[7] = byte.Parse(toStation.Substring(6, 3));
-                cellAddr[8] = byte.Parse(toStation.Substring(0, 3));
-
-                //sbyte[] taskNo = new sbyte[10];
-                //Util.ConvertStringChar.stringToBytes(TaskNo, 10).CopyTo(taskNo, 0);
-
-                Context.ProcessDispatcher.WriteToService(serviceName, "TaskAddress", cellAddr);
-                Context.ProcessDispatcher.WriteToService(serviceName, "TaskNo", TaskNo);
-                if (Context.ProcessDispatcher.WriteToService(serviceName, "WriteFinished", Flag))
-                {
-                    Logger.Info(TaskNo + "重下堆垛机任务！");
-                }
-                
+                PrefixName = "CranePLC";
+                AreaCode = "UL";
+                CraneNo = btnNam.Replace("btnStop", "");
+            }
+            else
+            {
+                PrefixName = "MiniLoad";
+                AreaCode = "ML";
+                CraneNo = btnNam.Replace("btnMStop", "");
+            }
+            string ServerName = PrefixName + CraneNo;
+            if (MessageBox.Show(string.Format("是否要急停{0}堆垛機?", AreaCode + CraneNo), "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
+            {
+                Context.ProcessDispatcher.WriteToService(ServerName, "Stop", 1);
+                Logger.Info(string.Format("{0}堆垛機下發急停命令", AreaCode + CraneNo));
             }
         }
 
-        private void ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            string ItemName = ((ToolStripMenuItem)sender).Name;
-            string State = ItemName.Substring(ItemName.Length-1, 1);
+        //private void btnConveyor_MouseEnter(object sender, EventArgs e)
+        //{
+        //    try
+        //    {
+        //        Button btn = (Button)sender;
+        //        string Number = btn.Name.Substring(btn.Name.Length - 2, 2);
+        //        string Barcode = "";
+        //        string AreaCode = BLL.Server.GetAreaCode();
+        //        if (AreaCode != "001")
+        //        {
+        //            Barcode = Util.ConvertStringChar.BytesToString(ObjectUtil.GetObjects(Context.ProcessDispatcher.WriteToService("TranLine", "ConveyorInfo" + Number)));
+        //            this.toolTip1.SetToolTip(btn, Barcode);
+        //        }
 
-            if (this.dgvMain.CurrentCell != null)
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Logger.Error(ex.Message);
+        //    }
+        //}
+
+        private void btnBack_Click(object sender, EventArgs e)
+        {
+            string PrefixName = "CranePLC";
+            string AreaCode="UL";
+            string CraneNo = "";
+            string ItemName = "TaskType";
+            string btnNam=((Button)sender).Name;
+            if (btnNam.IndexOf("btnBack") >= 0)
             {
-                BLL.BLLBase bll = new BLL.BLLBase();
-                string TaskNo = this.dgvMain.Rows[this.dgvMain.CurrentCell.RowIndex].Cells[0].Value.ToString();
-
-                DataParameter[] param = new DataParameter[] { new DataParameter("@TaskNo", TaskNo), new DataParameter("@State", State) };
-                bll.ExecNonQueryTran("WCS.Sp_UpdateTaskState", param);
-                MCP.Logger.Info("frmMonitor中任何号："+TaskNo+"手动更新为"+State);
-
-
-                
-                //bll.ExecNonQuery("WCS.UpdateTaskStateByTaskNo", new DataParameter[] { new DataParameter("@State", State), new DataParameter("@TaskNo", TaskNo) });
-
-                ////堆垛机完成执行
-                //if (State == "7")
-                //{
-                //    DataParameter[] param = new DataParameter[] { new DataParameter("@TaskNo", TaskNo) };
-                //    bll.ExecNonQueryTran("WCS.Sp_TaskProcess", param);
-                //}
-                BindData();
+                PrefixName = "CranePLC";
+                AreaCode = "UL";
+                CraneNo = btnNam.Replace("btnBack", "");
             }
-        }
-
-        private void ToolStripMenuItemDelCraneTask_Click(object sender, EventArgs e)
-        {
-            string serviceName = "CranePLC1";
-            int[] cellAddr = new int[9];
-            cellAddr[0] = 0;
-            cellAddr[1] = 1;
-
-            Context.ProcessDispatcher.WriteToService(serviceName, "TaskAddress", cellAddr);
-            Context.ProcessDispatcher.WriteToService(serviceName, "WriteFinished", 0);
-
-            MCP.Logger.Info("已给堆垛机下发取消任务指令");
+            else
+            {
+                PrefixName = "MiniLoad";
+                AreaCode = "ML";
+                CraneNo = btnNam.Replace("btnMBack", "");
+                ItemName = "TaskType2";
+            }
+            string ServerName = PrefixName + CraneNo;
+            if (MessageBox.Show(string.Format("是否要召回{0}堆垛機到初始位置?", AreaCode + CraneNo), "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
+            {
+                Context.ProcessDispatcher.WriteToService(ServerName, ItemName, 4);
+                Context.ProcessDispatcher.WriteToService(ServerName, "WriteFinished", 1);
+                Logger.Info(string.Format("{0}堆垛機下發召回命令", AreaCode + CraneNo));
+            }
         }
 
         private void btnClearAlarm_Click(object sender, EventArgs e)
         {
-            Context.ProcessDispatcher.WriteToService("CranePLC1", "Reset", 1);
+            string PrefixName = "CranePLC";
+            string AreaCode = "UL";
+            string CraneNo = "";
+            
+            string btnNam = ((Button)sender).Name;
+            if (btnNam.IndexOf("btnClearAlarm") >= 0)
+            {
+                PrefixName = "CranePLC";
+                AreaCode = "UL";
+                CraneNo = btnNam.Replace("btnClearAlarm", "");
+            }
+            else
+            {
+                PrefixName = "MiniLoad";
+                AreaCode = "ML";
+                CraneNo = btnNam.Replace("btnMClearAlarm", "");
+                
+            }
+            string ServerName = PrefixName + CraneNo;
+
+            Context.ProcessDispatcher.WriteToService(ServerName, "Reset", 1);
+            Logger.Info(string.Format("{0}堆垛機解警", AreaCode + CraneNo));
+
         }
 
-        private void btnReset_Click(object sender, EventArgs e)
-        {
-            Context.ProcessDispatcher.WriteToService("CranePLC1", "Reset", 2);
-        }             
+        
+
+           
     }
 }
