@@ -297,7 +297,7 @@
                         });
                         if (blnUsed)
                             return false;
-                        var data = { Action: 'Delete', FormID: FormID, Comd: 'cmd.DeleteProduct', json: "'" + deleteCode.join("','") + "'" };
+                        var data = { Action: 'DelMainDetail', MainComd: 'cmd.DeleteProduct', SubComd: "cmd.DeleteProductDetail", json: "'" + deleteCode.join("','") + "'" };
                         $.post(url, data, function (result) {
                             if (result.status == 1) {
                                 ReloadGrid('dg');
@@ -400,14 +400,37 @@
                 {
                     field: 'RowID', width: 60, title: '序号'
                 },
+                 {
+                     field: 'SectionName', title: '阶段名称', width: 150, editor: {
+                         type: 'textbox',
+                         required: true
+                     }
+                 },
                 {
-                    field: 'AreaName', title: '区域名称', width: 130, editor: {
+                    field: 'GrowDay', title: '成长天数', width: 150, editor: {
+                        type: 'numberbox',
+                        options: {
+                            precision: 0
+                        },   
+                        required: true
+                    }
+                },
+                {
+                    field: 'PreQty', title: '每盆数量', width: 120, editor: {
+                        type: 'numberbox',
+                        options: {
+                            precision: 0
+                        }, 
+                        required: true
+                    }
+                },
+                {
+                    field: 'AreaName', title: '存放区域', width: 130, editor: {
                         type: 'combobox',
                         options: {
                             data: areaPro,
                             valueField: 'AreaCode',
                             textField: 'AreaName',
-                            required: true,
                             editable: false,
                             onSelect: function (record) {
                                 var indexSelect = getRowIndex(this);
@@ -435,33 +458,14 @@
                     }
                 },
                 {
-                    field: 'RegionName', title: '库区名称', width: 130, editor: {
+                    field: 'RegionName', title: '存放库区', width: 130, editor: {
                         type: 'combobox',
                         options: {
                             data: regionPro,
                             valueField: 'RegionCode',
                             textField: 'RegionName',
-                            required: true,
                             editable: false
                         }
-                    }
-                },
-                 {
-                     field: 'SectionName', title: '阶段名称', width: 150, editor: {
-                         type: 'textbox',
-                         required: true
-                     }
-                 },
-                {
-                    field: 'GrowDay', title: '成长天数', width: 150, editor: {
-                        type: 'textbox',
-                        required: true
-                    }
-                },
-                {
-                    field: 'PreQty', title: '每盆数量', width: 120, editor: {
-                        type: 'textbox',
-                        required: true
                     }
                 }
                 ]]
@@ -481,8 +485,8 @@
 			<tr>
 				<th data-options="field:'',checkbox:true"></th> 
                 <th data-options="field:'ProductCode',width:140">产品编号</th>
-                <th data-options="field:'ModelNo',width:140">产品名称</th>
-                <th data-options="field:'StandardNo',width:90">产品类别</th>      
+                <th data-options="field:'ProductName',width:140">产品名称</th>
+                <th data-options="field:'CategoryName',width:90">产品类别</th>      
                
 			</tr>
 		</thead>
@@ -503,7 +507,6 @@
                 <thead>
 		            <tr>
 		                <th data-options="field:'RowID',width:100">序号</th>
-                        <th data-options="field:'ProductCode',width:100">产品编号</th>
                         <th data-options="field:'SectionName',width:100">产品阶段</th>
                         <th data-options="field:'RegionCode',width:100">库区编号</th>
                         <th data-options="field:'GrowDay',width:100">成长天数</th>
@@ -542,7 +545,7 @@
         </table>
    </div>
       <%-- 弹出操作框--%>
-    <div id="AddWin" class="easyui-dialog" style="width: 1200px; height: auto; padding: 5px 5px"
+    <div id="AddWin" class="easyui-dialog" style="width: 1000px; height: auto; padding: 5px 5px"
         data-options="closed:true,buttons:'#AddWinBtn',modal:true"> 
         <form id="fm" method="post">
                <div>

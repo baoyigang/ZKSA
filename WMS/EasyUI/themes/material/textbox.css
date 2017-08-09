@@ -13,7 +13,7 @@
   border-radius: 4px 4px 4px 4px;
 }
 .textbox .textbox-text {
-  font-size: 12px;
+  font-size: 14px;
   border: 0;
   margin: 0;
   padding: 4px;
@@ -33,7 +33,7 @@
   white-space: pre-wrap;
 }
 .textbox .textbox-prompt {
-  font-size: 12px;
+  font-size: 14px;
   color: #aaa;
 }
 .textbox .textbox-bgicon {

@@ -68,6 +68,20 @@ public class BaseHandler : IHttpHandler, IRequiresSessionState
             case "SessionTimeOut":
                 strJson = SessionTimeOut(context);
                 break;
+            case "CheckBill":
+                strJson = CheckBill(context);
+                break;
+            case "CancelCheck":
+                strJson = CancelCheck(context);
+                break;
+                
+            case "ExecTask":
+                strJson = ExecTask(context);
+                break;
+            
+            case "CancelTask":
+                strJson = CancelTask(context);
+                break;
         }
         context.Response.Clear();
         context.Response.ContentEncoding = System.Text.Encoding.UTF8;
@@ -452,6 +466,116 @@ public class BaseHandler : IHttpHandler, IRequiresSessionState
         }
     }
 
+
+
+
+
+    private string CheckBill(HttpContext context)
+    {
+        JsonResult jr = new JsonResult();
+        try
+        {
+            string Comd = context.Request["Comd"].ToString();
+            string where = context.Server.UrlDecode(context.Request["json"].ToString());
+            BLL.BLLBase bll = new BLL.BLLBase();
+            bll.ExecNonQuery(Comd, new DataParameter[] { new DataParameter("{0}", where), new DataParameter("@Checker", context.Session["G_user"].ToString()), new DataParameter("@State", 1) });
+            jr.status = 1;
+            jr.msg = "审核成功！";
+
+        }
+        catch (Exception ex)
+        {
+            jr.status = 0;
+            jr.msg = ex.Message;
+        }
+
+        string strJson = JsonConvert.SerializeObject(jr);
+        return strJson;
+    }
+    private string CancelCheck(HttpContext context)
+    {
+        JsonResult jr = new JsonResult();
+        try
+        {
+            string Comd = context.Request["Comd"].ToString();
+            string where = context.Server.UrlDecode(context.Request["json"].ToString());
+            BLL.BLLBase bll = new BLL.BLLBase();
+            bll.ExecNonQuery(Comd, new DataParameter[] { new DataParameter("{0}", where), 
+                                                         new DataParameter("@Checker", context.Session["G_user"].ToString()),
+                                                         new DataParameter("@State", 0)
+                                                        });
+            jr.status = 1;
+            jr.msg = "取消审核成功！";
+
+        }
+        catch (Exception ex)
+        {
+            jr.status = 0;
+            jr.msg = ex.Message;
+        }
+
+        string strJson = JsonConvert.SerializeObject(jr);
+        return strJson;
+    }
+
+    private string ExecTask(HttpContext context)
+    {
+        JsonResult jr = new JsonResult();
+
+        try
+        {
+            string Comd = context.Request["Comd"].ToString();
+            string StrWhere = context.Server.UrlDecode(context.Request["json"].ToString());
+            BLL.BLLBase bll = new BLL.BLLBase();
+            bll.ExecNonQueryTran(Comd, new DataParameter[] { new DataParameter("@strWhere", StrWhere), new DataParameter("@UserName", context.Session["G_user"].ToString()) });
+            jr.status = 1;
+            jr.msg = "作业成功！";
+
+        }
+        catch (Exception ex)
+        {
+            jr.status = 0;
+            jr.msg = ex.Message;
+        }
+
+        string strJson = JsonConvert.SerializeObject(jr);
+        return strJson;
+    }
+    private string CancelTask(HttpContext context)
+    {
+        JsonResult jr = new JsonResult();
+
+        string FormID = context.Request["FormID"].ToString();
+
+        DataTable dtMenu = (DataTable)context.Session["DT_UserOperation"];
+        string Module = "";
+        DataRow[] drs = dtMenu.Select(string.Format("FormID='{0}'", FormID));
+        if (drs.Length > 0)
+        {
+            Module = drs[0]["MenuTitle"].ToString();
+
+        }
+        try
+        {
+            string Comd = context.Request["Comd"].ToString();
+            string StrWhere = context.Server.UrlDecode(context.Request["json"].ToString());
+            BLL.BLLBase bll = new BLL.BLLBase();
+            bll.ExecNonQueryTran(Comd, new DataParameter[] { new DataParameter("@strWhere", StrWhere), new DataParameter("@UserName", context.Session["G_user"].ToString()) });
+            Common.AddOperateLog(context.Session["G_user"].ToString(), Module, "删除单号：" + StrWhere.Replace("'", ""));
+            
+            jr.status = 1;
+            jr.msg = "取消作业成功！";
+
+        }
+        catch (Exception ex)
+        {
+            jr.status = 0;
+            jr.msg = ex.Message;
+        }
+
+        string strJson = JsonConvert.SerializeObject(jr);
+        return strJson;
+    }
 
 
 }
