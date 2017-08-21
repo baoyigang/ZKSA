@@ -158,15 +158,16 @@
 
   <Command ID="SelectCellEdit">
     <CommandString>
-      select c.CellCode,c.CellName,c.AreaCode,c.RegionCode,c.Memo,c.Depth,CMD_Region.RegionName from CMD_Cell  c
+      select c.CellCode,c.CellName,c.AreaCode,Cmd_area.AreaName,c.RegionCode,c.Memo,c.Depth,c.CellRow,c.CellColumn,c.DisInStation,c.DisOutStation,CMD_Region.RegionName,c.IsActive,c.IsLock  from CMD_Cell  c
       left join CMD_Region on CMD_Region.RegionCode=c.RegionCode
+      LEFT join CMD_Area on CMD_Region.AreaCode=cmd_area.AreaCode
       WHERE {0} ORDER BY c.AreaCode,c.RegionCode,CellCode
     </CommandString>
   </Command>
 
   <Command ID="UpdateCellEdit">
     <CommandString>
-      update CMD_Cell set AreaCode=@AreaCode,RegionCode=@RegionCode  where CellCode in ({0})
+      update CMD_Cell set AreaCode=@AreaCode,RegionCode=@RegionCode,IsActive=@ActiveCode,IsLock=@LockCode  where CellCode in ({0})
     </CommandString> 
   </Command>
 
@@ -267,9 +268,8 @@
   <!--产品信息-->
   <Command ID="SelectProduct">
     <CommandString>
-      select  product.*,Category.CategoryName,(case when pallet.IsLock='1' then '在库'  when pallet.IsLock='0' then '' else '' end) Instock from CMD_PRODUCT product
+      select  product.*,Category.CategoryName from CMD_PRODUCT product
       Left join CMD_ProductCategory Category on product.CategoryCode=Category.CategoryCode
-      left join WMS_Pallet pallet on Product.productCode=pallet.productCode
       where {0}
       order by {1}
     </CommandString>
@@ -279,19 +279,43 @@
       delete from CMD_PRODUCT WHERE ProductCode in({0})
     </CommandString>
   </Command>
+  <Command ID="DeleteProductDetail">
+    <CommandString>
+      delete from CMD_PRODUCTDetail WHERE ProductCode in({0})
+    </CommandString>
+  </Command>
   <Command ID="InsertProduct">
     <CommandString>
       INSERT INTO CMD_PRODUCT(ProductCode, ProductName, CategoryCode,ModelNo,StandardNo,ProductNo,Weight,ValidPeriod,Description,Memo,PartNo,Creator, CreateDate, Updater, UpdateDate)
       values(@ProductCode, @ProductName, @CategoryCode,'','','','','','',@Memo,'',@Creator, getdate(), @Updater, getdate())
     </CommandString>
   </Command>
+  <Command ID="InsertProductDetail">
+    <CommandString>
+      INSERT INTO CMD_PRODUCTDetail(ProductCode, RowID, RegionCode,SectionName,GrowDay,PreQty)
+      values(@ProductCode, @RowID, @RegionCode,@SectionName,@GrowDay,@PreQty)
+    </CommandString>
+  </Command>
+  
   <Command ID="UpdateProduct">
     <CommandString>
-      Update CMD_PRODUCT Set ProductName=@ProductName, CategoryCode=@CategoryCode, ModelNo=@ModelNo, StandardNo=@StandardNo, ProductNo=@ProductNo, Weight=@Weight,ValidPeriod=@ValidPeriod,Description=@Description,Memo=@Memo,PartNo=@PartNo,
+      Update CMD_PRODUCT Set ProductName=@ProductName, CategoryCode=@CategoryCode,Memo=@Memo,
       Updater=@Updater,UpdateDate=getdate() where ProductCode=@ProductCode
     </CommandString>
   </Command>
-
+  <Command ID="SelectProductDetail">
+    <CommandString>
+      Select a.AreaName,r.RegionCode as RegionName,p.* from CMD_PRODUCTDetail  p
+      left join CMD_Region as r on p.RegionCode=r.RegionCode
+      left join CMD_Area as a on a.AreaCode=r.AreaCode
+      WHERE {0}
+    </CommandString>
+  </Command>
+  <Command ID="DeleteProductDetail">
+    <CommandString>
+      delete from CMD_PRODUCTDetail WHERE ProductCode in({0})
+    </CommandString>
+  </Command>
   <Command ID="SelectTaskQueryProduct">
     <CommandString>
       select * from CMD_PRODUCT
@@ -451,7 +475,7 @@
       select cell.* ,area.AreaName,shelf.ShelfName from CMD_Cell cell
       left join CMD_Area area On cell.AreaCode=area.AreaCode
       left join CMD_Shelf shelf ON cell.ShelfCode=shelf.ShelfCode
-      WHERE cell.IsLock=0 and cell.IsActive=1 and cell.PalletCode!='' and cell.InDate is not null and {0} ORDER BY AreaCode,ShelfCode,CellCode
+      WHERE cell.IsLock=0 and cell.IsActive=1 and cell.PalletBarCode!='' and cell.InDate is not null and {0} ORDER BY AreaCode,ShelfCode,CellCode
     </CommandString>
   </Command>
   <Command ID="SelectWareHouseCellQueryByWareHouse">

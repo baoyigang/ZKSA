@@ -1,6 +1,6 @@
 ﻿
 
-.date_calendar { POSITION: absolute; WIDTH: 191px; HEIGHT: 182px; PADDING: 1px 5px 5px 1px; _PADDING: 1px 0 1px 1px; BACKGROUND: url(images/date_bg2.png) no-repeat; DISPLAY: none; FLOAT: left; z-index:10;font-size: 12px;font-family: "微软雅黑" , "宋体" , "Arial Narrow";}
+.date_calendar { POSITION: absolute; WIDTH: 191px; HEIGHT: 182px; PADDING: 1px 5px 5px 1px; _PADDING: 1px 0 1px 1px; BACKGROUND: url(images/date_bg2.png) no-repeat; DISPLAY: none; FLOAT: left; z-index:10;font-size: 14px;font-family: "微软雅黑" , "宋体" , "Arial Narrow";}
 .date_calendar1 { WIDTH: 16px; HEIGHT: 16px;BACKGROUND: url(images/date_bg3.png) no-repeat; CURSOR: pointer; }
 
 .date_calendar .calMain { WIDTH: 189px; HEIGHT: 180px; FLOAT: left; OVERFLOW: hidden; POSITION: absolute; }

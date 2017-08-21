@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="OutStocks.aspx.cs" Inherits="WebUI_OutStock_OutStocks" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="InStocks.aspx.cs" Inherits="WebUI_InStock_InStocks" %>
 
 <!DOCTYPE html>
 
@@ -20,11 +20,16 @@
         //            alert("登录名已存在");
         //        })
         $(function () {
-            $("input", $("#TxtClientName").next("span")).click(function () {
-                alert("ok");
+            $("input", $("#txtProductCode").next("span")).dblclick(function () {
+                SelectWinShow('SelectWin', '产品资料--选择');
             });
         });
 
+        function AddRow(ObjName, RowData) {
+            $("#txtProductCode").textbox('setValue',RowData.ProductCode);
+            $("#txtProductName").textbox('setValue', RowData.ProductName);
+            BindDropDownList();
+        }
 
         var url = "../../Handler/BaseHandler.ashx";
         var SessionUrl = '<% =ResolveUrl("~/Login.aspx")%>';
@@ -33,25 +38,31 @@
 
         function getQueryParams(objname, queryParams) {
             var Where = "1=1 ";
-            var BillID = $("#txtQueryBillID").textbox("getValue");
-            var BillDate = $("#txtQueryBillDate").textbox("getValue");
-            var Product = $("#txtQueryProduct").textbox("getValue");
-            var BatchNo = $("#txtQueryBatchNo").textbox("getValue");
+            if (objname == "dg") {
+                var BillID = $("#txtQueryBillID").textbox("getValue");
+                var BillDate = $("#txtQueryBillDate").textbox("getValue");
+                var Product = $("#txtQueryProduct").textbox("getValue");
+                var BatchNo = $("#txtQueryBatchNo").textbox("getValue");
 
-            if (BillID != "") {
-                Where += " and BillID like '%" + BillID + "%'";
-            }
-            if (BillDate != "") {
-                Where += " and CONVERT(nvarchar(10), BillDate,120) = '" + BillDate + "'";
-            }
-            if (Product != "") {
-                Where += " and (ProductCode like '%" + Product + "%' or ProductName like '%" + Product + "%')";
-            }
-            if (BatchNo != "") {
-                Where += " and BatchNo like '%" + BatchNo + "%'";
-            }
+                if (BillID != "") {
+                    Where += " and BillID like '%" + BillID + "%'";
+                }
+                if (BillDate != "") {
+                    Where += " and CONVERT(nvarchar(10), BillDate,120) = '" + BillDate + "'";
+                }
+                if (Product != "") {
+                    Where += " and (ProductCode like '%" + Product + "%' or ProductName like '%" + Product + "%')";
+                }
+                if (BatchNo != "") {
+                    Where += " and BatchNo like '%" + BatchNo + "%'";
+                }
 
-            Where = BaseWhere + encodeURIComponent(" and " + Where);
+                Where = BaseWhere + encodeURIComponent(" and " + Where);
+            }
+            else { 
+            
+
+            }
             queryParams.Where = Where;
             queryParams.t = new Date().getTime(); //使系统每次从后台执行动作，而不是使用缓存。
             return queryParams;
@@ -94,7 +105,7 @@
                 $.messager.alert("提示", "请选择要修改的行！", "info");
                 return false;
             }
-
+           
             if (row) {
                 var data = { Action: 'FillDataTable', Comd: 'WMS.SelectBill', Where: "BillID='" + row.BillID + "'" };
                 $.post(url, data, function (result) {
@@ -105,7 +116,7 @@
                     $('#txtSectionID').combobox('setValue', Product.SectionID);
                 }, 'json');
             }
-
+          
             $('#txtPageState').val("Edit");
 
             $("#txtID").textbox("readonly", true);
@@ -131,11 +142,11 @@
                 $("#txtProductCode").textbox('setValue', '');
                 $("#txtProductName").textbox('setValue', ProductName);
                 BindDropDownList();
-                $('#txtProductCode').next('span').find('input').focus();
+                $('#txtProductCode').next('span').find('input').focus(); 
                 blnProductChange = false;
-
+            
             }
-
+        
         }
 
         //保存信息
@@ -203,7 +214,7 @@
                             var StateDes = GetFieldValue("View_WMS_Bill", "StateDesc", "BillID='" + item.BillID + "'");
                             if (HasExists('WMS_Bill', "BillID='" + item.BillID + "'and State!=0", "入库单号 " + item.BillID + "已" + StateDes + ",无法删除！")) {
                                 blnUsed = true;
-                            }
+                            }  
                             deleteCode.push(item.BillID);
                         });
                         if (blnUsed)
@@ -401,7 +412,16 @@
 
 
 
+        function BindSelectUrl(objName) {
 
+            var Comd = "CMD.SelectProduct";
+            var AreaCode = '';
+            $('#dgSelect').datagrid({
+                url: '../../Handler/BaseHandler.ashx?Action=PageDate&Comd=' + Comd,
+                pageNumber: 1,
+                queryParams: { Where: encodeURIComponent("1=1 ") }
+            });
+        }
 
         function CheckRow(rowIndex, rowData) {
             CheckSelectRow('dg', rowIndex, rowData);
@@ -601,6 +621,39 @@
     <div id="AddWinBtn">
         <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="Save()">保存</a>
         <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" onclick="javascript:$('#AddWin').dialog('close')">关闭</a>
+    </div>
+
+     <div id="SelectWin" style="width:600px;height:500px">
+       <table id="dgSelect" class="easyui-datagrid"
+            data-options="loadMsg: '正在加载数据，请稍等...',fit:true, rownumbers:true,
+                         pagination:true,pageSize:PageSize, pageList:[15, 20, 30, 50],method:'post',striped:true,fitcolumns:true,toolbar:'#tbSelect',singleSelect:true,selectOnCheck:true,checkOnSelect:true,onCheck:SelectSingleCheckRow,onUncheck:SelectSingleUnCheckRow,onLoadSuccess:SelectLoadSelectSuccess,onDblClickRow:DblClickRow"> 
+            <thead>
+                    <tr>
+                        <th data-options="field:'',checkbox:true"></th> 
+                        <th data-options="field:'ProductCode',width:100">产品编号</th>
+                        <th data-options="field:'ProductName',width:120">品名</th>
+                        <th data-options="field:'CategoryName',width:120">产品类别</th>
+                    </tr>
+            </thead>            
+        </table>
+        <div id="tbSelect" style="padding:5px;height:auto">
+           <table>
+                <tr>
+                     <td>
+                        库区
+                        <input id="txtQueryAreaCodee" class ="easyui-textbox" style="width: 100px" /> 
+                        货架
+                        <input id="textQueryShelf" class ="easyui-textbox" style="width: 100px" /> 
+                        货位
+                        <input id="txtQueryCellCode" class="easyui-textbox" style="width: 100px" />  
+                        <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" onclick="ReloadGrid('dgSelect')" >查询</a> 
+                    </td>
+                    <td>
+                         <a href="javascript:void(0)"onclick="closeSelectWin()" class="easyui-linkbutton" data-options="iconCls:'icon-return'">取回</a>  
+                    </td>
+                </tr>          
+           </table>
+        </div>
     </div>
 
 </body>

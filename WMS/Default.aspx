@@ -271,7 +271,7 @@
          <span style="float:right; padding-right:20px;" class="head"><a href="Login.aspx" id="changeUser">切换用户</a><span>|</span><a href="javascript:void(0)" onclick="return ChangePassword();" id="changePassword">修改密码</a><span>|</span><a href="javascript:window.close();"/" id="loginOut">退出</a></span>   
     </div>
     <div region="south" split="false" style="height: 30px; background: #D2E0F2; ">
-        <div style="border:1px solid #cbe4f3;line-height:25px;text-align: center;background:url(Images/bottom.jpg) repeat-x;"><a href="http://www.unitechnik.com.cn" target="_blank">罗伯泰克自动化科技（苏州）有限公司</a></div>
+        <div style="border:1px solid #cbe4f3;line-height:25px;text-align: center;background:url(Images/bottom.jpg) repeat-x;"><a href="http://www.robotech-log.com" target="_blank">罗伯泰克自动化科技（苏州）有限公司</a></div>
     </div>
     <div region="west" hide="true" split="true" title="导航菜单" style="width:180px;" id="west">
         <div id='wnav' class="easyui-accordion" fit="true" border="false">

@@ -174,7 +174,7 @@ body
 }
 .cssbtn /*表單中覆核按鈕 */
 {
-    font-size: 12px;
+    font-size: 14px;
 	CURSOR: hand;
 	COLOR: black;
 	background: url('../images/main/btn_Css.gif') repeat-x;	
@@ -215,7 +215,7 @@ body
 }
 .btn_Xp_Bg11
 {
-	font-size: 12px;
+	font-size: 14px;
 	width: 58px;
 	height: 20px;
 	border: none;
@@ -232,7 +232,7 @@ body
 }
 .btn_Xp_Bg2
 {
-	font-size: 12px;
+	font-size: 14px;
 	border: none;
 	padding-top: 3px;
 	background-color :#319DE5;

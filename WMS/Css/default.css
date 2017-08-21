@@ -1,4 +1,4 @@
-﻿*{font-size:12px; font-family:微软雅黑}
+﻿*{font-size:14px; font-family:微软雅黑}
 body{background:#EAF2F4; }
 a{ color:Black; text-decoration:none;}
 a:hover{ color:Red; text-decoration:underline;}
@@ -83,3 +83,8 @@ a:hover{ color:Red; text-decoration:underline;}
     
     height:20px;
 }
+
+.NotMaintableTD
+ {
+      border:0px solid #ffffff;
+  }

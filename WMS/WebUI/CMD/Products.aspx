@@ -15,7 +15,6 @@
     <script type="text/javascript" src="../../EasyUI/locale/easyui-lang-zh_CN.js"></script>
     <script type="text/javascript" src="../../JScript/JsAjax.js" ></script>
     <script type="text/javascript" language="javascript">
-
         //       $("input",$("#loginName").next("span")).blur(function(){  
         //            alert("登录名已存在");  
         //        })
@@ -24,46 +23,51 @@
         var SessionUrl = '<% =ResolveUrl("~/Login.aspx")%>';
         var FormID = "Product";
         var OldStandardNoValue;
+//        var product;
+//        var baodata = { Action: 'FillDataTable', Comd: 'cmd.SelectAreaEdit', Where: "1=1" };
+//        $.ajax({
+//            type: "post",
+//            url: url,
+//            data: baodata,
+//            //contentType: "application/json; charset=utf-8",
+//            dataType: "json",
+//            async: false,
+//            success: function (json) {
+//                product = json.rows;
+//            }
+//        })
         function getQueryParams(objname, queryParams) {
             if (objname == "dg") {
                 var Where = "1=1 ";
-                var productcode = $("#txtQueryProductCodeOne").textbox("getValue");
-                var modelNo = $("#txtQueryModelNo").textbox("getValue");
-                var StandardNo = $("#txtQueryStandardNoOne").textbox("getValue");
-                var ProductName = $("#txtQueryProductName").textbox("getValue");
-                var ProductNo = $("#txtQueryProductNoOne").textbox("getValue");
+                var productcode = $("#txtQueryProductCodeOne").textbox('getValue');
+                var productname = $("#txtQueryProductNameOne").textbox('getValue');
+                var CategoryNameOne = $("#txtQueryCategoryNameOne").textbox('getValue');
+                var CategoryCodeOne = $("#txtQueryCategoryCodeOne").textbox('getValue');
                 if (productcode != "") {
                     Where += " and Product.productcode like '%" + productcode + "%'";
                 }
-                if (modelNo != "") {
-                    Where += " and modelNo like '%" + modelNo + "%'";
+                if (productname != "") {
+                    Where += " and ProductName like '%" + productname + "%'";
                 }
-                if (StandardNo!= "") {
-                    Where += " and StandardNo like '%" + StandardNo + "%'";
+                if (CategoryNameOne != "") {
+                    Where += " and CategoryName like '%" + CategoryNameOne + "%'";
                 }
-                if (ProductName!= "") {
-                    Where += " and ProductName like '%" + ProductName + "%'";
-                }
-                if (ProductNo != "") {
-                    Where += " and ProductNo like '%" + ProductNo + "%'";
+                if (CategoryCodeOne != "") {
+                    Where += " and CategoryCode like '%" + CategoryCodeOne + "%'";
                 }
                 queryParams.Where = encodeURIComponent(Where);
             }
             else {
-                var ProductCodeWhere = $("#txtProductCode").textbox("getValue");
-                var Where = "1=1 and ModelNo='' and Product.ProductCode !='" + ProductCodeWhere + "'";
-                var ProductCode = $("#txtQueryProductCodetTwo").textbox("getValue");
-                var ProductNo = $("#txtQueryProductNoTwo").textbox("getValue");
-                var StandardNo = $("#txtQueryStandardNoTwo").textbox("getValue");
+                var ProductCodeWhere = $("#txtProductCode").textbox('getValue');
+                var Where = "1=1 and ProductName='' and Product.ProductCode !='" + ProductCodeWhere + "'";
+                var ProductCode = $("#txtQueryProductCodetTwo").textbox('getValue');
+                var CategoryNameTwo = $("#CategoryNameTwo").textbox('getValue');
 
                 if (ProductCode != "") {
                     Where += " and Product.ProductCode like '%" + ProductCode + "%'";
                 }
-                if (ProductNo != "") {
-                    Where += " and ProductNo like '%" + ProductNo + "%'";
-                }
-                if (StandardNo != "") {
-                    Where += " and StandardNo like '%" + StandardNo + "%'";
+                if (CategoryNameTwo != "") {
+                    Where += " and CategoryName like '%" + CategoryNameTwo + "%'";
                 }
                 queryParams.Where = encodeURIComponent(Where);
             }
@@ -93,27 +97,7 @@
             SetInitColor();
             $("input", $("#txtFactory").next("span")).addClass("TextRead");
         }
-        function Clear() {
-            if (SessionTimeOut(SessionUrl)) {
-                return false;
-            }
-            var row = $('#dg').datagrid('getSelected');
-            if (row == null || row.length == 0) {
-                $.messager.alert("提示", "请选择要冲程清零的行！", "info");
-                return false;
-            }
-            if (row) {
-                data = { Action: 'ClearZero', Comd: 'cmd.UpdateTaskProductDetail', Where: "ProductCode='" + row.ProductCode + "'" };
-                $.post(OtherUrl, data, function (result) {
-                    if (result.status == 1) {
-                        $.messager.alert('提示', result.msg, 'info');
 
-                    } else {
-                        $.messager.alert('错误', result.msg, 'error');
-                    }
-                }, 'json');
-            }
-         }
         //修改管理员
         function Edit() {
             if (SessionTimeOut(SessionUrl)) {
@@ -122,7 +106,7 @@
             if (!GetPermisionByFormID("Product", 1)) {
                 alert("您没有修改权限！");
                 return false;
-            }
+            }   
             var row = $('#dg').datagrid('getSelected');
             if (row == null || row.length == 0) {
                 $.messager.alert("提示", "请选择要修改的行！", "info");
@@ -137,7 +121,8 @@
 //                $('#txtModelNo').textbox('enable', true);
 //                $('#txtStandardNo').textbox('enable', true);
 //                $('#btnProductNo').removeAttr('disabled');
-//            }
+            //            }
+
             BindDropDownList();
             if (row) {
                 var data = { Action: 'FillDataTable', Comd: 'cmd.SelectProduct', Where: "product.ProductCode='" + row.ProductCode + "'" };
@@ -147,12 +132,14 @@
                     $('#AddWin').dialog('open').dialog('setTitle', '产品资料--编辑');
                     $('#fm').form('load', Product);
                 }, 'json');
+                $('#dgSubAdd').datagrid({
+                    url: '../../Handler/BaseHandler.ashx?Action=FillDataTable&Comd=CMD.SelectProductDetail',
+                    queryParams: { Where: encodeURIComponent("ProductCode='" + row.ProductCode + "'") }
+                });
             }
             $('#txtPageState').val("Edit");
-            $("#txtFactoryName").textbox("readonly", true);
             $("#txtProductCode").textbox("readonly", true);
             SetInitColor();
-            $("input", $("#txtFactory").next("span")).addClass("TextRead");
         }
         function BatchEdit() {
             if (SessionTimeOut(SessionUrl)) {
@@ -176,16 +163,16 @@
             var data = { Action: 'FillDataTable', Comd: 'cmd.SelectProductCategory', Where: '1=1' };
             BindComboList(data, 'ddlCategoryCode', 'CategoryCode', 'CategoryName');
 
-            var cdata = { Action: 'FillDataTable', Comd: 'cmd.SelectAreaEdit', Where: "1=1" };
-            BindComboList(cdata, 'ddlDetailAreaCode', 'AreaCode', 'AreaName');
+         var cdata = { Action: 'FillDataTable', Comd: 'cmd.SelectAreaEdit', Where: "1=1" };
+//            BindComboList(cdata, 'bao', 'AreaCode', 'AreaName');
 
-            $("#ddlDetailAreaCode").combobox({
-                onSelect: function (record) {
-                    var edata = { Action: 'FillDataTable', Comd: 'cmd.SelectRegionEdit', Where: "a.AreaCode='" + $('#ddlDetailAreaCode').combobox('getValue') + "'" };
-                    BindComboList(edata, 'ddlDetailRegionCode', 'RegionCode', 'RegionName')
+//            $("#ddlDetailAreaCode").combobox({
+//                onSelect: function (record) {
+//                    var edata = { Action: 'FillDataTable', Comd: 'cmd.SelectRegionEdit', Where: "a.AreaCode='" + $('#ddlDetailAreaCode').combobox('getValue') + "'" };
+//                    BindComboList(edata, 'ddlDetailRegionCode', 'RegionCode', 'RegionName')
 
-                }
-            });
+//                }
+            //            });
         }
        
         //保存信息
@@ -196,7 +183,8 @@
             if (!$("#fm").form('validate')) {
                 return false;
             }
-            var query = createParam();
+            var MainQuery = createParam();
+            var SubQuery = createSubParam();
             var test = $('#txtPageState').val();
             var data;
 
@@ -204,32 +192,31 @@
                 //判断单号是否存在
                 if (HasExists('cmd_product', "ProductCode='" + $('#txtProductCode').textbox('getValue') + "'", '产品编号已经存在，请重新修改！'))
                     return false;
-               data = { Action: 'Add', Comd: 'cmd.InsertProduct', json: query };
+                data = { Action: 'AddMainDetail', MainComd: 'Cmd.InsertProduct', SubComd: 'Cmd.InsertProductDetail', MainJson: MainQuery, SubJson: SubQuery };
                 $.post(url, data, function (result) {
                     if (result.status == 1) {
-                        ReloadGrid('dg');
+                        ReloadGrid("dg");
                         $('#AddWin').window('close');
-                        
+
                     } else {
                         $.messager.alert('错误', result.msg, 'error');
                     }
                 }, 'json');
-
             }
             else {//修改
-                if (OldStandardNoValue != '' && OldStandardNoValue != StandardNoValue) {
-                    if (HasExists('CMD_Cell', "PalletCode='" + OldStandardNoValue + "'", '该旧托盘已在货位上!')) {
-                        $('#txtStandardNo').textbox('setValue', OldStandardNoValue);
-                        return false;
-                    }
-                }
-                if (StandardNoValue != '' && OldStandardNoValue != StandardNoValue) {
-                    if (HasExists('CMD_Cell', "PalletCode='" + StandardNoValue + "'", '该新托盘已在货位上!')) {
-                        $('#txtStandardNo').textbox('setValue', StandardNoValue);
-                        return false;
-                    }
-                }              
-                data = { Action: 'Edit', Comd: 'cmd.UpdateProduct', json: query };
+//                if (OldStandardNoValue != '' && OldStandardNoValue != StandardNoValue) {
+//                    if (HasExists('CMD_Cell', "PalletCode='" + OldStandardNoValue + "'", '该旧托盘已在货位上!')) {
+//                        $('#txtStandardNo').textbox('setValue', OldStandardNoValue);
+//                        return false;
+//                    }
+//                }
+//                if (StandardNoValue != '' && OldStandardNoValue != StandardNoValue) {
+//                    if (HasExists('CMD_Cell', "PalletCode='" + StandardNoValue + "'", '该新托盘已在货位上!')) {
+//                        $('#txtStandardNo').textbox('setValue', StandardNoValue);
+//                        return false;
+//                    }
+//                }
+                data = { Action: 'EditMainDetail', MainComd: 'Cmd.UpdateProduct', SubDelComd: 'Cmd.DeleteProductDetail', SubComd: 'Cmd.InsertProductDetail', MainJson: MainQuery, SubJson: SubQuery };
                 $.post(url, data, function (result) {
                     if (result.status == 1) {
                         ReloadGrid('dg');
@@ -302,22 +289,27 @@
                         });
                         if (blnUsed)
                             return false;
-                        var data = { Action: 'Delete', FormID: FormID, Comd: 'cmd.DeleteProduct', json: "'" + deleteCode.join("','") + "'" };
+                        var data = { Action: 'DelMainDetail', MainComd: 'cmd.DeleteProduct', SubComd: "cmd.DeleteProductDetail", json: "'" + deleteCode.join("','") + "'" };
                         $.post(url, data, function (result) {
                             if (result.status == 1) {
-                                ReloadGrid('dg');
-                               
-                                
+                                ReloadGrid("dg");
+
+
                             } else {
                                 $.messager.alert('错误', result.msg, 'error');
                             }
                         }, 'json');
-
                     }
                 });
             }
         }
-
+        function createSubParamRow(RowData) {
+            RowData.ProductCode = $('#txtProductCode').textbox('getValue');
+            RowData.RegionCode = $('#dgSubAdd').datagrid('getEditor', { index: RowData.RowID - 1, field: 'RegionName' }).target.combobox('getValue');
+            RowData.SectionName = $('#dgSubAdd').datagrid('getEditor', { index: RowData.RowID - 1, field: 'SectionName' }).target.textbox('getValue');
+            RowData.GrowDay = $('#dgSubAdd').datagrid('getEditor', { index: RowData.RowID - 1, field: 'GrowDay' }).target.textbox('getValue');
+            RowData.PreQty = $('#dgSubAdd').datagrid('getEditor', { index: RowData.RowID - 1, field: 'PreQty' }).target.textbox('getValue');
+        }
         function CheckRow(rowIndex, rowData) {
             CheckSelectRow('dg', rowIndex, rowData);
         }
@@ -351,6 +343,126 @@
                 });
             }
         }
+        function EditDetail() {
+            var editIndex = undefined;
+            if (endEditing()) {
+                editIndex = $('#dgSubAdd').datagrid('getRows').length - 1;
+                var j = { "RowID": $('#dgSubAdd').datagrid('getRows').length + 1 };
+                $('#dgSubAdd').datagrid('appendRow', j);
+                $('#dg').datagrid('selectRow', editIndex).datagrid('beginEdit', editIndex);
+            }
+        }
+        function getRowIndex(target) {
+            var tr = $(target).closest("tr.datagrid-row");
+            return parseInt(tr.attr("datagrid-row-index"));
+        }
+        $(function () {
+            var areaPro;
+            var regionPro;
+            var baodata = { Action: 'FillDataTable', Comd: 'cmd.SelectAreaEdit', Where: "1=1" };
+            $.ajax({
+                type: "post",
+                url: url,
+                data: baodata,
+                //contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: false,
+                success: function (json) {
+                    areaPro = json.rows;
+                }
+            })
+            $('#dgSubAdd').datagrid({
+                onClickCell: function (index, field, value) {
+                    $(this).datagrid('beginEdit', index);
+                    var ed = $(this).datagrid('getEditor', { index: index, field: field });
+                    $(ed.target).focus();
+                },
+                onLoadSuccess: function (json) {
+                    if (json) {
+                        for (var i = 0; i < json.rows.length; i++) {
+                            $('#dgSubAdd').datagrid('beginEdit', i);
+                        };
+                    };
+                }
+                ,
+                columns: [[{
+                    field: '', checkbox: true
+                },
+                {
+                    field: 'RowID', width: 60, title: '序号'
+                },
+                 {
+                     field: 'SectionName', title: '阶段名称', width: 150, editor: {
+                         type: 'textbox',
+                         required: true
+                     }
+                 },
+                {
+                    field: 'GrowDay', title: '成长天数', width: 150, editor: {
+                        type: 'numberbox',
+                        options: {
+                            precision: 0
+                        },   
+                        required: true
+                    }
+                },
+                {
+                    field: 'PreQty', title: '每盆数量', width: 120, editor: {
+                        type: 'numberbox',
+                        options: {
+                            precision: 0
+                        }, 
+                        required: true
+                    }
+                },
+                {
+                    field: 'AreaName', title: '存放区域', width: 130, editor: {
+                        type: 'combobox',
+                        options: {
+                            data: areaPro,
+                            valueField: 'AreaCode',
+                            textField: 'AreaName',
+                            editable: false,
+                            onSelect: function (record) {
+                                var indexSelect = getRowIndex(this);
+                                var edArea = $('#dgSubAdd').datagrid('getEditor', { index: indexSelect, field: 'AreaName' });
+                                var edReg = $('#dgSubAdd').datagrid('getEditor', { index: indexSelect, field: 'RegionName' });
+                                var val = edArea.target.combobox('getValue');
+                                var eadata = { Action: 'FillDataTable', Comd: 'cmd.SelectRegionEdit', Where: "a.AreaCode='" + val + "'" };
+                                $.ajax({
+                                    type: "post",
+                                    url: url,
+                                    data: eadata,
+                                    //contentType: "application/json; charset=utf-8",
+                                    dataType: "json",
+                                    async: false,
+                                    success: function (json) {
+                                        edReg.target.combobox({
+                                            data: json.rows,
+                                            valueField: 'RegionCode',
+                                            textField: 'RegionName'
+                                        });
+                                    }
+                                });
+                            }
+                        }
+                    }
+                },
+                {
+                    field: 'RegionName', title: '存放库区', width: 130, editor: {
+                        type: 'combobox',
+                        options: {
+                            data: regionPro,
+                            valueField: 'RegionCode',
+                            textField: 'RegionName',
+                            editable: false
+                        }
+                    }
+                }
+                ]]
+            })
+
+        })           
     </script> 
 </head>
 <body class="easyui-layout">
@@ -364,8 +476,8 @@
 			<tr>
 				<th data-options="field:'',checkbox:true"></th> 
                 <th data-options="field:'ProductCode',width:140">产品编号</th>
-                <th data-options="field:'ModelNo',width:140">产品名称</th>
-                <th data-options="field:'StandardNo',width:90">产品类别</th>      
+                <th data-options="field:'ProductName',width:140">产品名称</th>
+                <th data-options="field:'CategoryName',width:90">产品类别</th>      
                
 			</tr>
 		</thead>
@@ -386,11 +498,10 @@
                 <thead>
 		            <tr>
 		                <th data-options="field:'RowID',width:100">序号</th>
-                        <th data-options="field:'ProductCode',width:100">产品编号</th>
                         <th data-options="field:'SectionName',width:100">产品阶段</th>
                         <th data-options="field:'RegionCode',width:100">库区编号</th>
                         <th data-options="field:'GrowDay',width:100">成长天数</th>
-                        <th data-options="field:'PreQty',width:100">数量</th>
+                        <th data-options="field:'PreQty',width:100">每盆数量</th>
 		            </tr>
                 </thead>
             </table>
@@ -405,28 +516,24 @@
                     产品编号
                     <input id="txtQueryProductCodeOne" class ="easyui-textbox" style="width: 100px" />
                     产品名称
-                    <input id="txtQueryModelNo" class ="easyui-textbox" style="width: 100px" />
+                    <input id="txtQueryProductNameOne" class ="easyui-textbox" style="width: 100px" />
                     产品类别
-                    <input id="txtQueryStandardNoOne" class="easyui-textbox" style="width: 100px"/>  
-                    品名
-                    <input id="txtQueryProductName" class="easyui-textbox" style="width: 100px" /> 
-                    产品编号  
-                    <input id="txtQueryProductNoOne" class="easyui-textbox" style="width: 100px"/>   
+                    <input id="txtQueryCategoryNameOne" class="easyui-textbox" style="width: 100px"/>  
+                    类别编码
+                    <input id="txtQueryCategoryCodeOne" class="easyui-textbox" style="width: 100px" /> 
                     <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" onclick="ReloadGrid('dg')">查询</a> 
                 </td>
                 <td  style="width:*"  align="right">
                      <a href="javascript:void(0)" onclick="Add()" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true">新增</a>  
                      <a href="javascript:void(0)" onclick="Edit() " class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true">修改</a>  
                      <a href="javascript:void(0)" onclick="Delete()" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true">删除</a>
-                     <a href="javascript:void(0)" onclick="BatchEdit() " class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true">批次变更</a>
-                     <a href="javascript:void(0)"  onclick="Clear() " class="easyui-linkbutton" data-options="iconCls:'icon-clear',plain:true">冲程清零</a>
                      <a href="javascript:void(0)" onclick="Exit()" class="easyui-linkbutton" data-options="iconCls:'icon-no',plain:true">离开</a>
                 </td>
             </tr>
         </table>
    </div>
       <%-- 弹出操作框--%>
-    <div id="AddWin" class="easyui-dialog" style="width: 1200px; height: auto; padding: 5px 5px"
+    <div id="AddWin" class="easyui-dialog" style="width: 1000px; height: auto; padding: 5px 5px"
         data-options="closed:true,buttons:'#AddWinBtn',modal:true"> 
         <form id="fm" method="post">
                <div>
@@ -470,7 +577,7 @@
                         </tr>
                         <tr>
                         <td colspan="6">
-                                <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-add'" onclick="SelectWinShow('SelectWin','明细资料--选择')">新增明细</a>
+                                <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-add'" onclick="EditDetail()">新增明细</a>
                                 <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-remove'" onclick="DeleteSubDetail('dgSubAdd')">删除明细</a>
                         </td>
                         </tr>
@@ -480,16 +587,6 @@
             <table id="dgSubAdd" class="easyui-datagrid" style="width:100%;height:272px;"
                 data-options="loadMsg: '正在加载数据，请稍等...',rownumbers:true,pagination:false,method:'post',striped:true,fitcolumns:true,singleSelect:true,
                               selectOnCheck:false,checkOnSelect:false"> 
-               <thead >
-			        <tr>
-                        <th data-options="field:'',checkbox:true"></th> 
-		                <th data-options="field:'RowID',width:60">序号</th>
-                        <th data-options="field:'ProductCode',width:130">产品编号</th>
-                        <th data-options="field:'RegionCode',width:130">库区编号</th>
-                        <th data-options="field:'GrowDay',width:150">成长天数</th>
-                        <th data-options="field:'PreQty',width:120">数量</th>
-		            </tr>
-                </thead>
             </table>
             <table class="grid maintable" style="table-layout:fixed;width:100%">
                 <tr>
@@ -524,95 +621,6 @@
     <div id="AddWinBtn">
         <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="Save()">保存</a>
         <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" onclick="javascript:$('#AddWin').dialog('close')">关闭</a>
-    </div>
-
-    <%-- 单号批次变更 --%>
-     <div id="BatchWin" class="easyui-dialog" style="width: 350px; height: auto; padding: 5px 5px"
-        data-options="closed:true,buttons:'#BatchWinBtn',modal:true"> 
-        <form id="Batchfrm" method="post">
-              <table id="Table2" class="maintable"  width="100%" align="center">			
-				<tr>
-                    <td align="center" class="musttitle"style="width:90px">
-                        模具编号</td>
-                    <td width="176px">
-                        
-                        &nbsp;<input id="txtBatchProductCode" name="ProductCode" class="easyui-textbox" 
-                            data-options="required:true,editable:false" style="width:172px"/>&nbsp;
-                       
-                    </td>
-                    
-                </tr>
-                <tr>
-                    <td align="center" class="musttitle"style="width:90px">
-                            新模具编号
-                    </td>
-                    <td  width="176px">
-                            &nbsp;<input id="txtBatchNewProductCode" name="NewProductCode" 
-                                class="easyui-textbox" data-options="required:true" maxlength="20" 
-                                style="width:172px"/>
-                    </td>                    
-                </tr>            
-             </table>
-        </form>
-    </div>
-    <div id="BatchWinBtn">
-        <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="BatchSave()">保存</a>
-        <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" onclick="javascript:$('#BatchWin').dialog('close')">关闭</a>
-    </div>
-
-
-    <div  id="SelectWin" style="width:600px;height:auto">
-             <table id="dgSelect"  class="easyui-dialog" 
-            data-options="closed:true,modal:true"> 
-        </table>
-        <div id="tbSelect" style="padding: 5px; height: auto">  
-            <table >
-                <tr>
-                    <td align="center" class="musttitle"style="width:90px"  >
-                           阶段名称
-                    </td>
-                    <td width="210px"> 
-                        &nbsp;<input id="txtDetailProductName" name="DetailProductName" class="easyui-textbox" data-options="required:true" maxlength="50" style="width:180px"/>
-                    </td>
-                                        <td align="center" class="musttitle"style="width:90px"  >
-                           成长天数
-                    </td>
-                    <td width="210px"> 
-                        &nbsp;<input id="txtGrowDay" name="GrowDay" class="easyui-textbox" data-options="required:true" maxlength="50" style="width:180px"/>
-                    </td>
-                </tr>
-                <tr>
-                    <td align="center" class="musttitle"style="width:90px"  >
-                                区域
-                    </td>
-                    <td > 
-                            &nbsp;<input 
-                                id="ddlDetailAreaCode" name="DetailAreaCode" class="easyui-combobox" 
-                                data-options="required:true" maxlength="50" style="width:180px"/>
-                    </td>
-                     <td align="center" class="musttitle"style="width:90px"  >
-                                产品库区
-                    </td>
-                    <td > 
-                            &nbsp;<input 
-                                id="ddlDetailRegionCode" name="DetailRegionCode" class="easyui-combobox" 
-                                data-options="required:true,valueField:'RegionCode',textField:'RegionName'" maxlength="50" style="width:180px"/>
-                    </td>
-                </tr>
-                <tr>
-                                                    <td align="center" class="musttitle"style="width:90px"  >
-                           数量
-                    </td>
-                    <td width="210px"> 
-                        &nbsp;<input id="txtPreQty" name="PreQty" class="easyui-textbox" data-options="required:true" maxlength="50" style="width:180px"/>
-                    </td>
-                </tr>
-            </table>
-        </div>
-        <div id="SelectWinBtn" style=" text-align:center">
-        <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="SaveDetail()">保存</a>
-        <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" onclick="javascript:$('#SelectWin').dialog('close')">关闭</a>
-        </div>
     </div>
 
 </body>
