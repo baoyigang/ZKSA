@@ -22,7 +22,8 @@
         var url = "../../Handler/BaseHandler.ashx";
         var SessionUrl = '<% =ResolveUrl("~/Login.aspx")%>';
         var FormID = "Cell";
-
+        var ActiveValue = [{ ActiveCode: '1', ActiveText: '无异常' }, { ActiveCode: '0', ActiveText: '异常'}];
+        var LockValue = [{ LockCode: '0', LockText: '未锁定' }, { LockCode: '1', LockText: '锁定'}];
         function getQueryParams(objname, queryParams) {
             var Where = "1=1 ";
             var CellCode = $("#txtCellCode").textbox("getValue");
@@ -95,11 +96,10 @@
                     onSelect: function (record) {
                     var edata = { Action: 'FillDataTable', Comd: 'cmd.SelectRegionEdit', Where: "a.AreaCode='" + $('#SelectAreaName').combobox('getValue') + "'" };
                     BindComboList(edata,'SelectRegionName','RegionCode','RegionName')
-                    
                     }
                 });
 
-
+            $('#SelectRegionName').combobox('setValue', '');
             $('#txtPageState').val("Edit");
             $("#txtID").textbox("readonly", true);
             SetInitColor();
@@ -120,7 +120,7 @@
             }
             var checkedItems = $('#dg').datagrid('getChecked');
             var query = createParam();
-            var js = "[{\"AreaCode\":\"" + $("#SelectAreaName").combobox("getValue") + "\"," + "\"RegionCode\":\"" + $("#SelectRegionName").combobox("getValue")+"\",";
+            var js = "[{\"AreaCode\":\"" + $("#SelectAreaName").combobox("getValue") + "\"," + "\"RegionCode\":\"" + $("#SelectRegionName").combobox("getValue") + "\"," + "\"ActiveCode\":\"" + $("#SelectActive").combobox("getValue") + "\"," + "\"LockCode\":\"" + $("#SelectLock").combobox("getValue") + "\",";
             var updateCode = [];
             var blnUsed = false;
             $.each(checkedItems, function (index, item) {
@@ -141,50 +141,32 @@
                     }
                 }, 'json');
         }
-        //删除管理员
-        function Delete() {
-            if (SessionTimeOut(SessionUrl)) {
-                return false;
-            }
-            if (!GetPermisionByFormID("ProductCategory", 2)) {
-                alert("您没有删除权限！");
-                return false;
-            }
-            var checkedItems = $('#dg').datagrid('getChecked');
-            if (checkedItems == null || checkedItems.length == 0) {
-                $.messager.alert("提示", "请选择要解绑的行！", "info");
-                return false;
-            }
-            var js = "[{\"AreaCode\":\"" + "\"," + "\"RegionCode\":\"" + "\",";
-            if (checkedItems) {
-                $.messager.confirm('提示', '你确定要解绑吗？', function (r) {
-                    if (r) {
-                        var updateCode = [];
-                        var blnUsed = false;
-                        $.each(checkedItems, function (index, item) {
-//                            if (HasExists('VUsed_CMD_ProductCategory', "CategoryCode='" + item.CategoryCode + "'", "类别编码 " + item.CategoryCode + " 已经被其它单据使用，无法删除！"))
-//                                blnUsed = true;
-                            updateCode.push(item.CellCode);
-                        });
-                        if (blnUsed)
-                            return false;
-                        var data = { Action: 'Edit', Comd: 'cmd.UpdateCellEdit', json: js + "\"{0}\":\"'" + updateCode.join("','") + "'\"" + "}]" };
-                        $.post(url, data, function (result) {
-                            if (result.status == 1) {
-                                ReloadGrid('dg');
-
-
-                            } else {
-                                $.messager.alert('错误', result.msg, 'error');
-                            }
-                        }, 'json');
-
-                    }
-                });
-            }
-        }
         function CheckRow(rowIndex, rowData) {
             CheckSelectRow('dg', rowIndex, rowData);
+        }
+        function formatActive(value) {
+            if (value == 0) {
+                return '异常';
+            }
+            else {
+                return '无异常';
+            }
+       }
+       function formatLock(value) {
+           if (value == 0) {
+               return '未锁定';
+            }
+            else {
+                return '锁定';
+            }
+        }
+        function formatSet(value) {
+            if (value == '') {
+                return '未设置';
+            }
+            else {
+                return value;
+            }
         }
     </script> 
 </head>
@@ -197,10 +179,17 @@
                 <th data-options="field:'',checkbox:true"></th> 
 		        <th data-options="field:'CellCode',width:80,sortable:true">货位编码</th>
                 <th data-options="field:'CellName',width:180,sortable:true">名称</th>
-                <th data-options="field:'Memo',width:130">备注</th>
+                <th data-options="field:'IsActive',width:60,formatter:formatActive">异常</th>
+                <th data-options="field:'IsLock',width:60,formatter:formatLock">锁定</th>
+                <th data-options="field:'CellRow',width:80">层</th>
+                <th data-options="field:'CellColumn',width:80">列</th>
                 <th data-options="field:'Depth',width:80">深度</th>
-                <th data-options="field:'RegionCode',width:160,sortable:true">库区编码</th>
-                <th data-options="field:'AreaCode',width:80">区域编码</th>
+                <th data-options="field:'Memo',width:130">备注</th>
+                <th data-options="field:'DisOutStation',width:100">距出库站台距离</th>
+                <th data-options="field:'DisInStation',width:100">距入库站台距离</th>
+                <th data-options="field:'AreaCode',width:80,formatter:formatSet">区域编码</th>
+                <th data-options="field:'AreaName',width:160">区域名称</th>
+                <th data-options="field:'RegionCode',width:80,sortable:true,formatter:formatSet">库区编码</th>
                 <th data-options="field:'RegionName',width:160,sortable:true">库区名称</th>
 		    </tr>
         </thead>
@@ -226,7 +215,6 @@
                 </td>
                 <td style="width:*" align="right">
                      <a href="javascript:void(0)" onclick="Edit() " class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true">修改库区</a>  
-                     <a href="javascript:void(0)" onclick="Delete()" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true">解绑库区</a>
                      <a href="javascript:void(0)" onclick="Exit()" class="easyui-linkbutton" data-options="iconCls:'icon-no',plain:true">离开</a>
                 </td>
             </tr>
@@ -243,14 +231,31 @@
                             区域名称
                     </td>
                     <td width="210px"> 
-                        &nbsp;<input id="SelectAreaName" name="AreaCode" class="easyui-combobox" data-options="required:true" maxlength="50" style="width:180px"/>
+                        &nbsp;<input id="SelectAreaName" name="AreaCode" class="easyui-combobox" data-options="required:false" maxlength="50" style="width:180px"/>
                     </td>
                     <td align="center" class="musttitle"style="width:90px"  >
                            库区名称
                     </td>
                     <td width="210px"> 
-                        &nbsp;<input id="SelectRegionName" name="RegionCode" class="easyui-combobox" data-options="required:true,valueField:'RegionCode',textField:'RegionName'" maxlength="50" style="width:180px"/>
+                        &nbsp;<input id="SelectRegionName" name="RegionCode" class="easyui-combobox" data-options="required:false,valueField:'RegionCode',textField:'RegionName'" maxlength="50" style="width:180px"/>
                     </td>
+                </tr>
+                <tr>
+                <td align="center" class="musttitle"style="width:90px">
+                            锁定
+                    </td>
+                    <td width="210px"> 
+                        &nbsp;<input id="SelectLock" name="IsLock" class="easyui-combobox" data-options="required:true,valueField:'LockCode',textField:'LockText',data:LockValue,onLoadSuccess: function(json) {
+                  var val = $(this).combobox('getData'); for (var item in val[0]) { if (item == 'LockText') { $(this).combobox('select', val[0]['LockCode']);   } } }" maxlength="50" style="width:180px"/>
+                    </td>
+                    <td align="center" class="musttitle"style="width:90px"  >
+                           异常
+                    </td>
+                    <td width="210px"> 
+                        &nbsp;<input id="SelectActive" name="IsActive" class="easyui-combobox" data-options="required:true,valueField:'ActiveCode',textField:'ActiveText',data:ActiveValue,onLoadSuccess: function(json) {
+            var val = $(this).combobox('getData'); for (var item in val[0]) { if (item == 'ActiveText') { $(this).combobox('select', val[0]['ActiveCode']);   } } }" maxlength="50" style="width:180px"/>
+                    </td>
+                
                 </tr>
                 <tr style=" height:80px">
                     <td align="center"  class="smalltitle" style="width:120px;height:80px;">

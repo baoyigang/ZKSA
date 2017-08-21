@@ -39,43 +39,35 @@
         function getQueryParams(objname, queryParams) {
             if (objname == "dg") {
                 var Where = "1=1 ";
-                var productcode = $("#txtQueryProductCodeOne").textbox("getValue");
-                var modelNo = $("#txtQueryModelNo").textbox("getValue");
-                var StandardNo = $("#txtQueryStandardNoOne").textbox("getValue");
-                var ProductName = $("#txtQueryProductName").textbox("getValue");
-                var ProductNo = $("#txtQueryProductNoOne").textbox("getValue");
+                var productcode = $("#txtQueryProductCodeOne").textbox('getValue');
+                var productname = $("#txtQueryProductNameOne").textbox('getValue');
+                var CategoryNameOne = $("#txtQueryCategoryNameOne").textbox('getValue');
+                var CategoryCodeOne = $("#txtQueryCategoryCodeOne").textbox('getValue');
                 if (productcode != "") {
                     Where += " and Product.productcode like '%" + productcode + "%'";
                 }
-                if (modelNo != "") {
-                    Where += " and modelNo like '%" + modelNo + "%'";
+                if (productname != "") {
+                    Where += " and ProductName like '%" + productname + "%'";
                 }
-                if (StandardNo!= "") {
-                    Where += " and StandardNo like '%" + StandardNo + "%'";
+                if (CategoryNameOne != "") {
+                    Where += " and CategoryName like '%" + CategoryNameOne + "%'";
                 }
-                if (ProductName!= "") {
-                    Where += " and ProductName like '%" + ProductName + "%'";
-                }
-                if (ProductNo != "") {
-                    Where += " and ProductNo like '%" + ProductNo + "%'";
+                if (CategoryCodeOne != "") {
+                    Where += " and CategoryCode like '%" + CategoryCodeOne + "%'";
                 }
                 queryParams.Where = encodeURIComponent(Where);
             }
             else {
-                var ProductCodeWhere = $("#txtProductCode").textbox("getValue");
-                var Where = "1=1 and ModelNo='' and Product.ProductCode !='" + ProductCodeWhere + "'";
-                var ProductCode = $("#txtQueryProductCodetTwo").textbox("getValue");
-                var ProductNo = $("#txtQueryProductNoTwo").textbox("getValue");
-                var StandardNo = $("#txtQueryStandardNoTwo").textbox("getValue");
+                var ProductCodeWhere = $("#txtProductCode").textbox('getValue');
+                var Where = "1=1 and ProductName='' and Product.ProductCode !='" + ProductCodeWhere + "'";
+                var ProductCode = $("#txtQueryProductCodetTwo").textbox('getValue');
+                var CategoryNameTwo = $("#CategoryNameTwo").textbox('getValue');
 
                 if (ProductCode != "") {
                     Where += " and Product.ProductCode like '%" + ProductCode + "%'";
                 }
-                if (ProductNo != "") {
-                    Where += " and ProductNo like '%" + ProductNo + "%'";
-                }
-                if (StandardNo != "") {
-                    Where += " and StandardNo like '%" + StandardNo + "%'";
+                if (CategoryNameTwo != "") {
+                    Where += " and CategoryName like '%" + CategoryNameTwo + "%'";
                 }
                 queryParams.Where = encodeURIComponent(Where);
             }
@@ -114,7 +106,7 @@
             if (!GetPermisionByFormID("Product", 1)) {
                 alert("您没有修改权限！");
                 return false;
-            }
+            }   
             var row = $('#dg').datagrid('getSelected');
             if (row == null || row.length == 0) {
                 $.messager.alert("提示", "请选择要修改的行！", "info");
@@ -300,14 +292,13 @@
                         var data = { Action: 'DelMainDetail', MainComd: 'cmd.DeleteProduct', SubComd: "cmd.DeleteProductDetail", json: "'" + deleteCode.join("','") + "'" };
                         $.post(url, data, function (result) {
                             if (result.status == 1) {
-                                ReloadGrid('dg');
-                               
-                                
+                                ReloadGrid("dg");
+
+
                             } else {
                                 $.messager.alert('错误', result.msg, 'error');
                             }
                         }, 'json');
-
                     }
                 });
             }
@@ -510,7 +501,7 @@
                         <th data-options="field:'SectionName',width:100">产品阶段</th>
                         <th data-options="field:'RegionCode',width:100">库区编号</th>
                         <th data-options="field:'GrowDay',width:100">成长天数</th>
-                        <th data-options="field:'PreQty',width:100">数量</th>
+                        <th data-options="field:'PreQty',width:100">每盆数量</th>
 		            </tr>
                 </thead>
             </table>
@@ -525,20 +516,17 @@
                     产品编号
                     <input id="txtQueryProductCodeOne" class ="easyui-textbox" style="width: 100px" />
                     产品名称
-                    <input id="txtQueryModelNo" class ="easyui-textbox" style="width: 100px" />
+                    <input id="txtQueryProductNameOne" class ="easyui-textbox" style="width: 100px" />
                     产品类别
-                    <input id="txtQueryStandardNoOne" class="easyui-textbox" style="width: 100px"/>  
-                    品名
-                    <input id="txtQueryProductName" class="easyui-textbox" style="width: 100px" /> 
-                    产品编号  
-                    <input id="txtQueryProductNoOne" class="easyui-textbox" style="width: 100px"/>   
+                    <input id="txtQueryCategoryNameOne" class="easyui-textbox" style="width: 100px"/>  
+                    类别编码
+                    <input id="txtQueryCategoryCodeOne" class="easyui-textbox" style="width: 100px" /> 
                     <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" onclick="ReloadGrid('dg')">查询</a> 
                 </td>
                 <td  style="width:*"  align="right">
                      <a href="javascript:void(0)" onclick="Add()" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true">新增</a>  
                      <a href="javascript:void(0)" onclick="Edit() " class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true">修改</a>  
                      <a href="javascript:void(0)" onclick="Delete()" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true">删除</a>
-                     <a href="javascript:void(0)" onclick="BatchEdit() " class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true">批次变更</a>
                      <a href="javascript:void(0)" onclick="Exit()" class="easyui-linkbutton" data-options="iconCls:'icon-no',plain:true">离开</a>
                 </td>
             </tr>
@@ -633,40 +621,6 @@
     <div id="AddWinBtn">
         <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="Save()">保存</a>
         <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" onclick="javascript:$('#AddWin').dialog('close')">关闭</a>
-    </div>
-
-    <%-- 单号批次变更 --%>
-     <div id="BatchWin" class="easyui-dialog" style="width: 350px; height: auto; padding: 5px 5px"
-        data-options="closed:true,buttons:'#BatchWinBtn',modal:true"> 
-        <form id="Batchfrm" method="post">
-              <table id="Table2" class="maintable"  width="100%" align="center">			
-				<tr>
-                    <td align="center" class="musttitle"style="width:90px">
-                        模具编号</td>
-                    <td width="176px">
-                        
-                        &nbsp;<input id="txtBatchProductCode" name="ProductCode" class="easyui-textbox" 
-                            data-options="required:true,editable:false" style="width:172px"/>&nbsp;
-                       
-                    </td>
-                    
-                </tr>
-                <tr>
-                    <td align="center" class="musttitle"style="width:90px">
-                            新模具编号
-                    </td>
-                    <td  width="176px">
-                            &nbsp;<input id="txtBatchNewProductCode" name="NewProductCode" 
-                                class="easyui-textbox" data-options="required:true" maxlength="20" 
-                                style="width:172px"/>
-                    </td>                    
-                </tr>            
-             </table>
-        </form>
-    </div>
-    <div id="BatchWinBtn">
-        <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="BatchSave()">保存</a>
-        <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" onclick="javascript:$('#BatchWin').dialog('close')">关闭</a>
     </div>
 
 </body>
