@@ -158,15 +158,16 @@
 
   <Command ID="SelectCellEdit">
     <CommandString>
-      select c.CellCode,c.CellName,c.AreaCode,c.RegionCode,c.Memo,c.Depth,CMD_Region.RegionName from CMD_Cell  c
+      select c.CellCode,c.CellName,c.AreaCode,Cmd_area.AreaName,c.RegionCode,c.Memo,c.Depth,c.CellRow,c.CellColumn,c.DisInStation,c.DisOutStation,CMD_Region.RegionName,c.IsActive,c.IsLock  from CMD_Cell  c
       left join CMD_Region on CMD_Region.RegionCode=c.RegionCode
+      LEFT join CMD_Area on CMD_Region.AreaCode=cmd_area.AreaCode
       WHERE {0} ORDER BY c.AreaCode,c.RegionCode,CellCode
     </CommandString>
   </Command>
 
   <Command ID="UpdateCellEdit">
     <CommandString>
-      update CMD_Cell set AreaCode=@AreaCode,RegionCode=@RegionCode  where CellCode in ({0})
+      update CMD_Cell set AreaCode=@AreaCode,RegionCode=@RegionCode,IsActive=@ActiveCode,IsLock=@LockCode  where CellCode in ({0})
     </CommandString> 
   </Command>
 
@@ -267,9 +268,8 @@
   <!--产品信息-->
   <Command ID="SelectProduct">
     <CommandString>
-      select  product.*,Category.CategoryName,(case when pallet.IsLock='1' then '在库'  when pallet.IsLock='0' then '' else '' end) Instock from CMD_PRODUCT product
+      select  product.*,Category.CategoryName from CMD_PRODUCT product
       Left join CMD_ProductCategory Category on product.CategoryCode=Category.CategoryCode
-      left join WMS_Pallet pallet on Product.productCode=pallet.productCode
       where {0}
       order by {1}
     </CommandString>
@@ -277,6 +277,11 @@
   <Command ID="DeleteProduct">
     <CommandString>
       delete from CMD_PRODUCT WHERE ProductCode in({0})
+    </CommandString>
+  </Command>
+  <Command ID="DeleteProductDetail">
+    <CommandString>
+      delete from CMD_PRODUCTDetail WHERE ProductCode in({0})
     </CommandString>
   </Command>
   <Command ID="InsertProduct">
@@ -300,7 +305,7 @@
   </Command>
   <Command ID="SelectProductDetail">
     <CommandString>
-      Select a.AreaName,r.RegionName,p.* from CMD_PRODUCTDetail  p
+      Select a.AreaName,r.RegionCode as RegionName,p.* from CMD_PRODUCTDetail  p
       left join CMD_Region as r on p.RegionCode=r.RegionCode
       left join CMD_Area as a on a.AreaCode=r.AreaCode
       WHERE {0}
