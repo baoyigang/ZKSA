@@ -36,6 +36,9 @@ public class BaseHandler : IHttpHandler, IRequiresSessionState
             case "Add":
                 strJson = Add(context);
                 break;
+            case "MultiAdd":
+                strJson = MultiAdd(context);
+                break;
            
             case "AddMainDetail":
                 strJson = AddMainDetail(context);
@@ -89,7 +92,7 @@ public class BaseHandler : IHttpHandler, IRequiresSessionState
         context.Response.Write(strJson);
         context.Response.End();
     }
-     
+   
     private string Add(HttpContext context)
     {
         JsonResult jr = new JsonResult();
@@ -121,7 +124,35 @@ public class BaseHandler : IHttpHandler, IRequiresSessionState
         string strJson = JsonConvert.SerializeObject(jr);
         return strJson;
     }
+    private string MultiAdd(HttpContext context)
+    {
+        JsonResult jr = new JsonResult();
 
+        try
+        {
+            string SubComd = context.Request["SubComd"].ToString();
+            string SubJson = context.Server.UrlDecode(context.Request["SubJson"].ToString());
+            DataTable dtSub = Util.JsonHelper.Json2Dtb(SubJson);
+
+            List<string> comds = new List<string>();
+            List<DataParameter[]> paras = new List<DataParameter[]>();
+            Common.SetPara(SubComd, dtSub, ref comds, ref paras);
+
+            BLL.BLLBase bll = new BLL.BLLBase();
+            bll.ExecTran(comds.ToArray(), paras);
+
+            jr.status = 1;
+            jr.msg = "添加成功！";
+        }
+        catch (Exception ex)
+        {
+            jr.status = 0;
+            jr.msg = ex.Message;
+        }
+
+        string strJson = JsonConvert.SerializeObject(jr);
+        return strJson;
+    }
     private string AddMainDetail(HttpContext context)
     {
         JsonResult jr = new JsonResult();

@@ -36,26 +36,9 @@
             <td align="left" style="width:100%; height:30px;" >
                 <table class="maintable"  width="100%" align="center" >
                     <tr>
-                        <td   align="center" class="musttitle" style=" width:5%" >
-                            出库日期 
-                        </td>
-                        <td align="left"   style="width:129px;" >
-                            &nbsp;<uc1:Calendar ID="txtStartDate" runat="server"  /> 
-                        </td> 
-                        <td align="center" >
-                        &nbsp;至&nbsp;
-                        </td>                                
-                        <td align="left"   style="width:129px;" >
-                             &nbsp;<uc1:Calendar ID="txtEndDate" runat="server" />
-                        </td>
-                        <td   align="center" class="smalltitle" style="width:5%;">
-                            模具编码
-                        </td>
-                        <td align="left"   style="width:11%;">
-                         &nbsp;<asp:textbox id="txtProductCode"   runat="server"  Width="90%" CssClass="TextBox" ></asp:textbox>
-                        </td>
-                        <td   align="center" class="smalltitle" style="width:5%;">
-                            产品编码
+                     
+                        <td   align="center" class="smalltitle" style="width:7%;">
+                            产品编号
                         </td>
                         <td align="left"   style="width:11%;">
                          &nbsp;<asp:textbox id="txtProductNo"   runat="server"  Width="90%" CssClass="TextBox" ></asp:textbox>
@@ -65,7 +48,14 @@
                         </td>
                         <td align="left"   style="width:11%;" >
                              &nbsp;<asp:textbox id="txtProductName" tabIndex="1" runat="server" Width="90%" CssClass="TextBox"></asp:textbox>
-                        </td>                        
+                        </td>  
+                           
+                        <td   align="center" class="smalltitle" style="width:7%;">
+                            批次
+                        </td>
+                        <td align="left"   style="width:11%;">
+                         &nbsp;<asp:textbox id="txtProductCode"   runat="server"  Width="90%" CssClass="TextBox" ></asp:textbox>
+                        </td>                      
                         <td align= "left" style="border-left:2px solid #ffffff;">
                              &nbsp;<asp:Button ID="btnSearch" runat="server" CssClass="ButtonQuery" 
                                  tabIndex="2" Text="查询" Width="58px" 

@@ -32,7 +32,7 @@
         <TableRow Name="Row1">
           <TableCell Name="Cell1" Border.Lines="Right" Text="仓库" VertAlign="Center" Font="宋体, 9pt"/>
           <TableCell Name="Cell4" Border.Lines="Right" Text="托盘" VertAlign="Center" Font="宋体, 9pt"/>
-          <TableCell Name="Cell6" Border.Lines="Right" Text="产品编码" VertAlign="Center" Font="宋体, 9pt"/>
+          <TableCell Name="Cell6" Border.Lines="Right" Text="产品编号" VertAlign="Center" Font="宋体, 9pt"/>
           <TableCell Name="Cell19" Border.Lines="Right" Text="产品名称" VertAlign="Center" Font="宋体, 9pt"/>
           <TableCell Name="Cell38" Border.Lines="Right" Text="生产批次" VertAlign="Center" Font="宋体, 9pt"/>
           <TableCell Name="Cell22" Border.Lines="Right" Text="入库数量" HorzAlign="Right" VertAlign="Center" Font="宋体, 9pt"/>

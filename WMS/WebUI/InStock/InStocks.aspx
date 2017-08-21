@@ -443,7 +443,7 @@
      <div class="easyui-layout" data-options="fit:true">
         <div data-options="region:'north',split:true" style="height:300px;">
               <table id="dg"  class="easyui-datagrid" 
-                             data-options="loadMsg: '正在加载数据，请稍等...',fit:true, rownumbers:true,url:'../../Handler/BaseHandler.ashx?Action=PageDate&Comd=WMS.SelectBillMaster',queryParams:{Where:BaseWhere},
+                             data-options="loadMsg: '正在加载数据，请稍等...',fit:true, rownumbers:true,url:'../../Handler/BaseHandler.ashx?Action=PageDate&FormID=InStock',queryParams:{Where:BaseWhere},
                              pagination:true,pageSize:PageSize, pageList:[15, 20, 30, 50],method:'post',striped:true,fitcolumns:true,toolbar:'#tb',onLoadSuccess: function(data){ 
                              $('#dg').datagrid('selectRow',0);},singleSelect:true,selectOnCheck:false,checkOnSelect:false,onSelect:getDetail,onCheck:CheckRow,onUncheck:CheckRow"> 
                  <thead data-options="frozen:true">
@@ -485,8 +485,9 @@
                         <th data-options="field:'StartDate',width:120">开始时间</th>
                         <th data-options="field:'FinishDate',width:120">结束时间</th>
                          
-                    </tr>                
-                </table>
+                    </tr>  
+                </thead>              
+            </table>
         </div>
     </div>
     <div id="tb" style="padding: 5px; height: auto">  
@@ -623,6 +624,7 @@
         <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" onclick="javascript:$('#AddWin').dialog('close')">关闭</a>
     </div>
 
+     <%-- 选择框--%>
      <div id="SelectWin" style="width:600px;height:500px">
        <table id="dgSelect" class="easyui-datagrid"
             data-options="loadMsg: '正在加载数据，请稍等...',fit:true, rownumbers:true,

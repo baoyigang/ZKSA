@@ -281,7 +281,7 @@
     </div>
     <div id="mainPanle" region="center" style="background: #eee; overflow-y:hidden">
         <div id="tabs" class="easyui-tabs" data-options="closable:false,onBeforeClose: function(title){	return confirm('您确认想要关闭 ' + title); },fit:true" border="false" >
-			<div title="首页" id="ShowMainDiv" style="overflow:hidden;" id="home">
+			<div title="首页" id="ShowMainDiv" style="overflow:hidden;" >
 				
 			</div>
 		</div>

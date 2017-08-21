@@ -28,6 +28,9 @@ public class OtherHandler : IHttpHandler, IRequiresSessionState
             case "BatchChangeCode":
                 strJson = BatchChangeCode(context);
                 break;
+            case "CreateOutStock":
+                strJson = CreateOutStock(context);
+                break;
             case "Clear":
                 strJson = Clear(context);
                 break;
@@ -53,7 +56,54 @@ public class OtherHandler : IHttpHandler, IRequiresSessionState
         context.Response.Write(strJson);
         context.Response.End();
     }
-      
+    private string CreateOutStock(HttpContext context)
+    {
+        JsonResult jr = new JsonResult();
+
+        try
+        {
+            string SubComd = "WMS.InsertOutStock";
+            string SubJson = context.Server.UrlDecode(context.Request["SubJson"].ToString());
+            DataTable dtSub = Util.JsonHelper.Json2Dtb(SubJson);
+
+            List<string> comds = new List<string>();
+            List<DataParameter[]> paras = new List<DataParameter[]>();
+            for (int j = 0; j < dtSub.Rows.Count; j++)
+            {
+                DataParameter[] AddPara = new DataParameter[dtSub.Columns.Count];
+                for (int K = 0; K < dtSub.Columns.Count; K++)
+                {
+                    if (dtSub.Columns[K].ColumnName.IndexOf("Date") > 0 && dtSub.Rows[j][K].ToString() == "")
+                        AddPara[K] = new DataParameter("@" + dtSub.Columns[K].ColumnName, null);
+                    else if (dtSub.Columns[K].ColumnName.IndexOf("{") >= 0)
+                        AddPara[K] = new DataParameter(dtSub.Columns[K].ColumnName, dtSub.Rows[j][K]);
+                    else
+                        AddPara[K] = new DataParameter("@" + dtSub.Columns[K].ColumnName, dtSub.Rows[j][K]);
+                }
+                comds.Add(SubComd);
+                paras.Add(AddPara);
+
+                comds.Add("WMS.UpdatePalletOutStock");
+                paras.Add(new DataParameter[] { new DataParameter("@ProductCode", dtSub.Rows[j]["ProductCode"].ToString()), new DataParameter("@BatchNo", dtSub.Rows[j]["BatchNo"].ToString()), new DataParameter("@RowID", dtSub.Rows[j]["RowID"].ToString()) });
+                
+            }
+
+            BLL.BLLBase bll = new BLL.BLLBase();
+            bll.ExecTran(comds.ToArray(), paras);
+
+            jr.status = 1;
+            jr.msg = "添加成功！";
+        }
+        catch (Exception ex)
+        {
+            jr.status = 0;
+            jr.msg = ex.Message;
+        }
+
+        string strJson = JsonConvert.SerializeObject(jr);
+        return strJson;
+         
+    }  
     private string CancelTaskWork(HttpContext context)
     {
         JsonResult jr = new JsonResult();
@@ -150,6 +200,11 @@ public class OtherHandler : IHttpHandler, IRequiresSessionState
         string strJson = JsonConvert.SerializeObject(jr);
         return strJson;
     }
+    /// <summary>
+    /// 批次变更产品编号
+    /// </summary>
+    /// <param name="context"></param>
+    /// <returns></returns>
     private string BatchChangeCode(HttpContext context)
     {
         JsonResult jr = new JsonResult();
