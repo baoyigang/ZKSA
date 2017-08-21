@@ -72,21 +72,21 @@ public partial class Index_Main : System.Web.UI.Page
 
 
                 #region 提醒
-                BLL.BLLBase bll = new BLL.BLLBase();
-                DataTable dt = bll.FillDataTable("WMS.SelectProductOutWeight");
-                string strMsg = "";
-                for (int i = 0; i < dt.Rows.Count; i++)
-                {
-                    strMsg += Environment.NewLine+ "模具编号:" + dt.Rows[i]["ProductCode"].ToString() + " 标准冲程:" + dt.Rows[i]["Weight"].ToString() + " 总冲程数:" + dt.Rows[i]["quantity"].ToString();
-                }
-                if (strMsg.Length >0)
-                {
-                    string str = "以下模具总冲程数超过标准冲程:" + strMsg;
-                    hdnMsg.Value = str.TrimEnd();
-                    //JScript.ShowMessage(this, str);
-                    ScriptManager.RegisterStartupScript(this, this.GetType(), "showMsg", "ShowFormMsg('hdnMsg');", true);
-                   // ScriptManager.RegisterStartupScript(this, this.GetType(), "showMsg", "alert('" + str + "')", true);
-                }
+                //BLL.BLLBase bll = new BLL.BLLBase();
+                //DataTable dt = bll.FillDataTable("WMS.SelectProductOutWeight");
+                //string strMsg = "";
+                //for (int i = 0; i < dt.Rows.Count; i++)
+                //{
+                //    strMsg += Environment.NewLine+ "模具编号:" + dt.Rows[i]["ProductCode"].ToString() + " 标准冲程:" + dt.Rows[i]["Weight"].ToString() + " 总冲程数:" + dt.Rows[i]["quantity"].ToString();
+                //}
+                //if (strMsg.Length >0)
+                //{
+                //    string str = "以下模具总冲程数超过标准冲程:" + strMsg;
+                //    hdnMsg.Value = str.TrimEnd();
+                //    //JScript.ShowMessage(this, str);
+                //    ScriptManager.RegisterStartupScript(this, this.GetType(), "showMsg", "ShowFormMsg('hdnMsg');", true);
+                //   // ScriptManager.RegisterStartupScript(this, this.GetType(), "showMsg", "alert('" + str + "')", true);
+                //}
                 #endregion
             }
             catch (Exception ex)

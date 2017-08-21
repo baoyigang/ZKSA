@@ -475,7 +475,7 @@
       select cell.* ,area.AreaName,shelf.ShelfName from CMD_Cell cell
       left join CMD_Area area On cell.AreaCode=area.AreaCode
       left join CMD_Shelf shelf ON cell.ShelfCode=shelf.ShelfCode
-      WHERE cell.IsLock=0 and cell.IsActive=1 and cell.PalletCode!='' and cell.InDate is not null and {0} ORDER BY AreaCode,ShelfCode,CellCode
+      WHERE cell.IsLock=0 and cell.IsActive=1 and cell.PalletBarCode!='' and cell.InDate is not null and {0} ORDER BY AreaCode,ShelfCode,CellCode
     </CommandString>
   </Command>
   <Command ID="SelectWareHouseCellQueryByWareHouse">
