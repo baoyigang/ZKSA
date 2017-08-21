@@ -5,7 +5,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-public partial class WebUI_InStock_InStocks : EasyUIBasePage
+public partial class WebUI_InStock_Receipts : EasyUIBasePage
 {
     protected void Page_Load(object sender, EventArgs e)
     {

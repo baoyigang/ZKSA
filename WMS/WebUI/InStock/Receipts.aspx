@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="Receipts.aspx.cs" Inherits="WebUI_InStock_InStocks" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="Receipts.aspx.cs" Inherits="WebUI_InStock_Receipts" %>
 
 <!DOCTYPE html>
 
