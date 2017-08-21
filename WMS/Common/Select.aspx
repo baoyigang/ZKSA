@@ -74,7 +74,7 @@
         <table >
             <tr>
                 <td>
-                    产品编码
+                    产品编号
                     <input id="txtQueryProductCode" class ="easyui-textbox" style="width: 100px" />  
                     品名
                     <input id="txtQueryProductName" class="easyui-textbox" style="width: 100px" />   

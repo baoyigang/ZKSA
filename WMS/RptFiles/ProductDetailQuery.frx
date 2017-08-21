@@ -54,7 +54,7 @@
           <TableCell Name="Cell3" Border.Lines="Right" Text="货位" VertAlign="Center" Font="宋体, 9pt"/>
           <TableCell Name="Cell4" Border.Lines="Right" Text="托盘" VertAlign="Center" Font="宋体, 9pt"/>
           <TableCell Name="Cell38" Border.Lines="Right" Text="模具编码" VertAlign="Center" Font="宋体, 9pt"/>
-          <TableCell Name="Cell6" Border.Lines="Right" Text="产品编码" VertAlign="Center" Font="宋体, 9pt"/>
+          <TableCell Name="Cell6" Border.Lines="Right" Text="产品编号" VertAlign="Center" Font="宋体, 9pt"/>
           <TableCell Name="Cell19" Border.Lines="Right" Text="产品名称" VertAlign="Center" Font="宋体, 9pt"/>
           <TableCell Name="Cell22" Border.Lines="All" Text="库存数量" VertAlign="Center" Font="宋体, 9pt"/>
           <TableCell Name="Cell40" Border.Lines="Right" Text="退库日期" VertAlign="Center" Font="宋体, 9pt"/>

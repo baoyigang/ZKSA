@@ -225,7 +225,6 @@ namespace SQLDAL
 
         public DataTable FillDataTable(string commandID,  params object[] parameters)
         {
-
             string cmdText = GetCommandText(commandID);
             CommandType commandType = GetCommandType(commandID);
             SqlParameter[] param = ConvertParam(parameters, ref cmdText, commandType);

@@ -17,8 +17,8 @@ public partial class WebUI_Query_OutStockQuery : BasePage
         if (!Page.IsPostBack)
         {
             rptview.Visible = false;
-            this.txtEndDate.DateValue = DateTime.Now;
-            this.txtStartDate.DateValue = DateTime.Now.AddMonths(-1);
+            //this.txtEndDate.DateValue = DateTime.Now;
+            //this.txtStartDate.DateValue = DateTime.Now.AddMonths(-1);
         }
         else
         {
@@ -37,14 +37,14 @@ public partial class WebUI_Query_OutStockQuery : BasePage
     private void GetStrWhere()
     {
         strWhere = "1=1";
-        if (this.txtStartDate.tDate.Text != "")
-        {
-            strWhere += string.Format(" and CONVERT(nvarchar(10),FinishDate,111)>='{0}'", this.txtStartDate.tDate.Text);
-        }
-        if (this.txtEndDate.tDate.Text != "")
-        {
-            strWhere += string.Format(" and CONVERT(nvarchar(10),FinishDate,111)<='{0}'", this.txtEndDate.tDate.Text);
-        }
+        //if (this.txtStartDate.tDate.Text != "")
+        //{
+        //    strWhere += string.Format(" and CONVERT(nvarchar(10),FinishDate,111)>='{0}'", this.txtStartDate.tDate.Text);
+        //}
+        //if (this.txtEndDate.tDate.Text != "")
+        //{
+        //    strWhere += string.Format(" and CONVERT(nvarchar(10),FinishDate,111)<='{0}'", this.txtEndDate.tDate.Text);
+        //}
         strWhere += string.Format(" and Detail.ProductCode like '%{0}%'", this.txtProductCode.Text);
         strWhere += string.Format(" and product.ProductName like '%{0}%'", this.txtProductName.Text);
         strWhere += string.Format(" and product.ProductNo like '%{0}%'", this.txtProductNo.Text);
@@ -61,7 +61,7 @@ public partial class WebUI_Query_OutStockQuery : BasePage
         {
             GetStrWhere();
             string frx = "OutStockQuery.frx";
-            string Comds = "WMS.SelectOutStockQuery";
+            string Comds = "WMS.SelectProductQty";
 
 
             WebReport1.Report = new Report();

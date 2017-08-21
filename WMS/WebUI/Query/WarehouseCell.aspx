@@ -214,7 +214,7 @@
                     <tr>
                          
                         <td class="musttitle"  style="width: 13%;">
-                            产品编码
+                            产品编号
                         </td>
                         <td class="musttitle"  style="width:15%;">
                             品名

@@ -27,6 +27,13 @@
             }
         </script>
    
+    <style type="text/css">
+        .style1
+        {
+            width: 133px;
+        }
+    </style>
+   
     </head>
 <body  style="overflow:hidden;">
   <form id="form1" runat="server"> 
@@ -35,30 +42,34 @@
             <td align="left" style="width:100%; height:30px;" >
                 <table class="maintable"  width="100%" align="center" >
                     <tr>
-                        <td  align="center" class="smalltitle" style="width:5%;">
+                        <td  align="center" class="smalltitle" style="width:6%;">
                             模具编码
                         </td>
-                         <td style="width:15%;" >
+                         <td style="width:10%;" >
                         
                               &nbsp;<asp:textbox id="txtProductCode" tabIndex="1" runat="server" Width="90%" CssClass="TextBox"></asp:textbox>
                         </td>
-                        <td   align="center" class="smalltitle" style="width:5%;">
+                        <td   align="center" class="smalltitle" style="width:6%;">
                             托盘编码
                         </td>
-                        <td align="left"   style="width:15%;">
+                        <td align="left"   style="width:10%;">
                          &nbsp;<asp:textbox id="txtPalletCode"   runat="server"  Width="90%" CssClass="TextBox" ></asp:textbox> 
                         </td>
-                        <td   align="center" class="smalltitle" style="width:5%;">
-                            产品编码
+                        <td   align="center" class="smalltitle" style="width:6%;">
+                            产品编号
                         </td>
-                        <td align="left"   style="width:15%;">
+                        <td align="left"   style="width:10%;">
                          &nbsp;<asp:textbox id="txtProductNo"   runat="server"  Width="90%" CssClass="TextBox" ></asp:textbox>
                         </td>
                         <td   align="center" class="smalltitle" style="width:4%;">
                             品名
                         </td>
-                        <td align="left"   style="width:15%;" >
+                        <td align="left"   style="width:10%;" >
                              &nbsp;<asp:textbox id="txtProductName" tabIndex="1" runat="server" Width="90%" CssClass="TextBox"></asp:textbox>
+                       </td>
+                       <td class="style1">
+                           <asp:CheckBox ID="CheckBox1" runat="server" Text="低于安全存量" />
+                        
                        </td>
                         <td align= "left" style="border-left:2px solid #ffffff;">
                              &nbsp;<asp:Button ID="btnSearch" runat="server" CssClass="ButtonQuery" 

@@ -50,7 +50,26 @@
   </Command>
   
   
-  
+  <!--出库单-->
+
+  <Command ID="SelectProductInStock">
+    <CommandString>
+      select * from VCMD_ProductInstock
+      where {0}
+      order by {1}
+    </CommandString>
+  </Command>
+  <Command ID="InsertOutStock">
+    <CommandString>
+      insert into WMS_Bill(BillID, BillDate, ProductCode, BatchNo, SectionID, Creator, CreateDate, Updater, UpdateDate)
+      values( @BillID,@BillDate,@ProductCode,@BatchNo,@RowID,@Creator, getdate(), @Updater, getdate())
+    </CommandString>
+  </Command>
+  <Command ID="UpdatePalletOutStock">
+    <CommandString>
+      update WMS_Pallet set LockQty=Quantity where ProductCode=@ProductCode and BatchNo=@BatchNo and RowID=@RowID
+    </CommandString>
+  </Command>
   
   
   

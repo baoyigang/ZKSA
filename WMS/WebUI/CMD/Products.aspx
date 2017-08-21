@@ -283,7 +283,7 @@
                         var deleteCode = [];
                         var blnUsed = false;
                         $.each(checkedItems, function (index, item) {
-                            if (HasExists('VUsed_CMD_Product', "ProductCode='" + item.ProductCode + "'", "产品编码 "+item.ProductCode+" 已经被其它单据使用，无法删除！"))
+                            if (HasExists('VUsed_CMD_Product', "ProductCode='" + item.ProductCode + "'", "产品编号 "+item.ProductCode+" 已经被其它单据使用，无法删除！"))
                                 blnUsed = true;
                             deleteCode.push(item.ProductCode);
                         });

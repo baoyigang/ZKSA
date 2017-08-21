@@ -49,7 +49,7 @@
         <TableColumn Name="Column63" Width="97.17"/>
         <TableRow Name="Row1">
           <TableCell Name="Cell4" Border.Lines="Right" Text="模具编码" VertAlign="Center" Font="宋体, 9pt"/>
-          <TableCell Name="Cell6" Border.Lines="Right" Text="产品编码" VertAlign="Center" Font="宋体, 9pt"/>
+          <TableCell Name="Cell6" Border.Lines="Right" Text="产品编号" VertAlign="Center" Font="宋体, 9pt"/>
           <TableCell Name="Cell19" Border.Lines="Right" Text="产品名称" VertAlign="Center" Font="宋体, 9pt"/>
           <TableCell Name="Cell8" Border.Lines="Right" Text="标准冲程" VertAlign="Center" Font="宋体, 9pt"/>
           <TableCell Name="Cell78" Border.Lines="Right" Text="总冲程数" VertAlign="Center" Font="宋体, 9pt"/>

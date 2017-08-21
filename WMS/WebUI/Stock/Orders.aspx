@@ -648,7 +648,7 @@
               <thead data-options="frozen:true">
 			    <tr>
 				    <th data-options="field:'',checkbox:true"></th> 
-		            <th data-options="field:'ProductCode',width:100">产品编码</th>
+		            <th data-options="field:'ProductCode',width:100">产品编号</th>
                     <th data-options="field:'ProductName',width:100">品名</th>
 			    </tr>
 		    </thead>
@@ -672,7 +672,7 @@
             <table >
                 <tr>
                     <td>
-                         产品编码
+                         产品编号
                         <input id="txtQueryProductCode" class ="easyui-textbox" style="width: 100px" />  
                         品名
                         <input id="txtQueryProductName" class="easyui-textbox" style="width: 100px" /> 
