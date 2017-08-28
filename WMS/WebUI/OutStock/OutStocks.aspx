@@ -96,13 +96,20 @@
             if (SessionTimeOut(SessionUrl)) {
                 return false;
             }
-            if (!GetPermisionByFormID("InStock", 1)) {
+            if (!GetPermisionByFormID("OutStock", 1)) {
                 alert("您没有修改权限！");
                 return false;
             }
             var row = $('#dg').datagrid('getSelected');
             if (row == null || row.length == 0) {
                 $.messager.alert("提示", "请选择要修改的行！", "info");
+                return false;
+            }
+            var BillID = row.BillID;
+            var state = GetFieldValue("WMS_BillMaster", "State", "BillID='" + BillID + "'");
+            if (state >= 1) {
+                var StateDes = GetFieldValue("View_WMS_BillMaster", "StateDesc", "BillID='" + BillID + "'");
+                $.messager.alert("提示", BillID + "单号已" + StateDes + "，无法修改!", "info");
                 return false;
             }
 
@@ -162,9 +169,9 @@
             var data;
             if (test == "Add") {
                 //判断单号是否存在
-                if (HasExists('WMS_Bill', "BillID='" + $('#txtID').textbox('getValue') + "'", '入库单号已经存在，请重新修改！'))
+                if (HasExists('WMS_Bill', "BillID='" + $('#txtID').textbox('getValue') + "'", '出库单号已经存在，请重新修改！'))
                     return false;
-                data = { Action: 'Add', Comd: 'WMS.InsertInStockBill', json: query };
+                data = { Action: 'Add', Comd: 'WMS.InsertOutStock', json: query };
                 $.post(url, data, function (result) {
                     if (result.status == 1) {
                         ReloadGrid('dg');
@@ -177,7 +184,7 @@
 
             }
             else {
-                data = { Action: 'Edit', Comd: 'WMS.UpdateInStockBill', json: query };
+                data = { Action: 'Edit', Comd: 'WMS.UpdateOutStock', json: query };
                 $.post(url, data, function (result) {
                     if (result.status == 1) {
                         ReloadGrid('dg');
@@ -195,7 +202,7 @@
             if (SessionTimeOut(SessionUrl)) {
                 return false;
             }
-            if (!GetPermisionByFormID("InStock", 2)) {
+            if (!GetPermisionByFormID("OutStock", 2)) {
                 alert("您没有删除权限！");
                 return false;
             }
@@ -212,7 +219,7 @@
                         var blnUsed = false;
                         $.each(checkedItems, function (index, item) {
                             var StateDes = GetFieldValue("View_WMS_Bill", "StateDesc", "BillID='" + item.BillID + "'");
-                            if (HasExists('WMS_Bill', "BillID='" + item.BillID + "'and State!=0", "入库单号 " + item.BillID + "已" + StateDes + ",无法删除！")) {
+                            if (HasExists('WMS_Bill', "BillID='" + item.BillID + "'and State!=0", "出库单号 " + item.BillID + "已" + StateDes + ",无法删除！")) {
                                 blnUsed = true;
                             }
                             deleteCode.push(item.BillID);
@@ -327,14 +334,14 @@
                 return false;
             }
             if (!GetPermisionByFormID("InStock", 7)) {
-                alert("您没有入库作业权限！");
+                alert("您没有出库作业权限！");
                 return false;
             }
 
             var checkedItems = $('#dg').datagrid('getChecked');
 
             if (checkedItems == null || checkedItems.length == 0) {
-                $.messager.alert("提示", "请选择要入库作业的行！", "info");
+                $.messager.alert("提示", "请选择要出库作业的行！", "info");
                 return false;
             }
             if (checkedItems) {
@@ -344,19 +351,19 @@
                     var BillID = item.BillID;
                     var state = GetFieldValue("WMS_Bill", "State", encodeURIComponent("BillID='" + BillID + "'"));
                     if (state == 0) {
-                        $.messager.alert("提示", BillID + "单号还未审核，不能进行入库作业!", "info");
+                        $.messager.alert("提示", BillID + "单号还未审核，不能进行出库作业!", "info");
                         blnUsed = true;
                     }
                     if (state > 1) {
                         var StateDes = GetFieldValue("View_WMS_BillMaster", "StateDesc", "BillID='" + BillID + "'");
-                        $.messager.alert("提示", BillID + "单号已" + StateDes + "，无法再进行入库作业!", "info");
+                        $.messager.alert("提示", BillID + "单号已" + StateDes + "，无法再进行出库作业!", "info");
                         blnUsed = true;
                     }
                     checkCode.push(item.BillID);
                 });
                 if (blnUsed)
                     return false;
-                var data = { Action: 'ExecTask', FormID: FormID, Comd: 'WMS.SpInStockTask', json: "'" + checkCode.join("','") + "'" };
+                var data = { Action: 'ExecTask', FormID: FormID, Comd: 'WMS.SpOutStockTask', json: "'" + checkCode.join("','") + "'" };
                 $.post(url, data, function (result) {
                     if (result.status == 1) {
                         ReloadGrid('dg');
@@ -510,7 +517,7 @@
                     <a href="javascript:void(0)" onclick="Delete()" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true">删除</a>
                     <a href="javascript:void(0)"  onclick="CheckBill()" class="easyui-linkbutton" data-options="iconCls:'icon-man',plain:true">审核</a> 
                     <a href="javascript:void(0)" onclick="UnCheckBill()" class="easyui-linkbutton" data-options="iconCls:'icon-undo',plain:true">取消审核</a> 
-                    <a href="javascript:void(0)" onclick="ExecTask()"  class="easyui-linkbutton" data-options="iconCls:'icon-instock',plain:true">入库作业</a>
+                    <a href="javascript:void(0)" onclick="ExecTask()"  class="easyui-linkbutton" data-options="iconCls:'icon-instock',plain:true">出库作业</a>
                     <a href="javascript:void(0)" onclick="CancelTask()" class="easyui-linkbutton" data-options="iconCls:'icon-clear',plain:true">取消作业</a>
                     <a href="javascript:void(0)" onclick="Exit()"   class="easyui-linkbutton" data-options="iconCls:'icon-no',plain:true">离开</a>
                 </td>

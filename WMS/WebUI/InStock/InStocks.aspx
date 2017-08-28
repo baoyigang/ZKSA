@@ -86,6 +86,7 @@
             $("#txtBatchNo").textbox('setValue', new Date().Format("yyMMdd")); //设置批次号
             SetTextRead('txtProductName');
             $('#txtPageState').val("Add");
+            $('#txtBillTypeCode').val("001");
 
             $("#txtID").textbox('readonly', false);
             SetInitValue('<%=Session["G_user"] %>');
@@ -105,12 +106,18 @@
                 $.messager.alert("提示", "请选择要修改的行！", "info");
                 return false;
             }
-           
+            var BillID = row.BillID;
+            var state = GetFieldValue("WMS_BillMaster", "State", "BillID='" + BillID + "'");
+            if (state >= 1) {
+                var StateDes = GetFieldValue("View_WMS_BillMaster", "StateDesc", "BillID='" + BillID + "'");
+                $.messager.alert("提示", BillID + "单号已" + StateDes + "，无法修改!", "info");
+                return false;
+            }
             if (row) {
                 var data = { Action: 'FillDataTable', Comd: 'WMS.SelectBill', Where: "BillID='" + row.BillID + "'" };
                 $.post(url, data, function (result) {
                     var Product = result.rows[0];
-                    $('#AddWin').dialog('open').dialog('setTitle', '客户资料--编辑');
+                    $('#AddWin').dialog('open').dialog('setTitle', '入库单--编辑');
                     $('#fm').form('load', Product);
                     BindDropDownList();
                     $('#txtSectionID').combobox('setValue', Product.SectionID);
@@ -118,7 +125,7 @@
             }
           
             $('#txtPageState').val("Edit");
-
+            $('#txtBillTypeCode').val("001");
             $("#txtID").textbox("readonly", true);
             SetInitColor();
         }
@@ -571,6 +578,7 @@
                         托盘数</td>
                     <td colspan="2">
                         <input id="txtPalletQty" name="PalletQty" class="easyui-numberbox"  maxlength="200" data-options="min:0,precision:0,required:true" style="width:190px"/>
+                        <input id="txtBillTypeCode" name="BillTypeCode" type="hidden" value="001" />
                     </td>
                 </tr>
               

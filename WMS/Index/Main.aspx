@@ -75,6 +75,7 @@
 
                     rows[i].BillID = 'OS' + (parseInt(BillID.substr(2, BillID.length - 2)) + i).toString();
                     rows[i].BillDate = new Date().Format("yyyy/MM/dd");
+                    rows[i].BillTypeCode = "020";
                     rows[i].Creator = '<%=Session["G_user"] %>';
                     rows[i].Updater = '<%=Session["G_user"] %>';
                     if (json == "")
