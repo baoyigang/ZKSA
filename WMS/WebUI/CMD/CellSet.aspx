@@ -57,19 +57,109 @@
             if (SessionTimeOut(SessionUrl)) {
                 return false;
             }
-            if (!GetPermisionByFormID("ProductCategory", 0)) {
+            if (!GetPermisionByFormID("Cell", 2)) {
                 alert("您没有新增权限！");
                 return false;
             }
 
-            $('#fm').form('clear');
+            $('#Form1').form('clear');
             BindDropDownList();
-            $('#AddWin').dialog('open').dialog('setTitle', '产品类别--新增');
-            SetAutoCodeNewID('txtID', 'CMD_ProductCategory', 'CategoryCode', '1=1');
-            $('#txtPageState').val("Add");
-            $("#txtID").textbox('readonly', false);
-            $('#txtCategoryName').textbox().next('span').find('input').focus();
+            $('#AddCell').dialog('open').dialog('setTitle', '库位--新增');
+            $('#txtPageState').val("AddCell");
+            $("#txtEditCellCode").textbox('readonly', false);
+            $('#txtEditCellCode').textbox().next('span').find('input').focus();
             SetInitValue('<%=Session["G_user"] %>');
+            SetInitColor();
+        }
+        //删除管理员
+        function Delete() {
+            if (SessionTimeOut(SessionUrl)) {
+                return false;
+            }
+            if (!GetPermisionByFormID("Cell", 2)) {
+                alert("您没有删除权限！");
+                return false;
+            }
+            var checkedItems = $('#dg').datagrid('getChecked');
+            if (checkedItems.length == 0) {
+                $.messager.alert("提示", "请选择要删除的行！", "info");
+                return false;
+            }
+            if (checkedItems) {
+                $.messager.confirm('提示', '你确定要删除吗？', function (r) {
+                    if (r) {
+                        var deleteCode = [];
+                        var blnUsed = false;
+                        $.each(checkedItems, function (index, item) {
+                            if (HasExists('Wms_Pallet', "CellCode='" + item.CellCode + "'", "货位编号 " + item.CellCode + " 已经被其它单据使用，无法删除！"))
+                                blnUsed = true;
+                            deleteCode.push(item.CellCode);
+                        });
+                        if (blnUsed)
+                            return false;
+                        var data = { Action: 'Delete', FormID: FormID, Comd: 'cmd.DeleteCellEdit', json: "'" + deleteCode.join("','") + "'" };
+                        $.post(url, data, function (result) {
+                            if (result.status == 1) {
+                                ReloadGrid('dg');
+
+
+                            } else {
+                                $.messager.alert('错误', result.msg, 'error');
+                            }
+                        }, 'json');
+                    }
+                });
+            }
+        }
+        //修改管理员
+        function EditCell() {
+            if (SessionTimeOut(SessionUrl)) {
+                return false;
+            }
+            if (!GetPermisionByFormID("Cell", 2)) {
+                alert("您没有修改权限！");
+                return false;
+            }
+            var row = $('#dg').datagrid('getSelected');
+            if (row == null || row.length == 0) {
+                $.messager.alert("提示", "请选择要修改的行！", "info");
+                return false;
+            }
+            $("#txtEditCellCode").textbox('readonly', true);
+            BindCellDrop();
+            if (row) {
+                   $('#Form1').form('clear');
+                if (row.ProductCode != null) {
+                    var data = { Action: 'FillDataTable', Comd: 'CMD.SelectCellSetEdit', Where: "c.CellCode='" + row.CellCode + "'" };
+                }
+                else {
+                    var data = { Action: 'FillDataTable', Comd: 'CMD.SelectCellEdit', Where: "c.CellCode ='" + row.CellCode + "'" };
+                }
+                $.post(url, data, function (result) {
+                    var Product = result.rows[0];
+                    $('#AddCell').dialog('open').dialog('setTitle', '库位--编辑');
+                    var eadata = { Action: 'FillDataTable', Comd: 'cmd.SelectRegionEdit', Where: "a.AreaCode='" + Product.AreaCode + "'" };
+                    $.ajax({
+                        type: 'post',
+                        url: url,
+                        data: eadata,
+                        dataType: 'json',
+                        async: false,
+                        success: function (json) {
+                            $("#ddlRegionName").combobox({
+                                data: json.rows,
+                                valueField: 'RegionCode',
+                                textField: 'RegionName'
+                            });
+                        }
+                    })
+                    $('#Form1').form('load', Product);
+                }, 'json');
+            }
+            
+            $('#txtPageState').val("EditCell");
+            $('#txtFlag').val("1");
+            $("#txtID").textbox("readonly", true);
             SetInitColor();
         }
         //修改管理员
@@ -109,7 +199,50 @@
            var data = { Action: 'FillDataTable', Comd: 'cmd.SelectAreaEdit', Where: "1=1" };
             BindComboList(data, 'SelectAreaName', 'AreaCode', 'AreaName');
         }
+        function BindCellDrop() {
+            var data = { Action: 'FillDataTable', Comd: 'cmd.SelectAreaEdit', Where: "1=1" };
+            BindComboList(data, 'ddlAreaName', 'AreaCode', 'AreaName');
 
+            var edata = { Action: 'FillDataTable', Comd: 'cmd.SelectRowID', Where: "ProductCode=" + $('#dg').datagrid('getSelected').ProductCode };
+             $.ajax({
+               type: "post",
+               url: BaseUrl,
+               data: edata,
+                //contentType: "application/json; charset=utf-8",
+               dataType: "json",
+                async: false,
+                success: function (json) {
+                 $('#ddlEditRowID').combobox({
+                data: json.rows,
+                valueField: 'RowID',
+                textField: 'RowID'
+                  });
+                },
+                  error: function (msg) {
+                   alert(msg);
+                  }
+           });
+           var cdata = { Action: 'FillDataTable', Comd: 'cmd.SelectBatchNo', Where: "1=1" };
+           $.ajax({
+               type: "post",
+               url: BaseUrl,
+               data: cdata,
+               //contentType: "application/json; charset=utf-8",
+               dataType: "json",
+               async: false,
+               success: function (json) {
+                   $('#ddlEditBatchNo').combobox({
+                       data: json.rows,
+                       valueField: 'BatchNo',
+                       textField: 'BatchNo'
+                   });
+               },
+               error: function (msg) {
+                   alert(msg);
+               }
+           });      
+                   
+        }
         //保存信息
         function Save() {
             if (SessionTimeOut(SessionUrl)) {
@@ -140,10 +273,54 @@
                         $.messager.alert('错误', result.msg, 'error');
                     }
                 }, 'json');
+            }
+            //保存信息
+            function SaveCell() {
+                if (SessionTimeOut(SessionUrl)) {
+                    return false;
+                }
+                var test = $('#txtPageState').val();
+                if (test == 'AddCell') 
+                {
+                    var mainjs = "{\"CellCode\":\"" + $("#txtEditCellCode").textbox("getValue") + "\"," + "\"AreaCode\":\"" + $("#ddlAreaName").combobox("getValue") + "\"," + "\"RegionCode\":\"" + $("#ddlRegionName").combobox("getValue") + "\"," + "\"IsActive\":\"" + $("#ddlEditActive").combobox("getValue") + "\"," + "\"IsLock\":\"" + $("#ddlEditLock").combobox("getValue") + "\"," + "\"CellName\":\"" + $("#txtEditCellName").textbox("getValue") + "\"," + "\"Memo\":\"" + $("#txtEditMemo").textbox("getValue") + "\"," + "\"Indate\":\"" + $("#txtEditIndate").textbox("getValue") + "\"}";
+                    var subjs = "{\"CellCode\":\"" + $("#txtEditCellCode").textbox("getValue") + "\"," + "\"ProductCode\":\"" + $("#txtEditProductCode").textbox("getValue") + "\"," + "\"BatchNo\":\"" + $("#ddlEditBatchNo").combobox("getValue") + "\"," + "\"PreQty\":\"" + $("#txtEditPreQty").textbox("getValue") + "\"," + "\"RowID\":\"" + $("#ddlEditRowID").combobox("getValue") + "\"," + "\"Indate\":\"" + $("#txtEditIndate").textbox("getValue") + "\"," + "\"PalletCode\":\"" + $("#txtEditPalletCode").textbox("getValue") + "\"," + "\"LockQty\":\"" + $("#txtEditLockQty").textbox("getValue") + "\"," + "\"IsLock\":\"" + $("#ddlEditLock").combobox("getValue") + "\"}";
+                    var MainQuery = "[" + encodeURIComponent(mainjs) + "]";
+                    var SubQuery = "[" + encodeURIComponent(subjs) + "]";
+
+                    data = { Action: 'AddMainDetail', MainComd: 'Cmd.InsertCmdCell',SubComd: 'Cmd.InsertWmsPallet', MainJson: MainQuery, SubJson: SubQuery };
+                    $.post(url, data, function (result) {
+                        if (result.status == 1) {
+                            ReloadGrid('dg');
+                            $('#AddCell').window('close');
+
+                        } else {
+                            $.messager.alert('错误', result.msg, 'error');
+                        }
+                    }, 'json');
+                }
+                else (test == 'EditCell')
+                {
+                    var mainjs = "{\"CellCode\":\"" + $("#txtEditCellCode").textbox("getValue") + "\"," + "\"AreaCode\":\"" + $("#ddlAreaName").combobox("getValue") + "\"," + "\"RegionCode\":\"" + $("#ddlRegionName").combobox("getValue") + "\"," + "\"IsActive\":\"" + $("#ddlEditActive").combobox("getValue") + "\"," + "\"IsLock\":\"" + $("#ddlEditLock").combobox("getValue") + "\"," + "\"CellName\":\"" + $("#txtEditCellName").textbox("getValue") + "\"," + "\"Memo\":\"" + $("#txtEditMemo").textbox("getValue") + "\"," + "\"Indate\":\"" + $("#txtEditIndate").textbox("getValue") + "\"}";
+                    var subjs = "{\"CellCode\":\"" + $("#txtEditCellCode").textbox("getValue") + "\"," + "\"ProductCode\":\"" + $("#txtEditProductCode").textbox("getValue") + "\"," + "\"BatchNo\":\"" + $("#ddlEditBatchNo").combobox("getValue") + "\"," + "\"PreQty\":\"" + $("#txtEditPreQty").textbox("getValue") + "\"," + "\"RowID\":\"" + $("#ddlEditRowID").combobox("getValue") + "\"," + "\"Indate\":\"" + $("#txtEditIndate").textbox("getValue") + "\"," + "\"PalletCode\":\"" + $("#txtEditPalletCode").textbox("getValue") + "\"," + "\"LockQty\":\"" + $("#txtEditLockQty").textbox("getValue") + "\"," + "\"IsLock\":\"" + $("#ddlEditLock").combobox("getValue") + "\"}";
+                    var MainQuery = "[" + encodeURIComponent(mainjs) + "]";
+                    var SubQuery = "[" + encodeURIComponent(subjs) + "]";
+
+                    data = { Action: 'EditMainDetail', MainComd: 'Cmd.UpdateCmdCell', SubDelComd: 'Cmd.DeleteWmsPallet', SubComd: 'Cmd.InsertWmsPallet', MainJson: MainQuery, SubJson: SubQuery };
+                    $.post(url, data, function (result) {
+                        if (result.status == 1) {
+                            ReloadGrid('dg');
+                            $('#AddCell').window('close');
+
+                        } else {
+                            $.messager.alert('错误', result.msg, 'error');
+                        }
+                    }, 'json');
+                }
         }
         function CheckRow(rowIndex, rowData) {
-            CheckSelectRow('dg', rowIndex, rowData);
+          //  CheckSelectRow('dg', rowIndex, rowData);
         }
+        //值转换
         function formatActive(value) {
             if (value == 0) {
                 return '异常';
@@ -168,19 +345,40 @@
                 return value;
             }
         }
+        $(function () {
+            $("#ddlAreaName").combobox({
+                onSelect: function (record) {
+                    var val = $('#ddlAreaName').combobox('getValue'); var eadata = { Action: 'FillDataTable', Comd: 'cmd.SelectRegionEdit', Where: "a.AreaCode='" + val + "'" };
+                    $.ajax({
+                        type: 'post',
+                        url: url,
+                        data: eadata,
+                        dataType: 'json',
+                        async: false,
+                        success: function (json) {
+                            $("#ddlRegionName").combobox({
+                                data: json.rows,
+                                valueField: 'RegionCode',
+                                textField: 'RegionName'
+                            });
+                        }
+                    })
+                }
+            });
+        })
     </script> 
 </head>
 <body class="easyui-layout">
     <table id="dg"  class="easyui-datagrid" 
         data-options="loadMsg: '正在加载数据，请稍等...',fit:true, rownumbers:true,url:'../../Handler/BaseHandler.ashx?Action=PageDate&FormID='+FormID,
-                     pagination:true,pageSize:PageSize, pageList:[15, 20, 30, 50],method:'post',striped:true,fitcolumns:true,toolbar:'#tb',singleSelect:false,selectOnCheck:true,checkOnSelect:false,onCheck:CheckRow,onUncheck:CheckRow,onBeforeSortColumn:BeforeSortColumn,idField:'CellCode'"> 
+                     pagination:true,pageSize:PageSize, pageList:[15, 20, 30, 50],method:'post',striped:true,fitcolumns:true,toolbar:'#tb',singleSelect:true,selectOnCheck:false,checkOnSelect:false,onCheck:CheckRow,onUncheck:CheckRow,onBeforeSortColumn:BeforeSortColumn,idField:'CellCode'"> 
         <thead>
 		    <tr>
                 <th data-options="field:'',checkbox:true"></th> 
-		        <th data-options="field:'CellCode',width:80,sortable:true">货位编码</th>
+		        <th data-options="field:'CellCode',width:100,sortable:true">货位编码</th>
                 <th data-options="field:'CellName',width:180,sortable:true">名称</th>
                 <th data-options="field:'IsActive',width:60,formatter:formatActive">异常</th>
-                <th data-options="field:'IsLock',width:60,formatter:formatLock">锁定</th>
+                <th data-options="field:'IsLock',width:60,sortable:true,formatter:formatLock">锁定</th>
                 <th data-options="field:'CellRow',width:80">层</th>
                 <th data-options="field:'CellColumn',width:80">列</th>
                 <th data-options="field:'Depth',width:80">深度</th>
@@ -191,9 +389,10 @@
                 <th data-options="field:'AreaName',width:160">区域名称</th>
                 <th data-options="field:'RegionCode',width:80,sortable:true,formatter:formatSet">库区编码</th>
                 <th data-options="field:'RegionName',width:160,sortable:true">库区名称</th>
+                <th data-options="field:'ProductCode',width:160,sortable:true">产品编码</th>
 		    </tr>
         </thead>
-    </table>
+    </table>    
     <div id="tb" style="padding: 5px; height: auto">  
     
         <table style="width:100%" >
@@ -214,7 +413,10 @@
                     <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" onclick="ReloadGrid('dg')">查询</a> 
                 </td>
                 <td style="width:*" align="right">
-                     <a href="javascript:void(0)" onclick="Edit() " class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true">修改库区</a>  
+                     <a href="javascript:void(0)" onclick="Add() " class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true">新增库位</a>  
+                     <a href="javascript:void(0)" onclick="EditCell() " class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true">修改库位</a>  
+                     <a href="javascript:void(0)" onclick="Edit() " class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true">批量修改</a>
+                     <a href="javascript:void(0)" onclick="Delete() " class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true">删除库位</a>    
                      <a href="javascript:void(0)" onclick="Exit()" class="easyui-linkbutton" data-options="iconCls:'icon-no',plain:true">离开</a>
                 </td>
             </tr>
@@ -231,13 +433,13 @@
                             区域名称
                     </td>
                     <td width="210px"> 
-                        &nbsp;<input id="SelectAreaName" name="AreaCode" class="easyui-combobox" data-options="required:false" maxlength="50" style="width:180px"/>
+                        &nbsp;<input id="SelectAreaName" name="AreaCode" class="easyui-combobox" data-options="required:false,editable:false" maxlength="50" style="width:180px"/>
                     </td>
                     <td align="center" class="musttitle"style="width:90px"  >
                            库区名称
                     </td>
                     <td width="210px"> 
-                        &nbsp;<input id="SelectRegionName" name="RegionCode" class="easyui-combobox" data-options="required:false,valueField:'RegionCode',textField:'RegionName'" maxlength="50" style="width:180px"/>
+                        &nbsp;<input id="SelectRegionName" name="RegionCode" class="easyui-combobox" data-options="required:false,editable:false,valueField:'RegionCode',textField:'RegionName'" maxlength="50" style="width:180px"/>
                     </td>
                 </tr>
                 <tr>
@@ -245,14 +447,14 @@
                             锁定
                     </td>
                     <td width="210px"> 
-                        &nbsp;<input id="SelectLock" name="IsLock" class="easyui-combobox" data-options="required:true,valueField:'LockCode',textField:'LockText',data:LockValue,onLoadSuccess: function(json) {
+                        &nbsp;<input id="SelectLock" name="IsLock" class="easyui-combobox" data-options="required:true,editable:false,valueField:'LockCode',textField:'LockText',data:LockValue,onLoadSuccess: function(json) {
                   var val = $(this).combobox('getData'); for (var item in val[0]) { if (item == 'LockText') { $(this).combobox('select', val[0]['LockCode']);   } } }" maxlength="50" style="width:180px"/>
                     </td>
                     <td align="center" class="musttitle"style="width:90px"  >
                            异常
                     </td>
                     <td width="210px"> 
-                        &nbsp;<input id="SelectActive" name="IsActive" class="easyui-combobox" data-options="required:true,valueField:'ActiveCode',textField:'ActiveText',data:ActiveValue,onLoadSuccess: function(json) {
+                        &nbsp;<input id="SelectActive" name="IsActive" class="easyui-combobox" data-options="required:true,editable:false,valueField:'ActiveCode',textField:'ActiveText',data:ActiveValue,onLoadSuccess: function(json) {
             var val = $(this).combobox('getData'); for (var item in val[0]) { if (item == 'ActiveText') { $(this).combobox('select', val[0]['ActiveCode']);   } } }" maxlength="50" style="width:180px"/>
                     </td>
                 
@@ -278,6 +480,149 @@
         <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="Save()">保存</a>
         <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" onclick="javascript:$('#AddWin').dialog('close')">关闭</a>
     </div>
+    <%-- 弹出操作框--%>
+    <div id="AddCell" class="easyui-dialog" style="width: 1000px; height: auto; padding: 5px 5px"
+        data-options="closed:true,buttons:'#AddCellBtn',modal:true"> 
+        <form id="Form1" method="post">
+            <div>
+                    <table id="Table2" class="grid maintable" style="table-layout:fixed;"  width="100%" align="center">			
+				    <tr> 
+                        <td align="center" class="musttitle"style="width:9%">
+                            货位编码 </td>
+                        <td style="width:21%" >
+                        
+                            &nbsp;<input id="txtEditCellCode" name="CellCode" class="easyui-textbox" data-options="required:true" style="width:160px"/> 
+                            <input name="PageState" id="txtPageState" type="hidden" />
+                        
+                        </td>
+                        <td align="center" class="musttitle"style="width:9%">
+                                货位状态
+                        </td>
+                        <td  style="width:21%">
+                                &nbsp;<input id="ddlEditActive" name="IsActive" 
+                                    class="easyui-combobox" data-options="required:true,editable:false,valueField:'ActiveCode',textField:'ActiveText',data:ActiveValue" maxlength="20" style="width:160px"/>
+                        </td>
+                        <td align="center" class="musttitle"style="width:9%"  >
+                                货位锁定
+                        </td>
+                        <td > 
+                            &nbsp;<input 
+                                id="ddlEditLock" name="IsLock" class="easyui-combobox" 
+                                data-options="required:true,editable:false,valueField:'LockCode',textField:'LockText',data:LockValue" maxlength="50" style="width:270px"/>
+                        </td>
+                        
+                    </tr>
+                    <tr> 
+                        <td align="center" class="musttitle"style="width:9%">
+                            货位名称 </td>
+                        <td style="width:21%" >
+                        
+                            &nbsp;<input id="txtEditCellName" name="CellName" class="easyui-textbox" data-options="required:true" style="width:160px"/> 
+                            <input name="PageState" id="Hidden1" type="hidden" />
+                        
+                        </td>
+                        <td align="center" class="musttitle"style="width:9%">
+                                区域名称
+                        </td>
+                        <td  style="width:21%">
+                                &nbsp;<input id="ddlAreaName" name="AreaCode" 
+                                    class="easyui-combobox" data-options="editable:false" maxlength="20" style="width:160px"/>
+                        </td>
+                        <td align="center" class="musttitle"style="width:9%"  >
+                                库区名称
+                        </td>
+                        <td > 
+                            &nbsp;<input 
+                                id="ddlRegionName" name="RegionCode" class="easyui-combobox" 
+                                data-options="editable:false,valueField: 'RegionCode',textField: 'RegionName'" maxlength="50" style="width:270px"/>
+                        </td>
+                        
+                    </tr>
+                    <tr> 
+                        <td align="center" class="musttitle"style="width:9%">
+                            产品编号 </td>
+                        <td style="width:21%" >
+                        
+                            &nbsp;<input id="txtEditProductCode" name="ProductCode" class="easyui-textbox" data-options="required:true" style="width:160px"/> 
+                        
+                        </td>
+                        <td align="center" class="musttitle"style="width:9%">
+                                批次
+                        </td>
+                        <td  style="width:21%">
+                                &nbsp;<input id="ddlEditBatchNo" name="BatchNo" 
+                                    class="easyui-combobox" data-options="required:true,editable:false" maxlength="20" style="width:160px"/>
+                        </td>
+                        <td align="center" class="musttitle"style="width:9%"  >
+                                每盘数量
+                        </td>
+                        <td > 
+                            &nbsp;<input 
+                                id="txtEditPreQty" name="PreQty" class="easyui-textbox" 
+                                data-options="required:true" maxlength="50" style="width:270px"/>
+                        </td>
+                        
+                    </tr>
+                    <tr> 
+                        <td align="center" class="musttitle"style="width:9%">
+                            阶段 </td>
+                        <td style="width:21%" >
+                        
+                            &nbsp;<input id="ddlEditRowID" name="RowID" class="easyui-combobox" data-options="required:true,editable:false" style="width:160px"/> 
+                        
+                        </td>
+                        <td align="center" class="musttitle"style="width:9%">
+                                阶段名称
+                        </td>
+                        <td  style="width:21%">
+                                &nbsp;<input id="txtEditSectionName" name="SectionName" 
+                                    class="easyui-textbox" data-options="required:false,disabled:true" maxlength="20" style="width:160px"/>
+                        </td>
+                        <td align="center" class="musttitle"style="width:9%"  >
+                                入库日期
+                        </td>
+                        <td > 
+                            &nbsp;<input 
+                                id="txtEditIndate" name="Indate" class="easyui-textbox" 
+                                data-options="required:true" maxlength="50" style="width:270px"/>
+                        </td>
+                        
+                    </tr>
+                     <tr> 
+                        <td align="center" class="musttitle"style="width:9%">
+                            任务号 </td>
+                        <td style="width:21%" >
+                        
+                            &nbsp;<input id="txtEditPalletCode" name="PalletCode" class="easyui-textbox" data-options="required:true" style="width:160px"/> 
+                        
+                        </td>
+                        <td align="center" class="musttitle"style="width:9%">
+                                锁定数量
+                        </td>
+                        <td  style="width:21%">
+                                &nbsp;<input id="txtEditLockQty" name="LockQty" 
+                                    class="easyui-textbox" data-options="required:true" maxlength="20" style="width:160px"/>
+                        </td>
+                    </tr>
+                    <tr style="height:40px;">
+                        <td align="center"  class="smalltitle" style="width:9%;">
+                            备注
+                        </td>
+                        <td colspan="5">
+                            &nbsp;<input 
+                                id="txtEditMemo" name="Memo" class="easyui-textbox" 
+                                data-options="multiline:true" style="width:856px; height:32px"/>
 
+                        </td>
+                        </tr>
+		            </table>
+            </div>
+         
+        </form>
+    </div>
+    <div id="AddCellBtn">
+        <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="SaveCell()">保存</a>
+        <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" onclick="javascript:$('#AddCell').dialog('close')">关闭</a>
+    </div>
 </body>
 </html>

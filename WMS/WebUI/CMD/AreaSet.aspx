@@ -56,7 +56,7 @@
             $('#AddWin').dialog('open').dialog('setTitle', '区域设置--新增');
             SetAutoCodeNewID('txtID', 'CMD_Area', 'AreaCode', '1=1');
             $('#txtPageState').val("Add");
-            $("#txtID").textbox('readonly', false);
+            $("#txtID").textbox({'disabled': false});
             $('#txtAreaName').textbox().next('span').find('input').focus();
             SetInitValue('<%=Session["G_user"] %>');
             SetInitColor();
@@ -86,7 +86,7 @@
                 }, 'json');
             }
             $('#txtPageState').val("Edit");
-            $("#txtID").textbox("readonly", true);
+            $("#txtID").textbox({"disabled": true});
             SetInitColor();
         }
         //绑定下拉控件

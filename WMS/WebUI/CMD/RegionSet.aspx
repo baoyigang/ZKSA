@@ -50,13 +50,13 @@
             if (SessionTimeOut(SessionUrl)) {
                 return false;
             }
-            if (!GetPermisionByFormID("Area", 0)) {
+            if (!GetPermisionByFormID("Area", 1)) {
                 alert("您没有新增权限！");
                 return false;
             }
             $('#fm').form('clear');
             BindDropDownList();
-            $('#AddWin').dialog('open').dialog('setTitle', '区域设置--新增');
+            $('#AddWin').dialog('open').dialog('setTitle', '库区设置--新增');
             $("#txtWarehouseCode").textbox('setValue', '01');
 
             SetAutoCodeNewID('txtID', 'CMD_Region', 'RegionCode', '1=1');
@@ -71,7 +71,7 @@
             if (SessionTimeOut(SessionUrl)) {
                 return false;
             }
-            if (!GetPermisionByFormID("Region", 1)) {
+            if (!GetPermisionByFormID("Region", 2)) {
                 alert("您没有修改权限！");
                 return false;
             }
@@ -85,7 +85,7 @@
                 var data = { Action: 'FillDataTable', Comd: 'cmd.SelectRegionEdit', Where: "RegionCode='" + row.RegionCode + "'" };
                 $.post(url, data, function (result) {
                     var Product = result.rows[0];
-                    $('#AddWin').dialog('open').dialog('setTitle', '区域设置--编辑');
+                    $('#AddWin').dialog('open').dialog('setTitle', '库区设置--编辑');
                     $('#fm').form('load', Product);
                 }, 'json');
             }
@@ -148,7 +148,7 @@
             if (SessionTimeOut(SessionUrl)) {
                 return false;
             }
-            if (!GetPermisionByFormID("Region", 2)) {
+            if (!GetPermisionByFormID("Region", 3)) {
                 alert("您没有删除权限！");
                 return false;
             }
@@ -237,14 +237,14 @@
                             仓库编码
                     </td>
                        <td  width="210px">
-                            &nbsp;<input id="txtWarehouseCode" name="WarehouseCode" readonly="false"
-                                class="easyui-textbox" data-options="required:true" maxlength="20" style="width:180px"/>
+                            &nbsp;<input id="txtWarehouseCode" name="WarehouseCode" 
+                                class="easyui-textbox" data-options="required:true,disabled:true" maxlength="20" style="width:180px"/>
                                 <input name="PageState" id="Hidden1" type="hidden" />
                     <td align="center" class="musttitle"style="width:90px">
                             区域名称
                     </td>
                     <td width="210px"> 
-                        &nbsp;<input id="SelectAreaName" name="AreaCode" class="easyui-combobox" data-options="required:true,valueField:'AreaCode',
+                        &nbsp;<input id="SelectAreaName" name="AreaCode" class="easyui-combobox" data-options="required:true,editable:false,valueField:'AreaCode',
                        textField:'AreaName'" maxlength="50" style="width:180px"/>
                     </td>
                 </tr>   
