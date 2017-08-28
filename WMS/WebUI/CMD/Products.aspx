@@ -560,7 +560,7 @@
                         <td > 
                             &nbsp;<input 
                                 id="ddlCategoryCode" name="CategoryCode" class="easyui-combobox" 
-                                data-options="required:true" maxlength="50" style="width:270px"/>
+                                data-options="required:true,editable:false" maxlength="50" style="width:270px"/>
                         </td>
                         
                     </tr>
