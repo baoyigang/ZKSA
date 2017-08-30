@@ -215,7 +215,7 @@
                  $('#ddlEditRowID').combobox({
                 data: json.rows,
                 valueField: 'RowID',
-                textField: 'RowID'
+                textField: 'SectionName'
                   });
                 },
                   error: function (msg) {
@@ -320,7 +320,7 @@
                     $('#ddlEditRowID').combobox({
                         data: json.rows,
                         valueField: 'RowID',
-                        textField: 'RowID'
+                        textField: 'SectionName'
                     });
                 },
                 error: function (msg) {
@@ -370,7 +370,6 @@
 
         function GetSection(record) {
             var SectionName = GetFieldValue("CMD_ProductDetail", "SectionName", encodeURIComponent("ProductCode='" + $("#txtEditProductCode").textbox('getValue') + "'" + " and RowID='" + $("#ddlEditRowID").combobox('getValue') + "'"));
-            $("#txtEditSectionName").textbox('setValue', SectionName);
         }
 
         //值转换
@@ -634,15 +633,6 @@
                             &nbsp;<input id="ddlEditRowID" name="RowID" class="easyui-combobox" data-options="editable:false,onSelect:GetSection" style="width:160px"/> 
                         
                         </td>
-                        <td align="center" class="musttitle"style="width:15%">
-                                阶段名称
-                        </td>
-                        <td  style="width:33%">
-                                &nbsp;<input id="txtEditSectionName" name="SectionName" 
-                                    class="easyui-textbox" data-options="disabled:true" maxlength="20" style="width:160px"/>
-                        </td>
-                    </tr>
-                    <tr>
                         <td align="center" class="musttitle"style="width:15%"  >
                                 入库日期
                         </td>
@@ -661,13 +651,13 @@
                         </td>
                     </tr>
                     <tr style="height:40px;">
-                        <td align="center"  class="smalltitle" style="width:9%;">
+                        <td align="center"  class="smalltitle" style="width:15%;">
                             备注
                         </td>
-                        <td colspan="5">
+                        <td colspan="3">
                             &nbsp;<input 
                                 id="txtEditMemo" name="Memo" class="easyui-textbox" 
-                                data-options="multiline:true" style="width:856px; height:32px"/>
+                                data-options="multiline:true" style="width:460px; height:32px"/>
 
                         </td>
                         </tr>
