@@ -566,7 +566,7 @@
   </Command>
   <Command ID="SelectRowID">
     <CommandString>
-      select  RowID from Cmd_ProductDetail where {0}
+      select * from Cmd_ProductDetail where {0}
     </CommandString>
   </Command>
   <Command ID="SelectBatchNo">
@@ -577,7 +577,7 @@
 
   <Command ID="UpdateCmdCell">
     <CommandString>
-      update Cmd_cell set IsActive=@IsActive,@IsLock=@IsLock,CellName=@CellName,@AreaCode=@AreaCode,RegionCode=@RegionCode,PalletBarCode=@PalletCode,Indate=@Indate Where CellCode=@CellCode
+      update Cmd_cell set IsActive=@IsActive,@IsLock=@IsLock,CellName=@CellName,AreaCode=@AreaCode,RegionCode=@RegionCode,PalletBarCode=@PalletCode,Indate=@Indate Where CellCode=@CellCode
     </CommandString>
   </Command>
   
