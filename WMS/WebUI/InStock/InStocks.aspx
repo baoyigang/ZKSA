@@ -59,8 +59,21 @@
 
                 Where = BaseWhere + encodeURIComponent(" and " + Where);
             }
-            else { 
-            
+            else {
+
+                var ProductCode = $("#txtSelectProductCode").textbox("getValue");
+                var ProductName = $("#txtSelectProductName").textbox("getValue");
+                var CategoryName = $("#txtSelectCategoryName").textbox("getValue");
+                if (ProductCode != "") {
+                    Where += " and ProductCode like '%" + ProductCode + "%'";
+                }
+                if (ProductName != "") {
+                    Where += " and ProductName like '%" + ProductName + "%'";
+                }
+                if (CategoryName != "") {
+                    Where += " and CategoryName like '%" + CategoryName + "%'";
+                }
+                Where = encodeURIComponent(Where);
 
             }
             queryParams.Where = Where;
@@ -218,7 +231,7 @@
                         var deleteCode = [];
                         var blnUsed = false;
                         $.each(checkedItems, function (index, item) {
-                            var StateDes = GetFieldValue("View_WMS_Bill", "StateDesc", "BillID='" + item.BillID + "'");
+                            var StateDes = GetFieldValue("View_WMS_BillMaster", "StateDesc", "BillID='" + item.BillID + "'");
                             if (HasExists('WMS_Bill', "BillID='" + item.BillID + "'and State!=0", "入库单号 " + item.BillID + "已" + StateDes + ",无法删除！")) {
                                 blnUsed = true;
                             }  
@@ -261,7 +274,7 @@
                 var blnUsed = false;
                 $.each(checkedItems, function (index, item) {
                     var BillID = item.BillID;
-                    var state = GetFieldValue("WMS_Bill", "State", encodeURIComponent("BillID='" + BillID + "'"));
+                    var state = GetFieldValue("View_WMS_BillMaster", "State", encodeURIComponent("BillID='" + BillID + "'"));
                     if (state == 1) {
                         $.messager.alert("提示", BillID + "单号已审核!", "info");
                         blnUsed = true;
@@ -305,7 +318,7 @@
                 var blnUsed = false;
                 $.each(checkedItems, function (index, item) {
                     var BillID = item.BillID;
-                    var state = GetFieldValue("WMS_Bill", "State", encodeURIComponent("BillID='" + BillID + "'"));
+                    var state = GetFieldValue("View_WMS_BillMaster", "State", encodeURIComponent("BillID='" + BillID + "'"));
                     if (state == 0) {
                         $.messager.alert("提示", BillID + "单号未审核!", "info");
                         blnUsed = true;
@@ -349,7 +362,7 @@
                 var blnUsed = false;
                 $.each(checkedItems, function (index, item) {
                     var BillID = item.BillID;
-                    var state = GetFieldValue("WMS_Bill", "State", encodeURIComponent("BillID='" + BillID + "'"));
+                    var state = GetFieldValue("View_WMS_BillMaster", "State", encodeURIComponent("BillID='" + BillID + "'"));
                     if (state == 0) {
                         $.messager.alert("提示", BillID + "单号还未审核，不能进行入库作业!", "info");
                         blnUsed = true;
@@ -392,7 +405,7 @@
                 var blnUsed = false;
                 $.each(checkedItems, function (index, item) {
                     var BillID = item.BillID;
-                    var state = GetFieldValue("WMS_Bill", "State", encodeURIComponent("BillID='" + BillID + "'"));
+                    var state = GetFieldValue("View_WMS_BillMaster", "State", encodeURIComponent("BillID='" + BillID + "'"));
                     if (state > 2) {
                         var StateDes = GetFieldValue("View_WMS_BillMaster", "StateDesc", "BillID='" + BillID + "'");
                         $.messager.alert("提示", BillID + "单号已" + StateDes + "，不能再进行取消作业。", "info");
@@ -641,7 +654,7 @@
                     <tr>
                         <th data-options="field:'',checkbox:true"></th> 
                         <th data-options="field:'ProductCode',width:100">产品编号</th>
-                        <th data-options="field:'ProductName',width:120">品名</th>
+                        <th data-options="field:'ProductName',width:120">产品名称</th>
                         <th data-options="field:'CategoryName',width:120">产品类别</th>
                     </tr>
             </thead>            
@@ -650,12 +663,12 @@
            <table>
                 <tr>
                      <td>
-                        库区
-                        <input id="txtQueryAreaCodee" class ="easyui-textbox" style="width: 100px" /> 
-                        货架
-                        <input id="textQueryShelf" class ="easyui-textbox" style="width: 100px" /> 
-                        货位
-                        <input id="txtQueryCellCode" class="easyui-textbox" style="width: 100px" />  
+                         产品编号
+                        <input id="txtSelectProductCode" class ="easyui-textbox" style="width: 80px" /> 
+                        品名
+                        <input id="txtSelectProductName" class ="easyui-textbox" style="width: 80px" /> 
+                        产品类别
+                        <input id="txtSelectCategoryName" class="easyui-textbox" style="width: 80px" />  
                         <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" onclick="ReloadGrid('dgSelect')" >查询</a> 
                     </td>
                     <td>

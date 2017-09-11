@@ -23,30 +23,65 @@
   </Command>
 
 
+  <!--区域信息-->
+  <Command ID="SelectAreaEdit">
+    <CommandString>
+      SELECT CMD_Area.*,WarehouseName
+      FROM CMD_Area
+      inner join CMD_Warehouse on CMD_Area.WarehouseCode=CMD_Warehouse.WarehouseCode
+      where {0}
+      order by {1}
+    </CommandString>
+  </Command>
+
+  <Command ID="UpdateAreaEdit">
+    <CommandString>
+      update CMD_Area set WarehouseCode=@WarehouseCode,AreaName=@AreaName,Memo=@Memo Where AreaCode=@AreaCode
+    </CommandString>
+  </Command>
+
+  <Command ID="DeleteAreaEdit">
+    <CommandString>
+      delete from  CMD_Area  Where AreaCode in({0})
+    </CommandString>
+  </Command>
+
+  <Command ID="InsertAreaEdit">
+    <CommandString>
+      insert into CMD_Area(WareHouseCode,AreaCode,AreaName,Memo)
+      values(@WareHouseCode,@AreaCode,@AreaName,@Memo)
+    </CommandString>
+  </Command>
+
   <!--库区信息-->
-  <Command ID="SelectArea">
+  <Command ID="SelectRegionEdit">
     <CommandString>
-      SELECT * FROM CMD_Area where {0} order by AreaCode
-    </CommandString>
-  </Command>
-  <Command ID="DeleteArea">
-    <CommandString>
-      delete from CMD_Area WHERE AreaCode='{0}'
-    </CommandString>
-  </Command>
-
-  <Command ID="InsertArea">
-    <CommandString>
-      Insert into CMD_Area(WarehouseCode,AreaCode,AreaName,Memo)
-      values(@WarehouseCode,@AreaCode,@AreaName,@Memo)
-    </CommandString>
-  </Command>
-  <Command ID="UpdateArea">
-    <CommandString>
-      update CMD_Area set AreaName=@AreaName,Memo=@Memo where AreaCode=@AreaCode
+      select R.*,a.AreaName,W.WarehouseName from CMD_Region R
+      inner join CMD_Area A on A.AreaCode=r.AreaCode
+      inner join CMD_Warehouse W on r.WarehouseCode=W.WarehouseCode
+      where {0}
+      order by {1}
     </CommandString>
   </Command>
 
+  <Command ID="InsertRegionEdit">
+    <CommandString>
+      insert into CMD_Region(WareHouseCode,AreaCode,RegionCode,RegionName,Memo)
+      values(@WareHouseCode,@AreaCode,@RegionCode,@RegionName,@Memo)
+    </CommandString>
+  </Command>
+
+  <Command ID="UpdateRegionEdit">
+    <CommandString>
+      update CMD_Region set AreaCode=@AreaCode,RegionCode=@RegionCode,RegionName=@RegionName,Memo=@Memo Where RegionCode=@RegionCode
+    </CommandString>
+  </Command>
+
+  <Command ID="DeleteRegionEdit">
+    <CommandString>
+      delete from  CMD_Region  Where RegionCode in({0})
+    </CommandString>
+  </Command>
 
   <!--货架信息-->
   <Command ID="SelectStation">
@@ -199,58 +234,7 @@
     </CommandString>
   </Command>
 
-  <Command ID="SelectAreaEdit">
-    <CommandString>
-      select * from CMD_Area Where {0}
-    </CommandString>
-  </Command>
 
-  <Command ID="UpdateAreaEdit">
-    <CommandString>
-      update CMD_Area set AreaName=@AreaName,Memo=@Memo Where AreaCode=@AreaCode
-    </CommandString>
-  </Command>
-
-  <Command ID="DeleteAreaEdit">
-    <CommandString>
-      delete from  CMD_Area  Where AreaCode in({0})
-    </CommandString>
-  </Command>
-  
-  <Command ID="InsertAreaEdit">
-    <CommandString>
-      insert into CMD_Area(WareHouseCode,AreaCode,AreaName,Memo)
-      values('01',@AreaCode,@AreaName,@Memo)
-    </CommandString>
-  </Command>
-
-
-  <Command ID="SelectRegionEdit">
-    <CommandString>
-      select R.*,a.AreaName from CMD_Region R
-      left join CMD_Area A on A.AreaCode=r.AreaCode
-      where {0}
-    </CommandString>
-  </Command>
-
-  <Command ID="InsertRegionEdit">
-    <CommandString>
-      insert into CMD_Region(WareHouseCode,AreaCode,RegionCode,RegionName,Memo)
-      values(@WareHouseCode,@AreaCode,@RegionCode,@RegionName,@Memo)
-    </CommandString>
-  </Command>
-
-  <Command ID="UpdateRegionEdit">
-    <CommandString>
-      update CMD_Region set AreaCode=@AreaCode,RegionCode=@RegionCode,RegionName=@RegionName,Memo=@Memo Where RegionCode=@RegionCode
-    </CommandString>
-  </Command>
-
-  <Command ID="DeleteRegionEdit">
-    <CommandString>
-      delete from  CMD_Region  Where RegionCode in({0})
-    </CommandString>
-  </Command>
 
   <Command ID="SelectProductQty">
     <CommandString>
@@ -267,7 +251,8 @@
     <CommandString>
       select *
       from CMD_ProductCategory
-      where {0} order by {1}
+      where {0} 
+      order by {1}
     </CommandString>
   </Command>
 

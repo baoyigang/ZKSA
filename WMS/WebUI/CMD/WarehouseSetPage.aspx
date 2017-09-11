@@ -164,33 +164,21 @@
         function CheckRow(rowIndex, rowData) {
             CheckSelectRow('dg', rowIndex, rowData);
         }
-        $(function () {
-            $("#dg").datagrid({
-                columns: [[
-                {
-                    field: 'WarehouseCode', title: '仓库编码', width: 80,align:'center', editor: {
-                        type: 'textbox'
-                    }
-                },
-                  {
-                      field: 'WarehouseName', title: '仓库名称', width: 180,align:'center', editor: {
-                          type: 'textbox'
-                          }
-                  },
-                  {
-                      field: 'Memo', title: '备注', width: 130,align:'center', editor: {
-                          type: 'textbox'
-                          }
-                  }
-                ]]
-            })
-        })
+       
  </script> 
 </head>
 <body class="easyui-layout">
     <table id="dg"  class="easyui-datagrid" 
         data-options="loadMsg: '正在加载数据，请稍等...',fit:true, rownumbers:true,url:'../../Handler/BaseHandler.ashx?Action=PageDate&FormID='+FormID,
                      pagination:true,pageSize:PageSize, pageList:[15, 20, 30, 50],method:'post',striped:true,fitcolumns:true,toolbar:'#tb',singleSelect:true,selectOnCheck:true,checkOnSelect:false,onCheck:CheckRow,onUncheck:CheckRow,onBeforeSortColumn:BeforeSortColumn,idField:'CellCode'"> 
+        <thead>
+		    <tr>
+                <th data-options="field:'',checkbox:true"></th> 
+		        <th data-options="field:'WarehouseCode',width:80">仓库编码</th>
+                <th data-options="field:'WarehouseName',width:160">仓库名称</th>
+                <th data-options="field:'Memo',width:200">备注</th>
+		    </tr>
+        </thead>
     </table>
     <div id="tb" style="padding: 5px; height: auto">  
     
@@ -204,9 +192,9 @@
                     <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" onclick="ReloadGrid('dg')">查询</a> 
                 </td>
                 <td style="width:*" align="right">
-                     <a href="javascript:void(0)" onclick="Add()" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true">新增</a>
+                   <%--  <a href="javascript:void(0)" onclick="Add()" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true">新增</a>--%>
                      <a href="javascript:void(0)" onclick="Edit()" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true">修改</a>
-                     <a href="javascript:void(0)" onclick="Delete()" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true">删除</a>
+                    <%-- <a href="javascript:void(0)" onclick="Delete()" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true">删除</a>--%>
                      <a href="javascript:void(0)" onclick="Exit()" class="easyui-linkbutton" data-options="iconCls:'icon-no',plain:true">离开</a>
                 </td>
             </tr>

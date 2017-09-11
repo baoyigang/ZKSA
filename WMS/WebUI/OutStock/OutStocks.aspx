@@ -25,13 +25,10 @@
             });
         });
 
-        function AddRow(ObjName, RowData) {
-            $("#txtProductCode").textbox('setValue', RowData.ProductCode);
-            $("#txtProductName").textbox('setValue', RowData.ProductName);
-            BindDropDownList();
-        }
+        
 
         var url = "../../Handler/BaseHandler.ashx";
+        var OtherUrl = "../../Handler/OtherHandler.ashx";
         var SessionUrl = '<% =ResolveUrl("~/Login.aspx")%>';
         var FormID = "InStock";
         var BaseWhere = encodeURIComponent("BillID like 'OS%'");
@@ -60,7 +57,19 @@
                 Where = BaseWhere + encodeURIComponent(" and " + Where);
             }
             else {
-
+                var ProductCode = $("#txtSelectProductCode").textbox("getValue");
+                var ProductName = $("#txtSelectProductName").textbox("getValue");
+                var BatchNo = $("#txtSelectBatchNo").textbox("getValue");
+                if (ProductCode != "") {
+                    Where += " and ProductCode like '%" + ProductCode + "%'";
+                }
+                if (ProductName != "") {
+                    Where += " and ProductName like '%" + ProductName + "%'";
+                }
+                if (BatchNo != "") {
+                    Where += " and BatchNo like '%" + BatchNo + "%'";
+                }
+                Where = encodeURIComponent(Where);
 
             }
             queryParams.Where = Where;
@@ -81,12 +90,14 @@
             $('#fm').form('clear');
             BindDropDownList();
             $('#txtBillDate').datebox('setValue', new Date().Format("yyyy/MM/dd"));
-            $('#AddWin').dialog('open').dialog('setTitle', '入库单--新增');
+            $('#AddWin').dialog('open').dialog('setTitle', '出库单--新增');
             SetAutoCodeByTableName('txtID', 'OS', '1=1', 'WMS_Bill', $('#txtBillDate').datebox('getValue'));
-            $("#txtBatchNo").textbox('setValue', new Date().Format("yyMMdd")); //设置批次号
-            SetTextRead('txtProductName');
-            $('#txtPageState').val("Add");
 
+            SetTextRead('txtProductName');
+            SetTextRead('txtBatchNo');
+            SetTextRead('txtSectionName');
+            $('#txtPageState').val("Add");
+            $('#txtBillTypeCode').val("020");
             $("#txtID").textbox('readonly', false);
             SetInitValue('<%=Session["G_user"] %>');
             SetInitColor();
@@ -117,45 +128,27 @@
                 var data = { Action: 'FillDataTable', Comd: 'WMS.SelectBill', Where: "BillID='" + row.BillID + "'" };
                 $.post(url, data, function (result) {
                     var Product = result.rows[0];
-                    $('#AddWin').dialog('open').dialog('setTitle', '客户资料--编辑');
+                    $('#AddWin').dialog('open').dialog('setTitle', '出库单--编辑');
                     $('#fm').form('load', Product);
                     BindDropDownList();
                     $('#txtSectionID').combobox('setValue', Product.SectionID);
                 }, 'json');
             }
-
+            SetTextRead('txtProductName');
+            SetTextRead('txtBatchNo');
+            SetTextRead('txtSectionName');
             $('#txtPageState').val("Edit");
-
+            $('#txtBillTypeCode').val("020");
             $("#txtID").textbox("readonly", true);
             SetInitColor();
         }
         //绑定下拉控件
         function BindDropDownList() {
-            var Product = $("#txtProductCode").textbox('getValue');
-            var data = { Action: 'FillDataTable', Comd: 'cmd.SelectProductDetail', Where: encodeURIComponent("ProductCode='" + Product + "'") };
-            BindComboList(data, 'ddlSectionID', 'RowID', 'SectionName');
+//            var Product = $("#txtProductCode").textbox('getValue');
+//            var data = { Action: 'FillDataTable', Comd: 'cmd.SelectProductDetail', Where: encodeURIComponent("ProductCode='" + Product + "'") };
+//            BindComboList(data, 'ddlSectionID', 'RowID', 'SectionName');
         }
-        var blnProductChange = false;
-        function GetProduct(newValue, oldValue) {
-            if (blnProductChange)
-                return;
-            var ProductName = GetFieldValue("CMD_Product", "ProductName", encodeURIComponent("ProductCode='" + newValue + "'"));
-            if (ProductName != "") {
-                $("#txtProductName").textbox('setValue', ProductName);
-                BindDropDownList();
-            }
-            else {
-                blnProductChange = true;
-                $("#txtProductCode").textbox('setValue', '');
-                $("#txtProductName").textbox('setValue', ProductName);
-                BindDropDownList();
-                $('#txtProductCode').next('span').find('input').focus();
-                blnProductChange = false;
-
-            }
-
-        }
-
+        
         //保存信息
         function Save() {
             if (SessionTimeOut(SessionUrl)) {
@@ -171,8 +164,8 @@
                 //判断单号是否存在
                 if (HasExists('WMS_Bill', "BillID='" + $('#txtID').textbox('getValue') + "'", '出库单号已经存在，请重新修改！'))
                     return false;
-                data = { Action: 'Add', Comd: 'WMS.InsertOutStock', json: query };
-                $.post(url, data, function (result) {
+                data = { Action: 'CreateOutStock', SubJson: query };
+                $.post(OtherUrl, data, function (result) {
                     if (result.status == 1) {
                         ReloadGrid('dg');
                         $('#AddWin').window('close');
@@ -218,7 +211,7 @@
                         var deleteCode = [];
                         var blnUsed = false;
                         $.each(checkedItems, function (index, item) {
-                            var StateDes = GetFieldValue("View_WMS_Bill", "StateDesc", "BillID='" + item.BillID + "'");
+                            var StateDes = GetFieldValue("View_WMS_BillMaster", "StateDesc", "BillID='" + item.BillID + "'");
                             if (HasExists('WMS_Bill', "BillID='" + item.BillID + "'and State!=0", "出库单号 " + item.BillID + "已" + StateDes + ",无法删除！")) {
                                 blnUsed = true;
                             }
@@ -226,7 +219,7 @@
                         });
                         if (blnUsed)
                             return false;
-                        var data = { Action: 'Delete', FormID: FormID, Comd: 'WMS.DeleteBill', json: "'" + deleteCode.join("','") + "'" };
+                        var data = { Action: 'Delete', FormID: FormID, Comd: 'WMS.DeleteOutStock', json: "'" + deleteCode.join("','") + "'" };
                         $.post(url, data, function (result) {
                             if (result.status == 1) {
                                 ReloadGrid('dg');
@@ -261,7 +254,7 @@
                 var blnUsed = false;
                 $.each(checkedItems, function (index, item) {
                     var BillID = item.BillID;
-                    var state = GetFieldValue("WMS_Bill", "State", encodeURIComponent("BillID='" + BillID + "'"));
+                    var state = GetFieldValue("View_WMS_BillMaster", "State", encodeURIComponent("BillID='" + BillID + "'"));
                     if (state == 1) {
                         $.messager.alert("提示", BillID + "单号已审核!", "info");
                         blnUsed = true;
@@ -305,7 +298,7 @@
                 var blnUsed = false;
                 $.each(checkedItems, function (index, item) {
                     var BillID = item.BillID;
-                    var state = GetFieldValue("WMS_Bill", "State", encodeURIComponent("BillID='" + BillID + "'"));
+                    var state = GetFieldValue("View_WMS_BillMaster", "State", encodeURIComponent("BillID='" + BillID + "'"));
                     if (state == 0) {
                         $.messager.alert("提示", BillID + "单号未审核!", "info");
                         blnUsed = true;
@@ -333,7 +326,7 @@
             if (SessionTimeOut(SessionUrl)) {
                 return false;
             }
-            if (!GetPermisionByFormID("InStock", 7)) {
+            if (!GetPermisionByFormID("OutStock", 7)) {
                 alert("您没有出库作业权限！");
                 return false;
             }
@@ -349,7 +342,7 @@
                 var blnUsed = false;
                 $.each(checkedItems, function (index, item) {
                     var BillID = item.BillID;
-                    var state = GetFieldValue("WMS_Bill", "State", encodeURIComponent("BillID='" + BillID + "'"));
+                    var state = GetFieldValue("View_WMS_BillMaster", "State", encodeURIComponent("BillID='" + BillID + "'"));
                     if (state == 0) {
                         $.messager.alert("提示", BillID + "单号还未审核，不能进行出库作业!", "info");
                         blnUsed = true;
@@ -392,7 +385,7 @@
                 var blnUsed = false;
                 $.each(checkedItems, function (index, item) {
                     var BillID = item.BillID;
-                    var state = GetFieldValue("WMS_Bill", "State", encodeURIComponent("BillID='" + BillID + "'"));
+                    var state = GetFieldValue("View_WMS_BillMaster", "State", encodeURIComponent("BillID='" + BillID + "'"));
                     if (state > 2) {
                         var StateDes = GetFieldValue("View_WMS_BillMaster", "StateDesc", "BillID='" + BillID + "'");
                         $.messager.alert("提示", BillID + "单号已" + StateDes + "，不能再进行取消作业。", "info");
@@ -421,7 +414,7 @@
 
         function BindSelectUrl(objName) {
 
-            var Comd = "CMD.SelectProduct";
+            var Comd = "WMS.SelectProductInStock";
             var AreaCode = '';
             $('#dgSelect').datagrid({
                 url: '../../Handler/BaseHandler.ashx?Action=PageDate&Comd=' + Comd,
@@ -443,6 +436,37 @@
                     queryParams: { Where: encodeURIComponent("BillID='" + selectdata.BillID + "'") }
                 });
             }
+        }
+        
+        function GetProduct(newValue, oldValue) {
+           
+            var row = GetFieldValue("VCMD_ProductInStock", "*", encodeURIComponent("ProductCode='" + newValue + "'"));
+            if (row.length>0) {
+                $("#txtProductName").textbox('setValue', row[0].ProductName);
+                $("#txtBatchNo").textbox('setValue', row[0].BatchNo);
+                $("#txtSectionID").val(row[0].RowID);
+                $("#txtSectionName").textbox('setValue', row[0].SectionName);
+            }
+            else {
+               
+                $("#txtProductCode").textbox('setValue', '');
+                $("#txtProductName").textbox('setValue', '');
+                $("#txtBatchNo").textbox('setValue', '');
+                $("#txtSectionID").val('');
+                $("#txtSectionName").textbox('setValue', '');
+               
+                $('#txtProductCode').next('span').find('input').focus();
+               
+
+            }
+
+        }
+        function AddRow(ObjName, RowData) {
+            $("#txtProductCode").textbox('setValue', RowData.ProductCode);
+            $("#txtProductName").textbox('setValue', RowData.ProductName);
+            $("#txtBatchNo").textbox('setValue', RowData.BatchNo);
+            $("#txtSectionID").val(RowData.RowID);
+            $("#txtSectionName").textbox('setValue', RowData.SectionName);
         }
  </script>  
 </head>
@@ -568,14 +592,16 @@
                             批次
                     </td>
                     <td>
-                            &nbsp;<input id="txtBatchNo" name="BatchNo" class="easyui-textbox"  maxlength="30"  data-options="required:true" style="width:180px"/>
+                        &nbsp;<input id="txtBatchNo" name="BatchNo" class="easyui-textbox"  maxlength="30"  data-options="editable:false" style="width:180px"/>
                                
                     </td>
                                
                     <td align="center" class="musttitle"  >
                         阶段</td>
                     <td colspan="2">
-                       &nbsp;<input id="ddlSectionID" name="SectionID" class="easyui-combobox" data-options="editable:false,required:true" maxlength="50" style="width: 186px;" />
+                       &nbsp;<input id="txtSectionName" name="SectionName" class="easyui-textbox" data-options="editable:false" maxlength="50" style="width: 186px;" />
+                        <input type="hidden" id="txtSectionID" name="RowID" />
+                        <input type="hidden" id="txtBillTypeCode" name="BillTypeCode" />
                     </td>
                 </tr>
               
@@ -638,9 +664,11 @@
             <thead>
                     <tr>
                         <th data-options="field:'',checkbox:true"></th> 
-                        <th data-options="field:'ProductCode',width:100">产品编号</th>
-                        <th data-options="field:'ProductName',width:120">品名</th>
-                        <th data-options="field:'CategoryName',width:120">产品类别</th>
+                        <th data-options="field:'ProductCode',width:80">产品编号</th>
+                        <th data-options="field:'ProductName',width:160">品名</th>
+                        <th data-options="field:'BatchNo',width:80">批次</th>
+                        <th data-options="field:'SectionName',width:80">阶段</th>
+                        <th data-options="field:'Qty',width:80">托盘数</th>
                     </tr>
             </thead>            
         </table>
@@ -648,12 +676,12 @@
            <table>
                 <tr>
                      <td>
-                        库区
-                        <input id="txtQueryAreaCodee" class ="easyui-textbox" style="width: 100px" /> 
-                        货架
-                        <input id="textQueryShelf" class ="easyui-textbox" style="width: 100px" /> 
-                        货位
-                        <input id="txtQueryCellCode" class="easyui-textbox" style="width: 100px" />  
+                        产品编号
+                        <input id="txtSelectProductCode" class ="easyui-textbox" style="width: 80px" /> 
+                        品名
+                        <input id="txtSelectProductName" class ="easyui-textbox" style="width: 80px" /> 
+                        批次
+                        <input id="txtSelectBatchNo" class="easyui-textbox" style="width: 80px" />  
                         <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" onclick="ReloadGrid('dgSelect')" >查询</a> 
                     </td>
                     <td>

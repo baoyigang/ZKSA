@@ -37,9 +37,9 @@
             alert(msg);
         }
         $(function () {
-            if (HasExists('VCMD_ProductInstock', "1=1", '')) {
+            if (HasExists('VCMD_ProductAttermOutStock', "1=1", '')) {
                 $('#dgSub').datagrid({
-                    url: '../Handler/BaseHandler.ashx?Action=PageDate&Comd=WMS.SelectProductInStock',
+                    url: '../Handler/BaseHandler.ashx?Action=PageDate&Comd=WMS.SelectProductAttermOutStock',
                     queryParams: { Where: encodeURIComponent("1=1") }
                 });
                 $('#AddWin').dialog('open').dialog('setTitle', '出库产品');

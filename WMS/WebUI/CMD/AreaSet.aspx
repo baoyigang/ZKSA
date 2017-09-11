@@ -26,8 +26,8 @@
 
         function getQueryParams(objname, queryParams) {
             var Where = "1=1 ";
-            var AreaCode = $("#txtAreaCode").textbox("getValue");
-            var AreaName = $("#txtAreaName").textbox("getValue");
+            var AreaCode = $("#txtQueryAreaCode").textbox("getValue");
+            var AreaName = $("#txtQueryAreaName").textbox("getValue");
 
             if (AreaCode != "") {
                 Where += " and AreaCode like '%" + AreaCode + "%'";
@@ -86,12 +86,13 @@
                 }, 'json');
             }
             $('#txtPageState').val("Edit");
-            $("#txtID").textbox({"disabled": true});
+            $("#txtID").textbox("readonly", true);
             SetInitColor();
         }
         //绑定下拉控件
         function BindDropDownList() {
-
+            var data = { Action: 'FillDataTable', Comd: 'cmd.SelectWareHouse', Where: "1=1" };
+            BindComboList(data, 'txtWareHouseCode', 'WarehouseCode', 'WarehouseName');
         }
 
         //保存信息
@@ -186,14 +187,16 @@
 <body class="easyui-layout">
     <table id="dg"  class="easyui-datagrid" 
         data-options="loadMsg: '正在加载数据，请稍等...',fit:true, rownumbers:true,url:'../../Handler/BaseHandler.ashx?Action=PageDate&FormID='+FormID,
-                     pagination:true,pageSize:PageSize, pageList:[15, 20, 30, 50],method:'post',striped:true,fitcolumns:true,toolbar:'#tb',singleSelect:false,selectOnCheck:true,checkOnSelect:false,onCheck:CheckRow,onUncheck:CheckRow,onBeforeSortColumn:BeforeSortColumn,idField:'CellCode'"> 
+                     pagination:true,pageSize:PageSize, pageList:[15, 20, 30, 50],method:'post',striped:true,fitcolumns:true,toolbar:'#tb',
+                    singleSelect:true,selectOnCheck:false,checkOnSelect:false,onCheck:CheckRow,onUncheck:CheckRow"> 
         <thead>
 		    <tr>
                 <th data-options="field:'',checkbox:true"></th> 
-		        <th data-options="field:'WarehouseCode',width:80,sortable:true">仓库编码</th>
-                <th data-options="field:'AreaCode',width:180,sortable:true">区域编码</th>
-                <th data-options="field:'AreaName',width:130">区域名称</th>
-                <th data-options="field:'Memo',width:130">备注</th>
+		        <th data-options="field:'WarehouseCode',width:80">仓库编码</th>
+                <th data-options="field:'WarehouseName',width:180">仓库名称</th>
+                <th data-options="field:'AreaCode',width:80">区域编码</th>
+                <th data-options="field:'AreaName',width:180">区域名称</th>
+                <th data-options="field:'Memo',width:200">备注</th>
 		    </tr>
         </thead>
     </table>
@@ -203,9 +206,9 @@
             <tr>
                 <td>
                    区域编码
-                    <input id="txtAreaCode" class ="easyui-textbox" style="width: 100px" />  
+                    <input id="txtQueryAreaCode" class ="easyui-textbox" style="width: 100px" />  
                     区域名称
-                    <input id="txtAreaName" class="easyui-textbox" style="width: 100px" />&nbsp;&nbsp;
+                    <input id="txtQueryAreaName" class="easyui-textbox" style="width: 100px" />&nbsp;&nbsp;
                     <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" onclick="ReloadGrid('dg')">查询</a> 
                 </td>
                 <td style="width:*" align="right">
@@ -218,7 +221,7 @@
         </table>
    </div>
       <%-- 弹出操作框--%>
-    <div id="AddWin" class="easyui-dialog" style="width: 600px; height: auto; padding: 5px 5px"
+    <div id="AddWin" class="easyui-dialog" style="width: 350px; height: auto; padding: 5px 5px"
         data-options="closed:true,buttons:'#AddWinBtn',modal:true"> 
         <form id="fm" method="post">
               <table id="Table1" class="maintable"  width="100%" align="center">			
@@ -229,24 +232,38 @@
                     </td>
                     <td  width="210px">
                             &nbsp;<input id="txtID" name="AreaCode" 
-                                class="easyui-textbox" data-options="required:true" maxlength="20" style="width:180px"/>
+                                class="easyui-textbox" data-options="required:true" maxlength="20" 
+                                style="width:200px"/>
                                 <input name="PageState" id="txtPageState" type="hidden" />
                     </td>
-                    <td align="center" class="musttitle"style="width:90px"  >
+                   
+                </tr>
+                <tr>
+                     <td align="center" class="musttitle"style="width:90px"  >
                            名称
                     </td>
                     <td width="210px"> 
-                        &nbsp;<input id="txtAreaNameI" name="AreaName" class="easyui-textbox" data-options="required:true" maxlength="50" style="width:180px"/>
+                        &nbsp;<input id="txtAreaName" name="AreaName" 
+                            class="easyui-textbox" data-options="required:true" maxlength="50" 
+                            style="width:200px"/>
+                    </td>
+                </tr>
+                <tr>
+                     <td align="center" class="musttitle"style="width:90px"  >
+                           仓库
+                    </td>
+                    <td width="210px"> 
+                        &nbsp;<input id="txtWareHouseCode" name="WareHouseCode" class="easyui-combobox" data-options="required:false,editable:false" maxlength="50" style="width:200px"/>
                     </td>
                 </tr>
                 <tr style=" height:80px">
-                    <td align="center"  class="smalltitle" style="width:120px;height:80px;">
+                    <td align="center"  class="smalltitle" style="width:90px;height:80px;">
                         备注
                     </td>
-                    <td colspan="3" style="height:80px;">
+                    <td  style="height:80px;">
                        &nbsp;<input 
                             id="txtMemo" name="Memo" class="easyui-textbox" 
-                            data-options="multiline:true" style="width:478px; height:72px"/>
+                            data-options="multiline:true" style="width:200px; height:72px"/>
 
                     </td>
                 </tr>

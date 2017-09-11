@@ -189,13 +189,13 @@
         <thead>
 		    <tr>
                 <th data-options="field:'',checkbox:true"></th> 
-		        <th data-options="field:'CategoryCode',width:80,sortable:true">类别编码</th>
-                <th data-options="field:'CategoryName',width:180,sortable:true">名称</th>
+		        <th data-options="field:'CategoryCode',width:80">类别编码</th>
+                <th data-options="field:'CategoryName',width:160">名称</th>
                 <th data-options="field:'Memo',width:130">备注</th>
                 <th data-options="field:'Creator',width:80">建单人员</th>
-                <th data-options="field:'CreateDate',width:160,sortable:true">建单日期</th>
+                <th data-options="field:'CreateDate',width:160">建单日期</th>
                 <th data-options="field:'Updater',width:80">修改人员</th>
-                <th data-options="field:'UpdateDate',width:160,sortable:true">修改日期</th>
+                <th data-options="field:'UpdateDate',width:160">修改日期</th>
 		    </tr>
         </thead>
     </table>

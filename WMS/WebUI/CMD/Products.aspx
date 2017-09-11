@@ -468,8 +468,7 @@
 <body class="easyui-layout">
     <div class="easyui-layout" data-options="fit:true">
     <div data-options="region:'north',split:true" style="height:300px;">
-    <table id="dg"  class="easyui-datagrid" 
-        data-options="loadMsg: '正在加载数据，请稍等...',fit:true, rownumbers:true,url:'../../Handler/BaseHandler.ashx?Action=PageDate&FormID='+FormID,
+    <table id="dg"  class="easyui-datagrid" data-options="loadMsg: '正在加载数据，请稍等...',fit:true, rownumbers:true,url:'../../Handler/BaseHandler.ashx?Action=PageDate&FormID='+FormID,
                      pagination:true,pageSize:PageSize, pageList:[15, 20, 30, 50],method:'post',striped:true,fitcolumns:true,toolbar:'#tb',onLoadSuccess: function(data){ 
                              $('#dg').datagrid('selectRow',0);},singleSelect:true,selectOnCheck:false,checkOnSelect:false,onSelect:getDetail,onCheck:CheckRow,onUncheck:CheckRow"> 
         <thead data-options="frozen:true">

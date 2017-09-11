@@ -57,7 +57,7 @@
             $('#fm').form('clear');
             BindDropDownList();
             $('#AddWin').dialog('open').dialog('setTitle', '库区设置--新增');
-            $("#txtWarehouseCode").textbox('setValue', '01');
+          
 
             SetAutoCodeNewID('txtID', 'CMD_Region', 'RegionCode', '1=1');
             $('#txtPageState').val("Add");
@@ -187,21 +187,27 @@
         function CheckRow(rowIndex, rowData) {
             CheckSelectRow('dg', rowIndex, rowData);
         }
+        function ComboxSelect(rec) {
+            $('#txtWarehouseCode').val(rec.WarehouseCode);
+            $("#txtWarehouseName").textbox('setValue', rec.WarehouseName);
+        }
     </script> 
 </head>
 <body class="easyui-layout">
     <table id="dg"  class="easyui-datagrid" 
         data-options="loadMsg: '正在加载数据，请稍等...',fit:true, rownumbers:true,url:'../../Handler/BaseHandler.ashx?Action=PageDate&FormID='+FormID,
-                     pagination:true,pageSize:PageSize, pageList:[15, 20, 30, 50],method:'post',striped:true,fitcolumns:true,toolbar:'#tb',singleSelect:false,selectOnCheck:true,checkOnSelect:false,onCheck:CheckRow,onUncheck:CheckRow,onBeforeSortColumn:BeforeSortColumn,idField:'CellCode'"> 
+                     pagination:true,pageSize:PageSize, pageList:[15, 20, 30, 50],method:'post',striped:true,fitcolumns:true,toolbar:'#tb',
+                     singleSelect:true,selectOnCheck:false,checkOnSelect:false,onCheck:CheckRow,onUncheck:CheckRow"> 
         <thead>
 		    <tr>
                 <th data-options="field:'',checkbox:true"></th> 
-		        <th data-options="field:'WarehouseCode',width:80,sortable:true">仓库编码</th>
-                <th data-options="field:'AreaCode',width:130,sortable:true">区域编码</th>
-                <th data-options="field:'AreaName',width:130,sortable:true">区域名称</th>
-                <th data-options="field:'RegionCode',width:130">库区编码</th>
-                <th data-options="field:'RegionName',width:130">库区名称</th>
-                <th data-options="field:'Memo',width:130">备注</th>
+		        <th data-options="field:'WarehouseCode',width:80">仓库编码</th>
+                 <th data-options="field:'WarehouseName',width:160">仓库名称</th>
+                <th data-options="field:'AreaCode',width:80">区域编码</th>
+                <th data-options="field:'AreaName',width:160">区域名称</th>
+                <th data-options="field:'RegionCode',width:80">库区编码</th>
+                <th data-options="field:'RegionName',width:160">库区名称</th>
+                <th data-options="field:'Memo',width:200">备注</th>
 		    </tr>
         </thead>
     </table>
@@ -232,22 +238,7 @@
         data-options="closed:true,buttons:'#AddWinBtn',modal:true"> 
         <form id="fm" method="post">
               <table id="Table1" class="maintable"  width="100%" align="center">			
-				<tr>
-                <td align="center" class="musttitle"style="width:90px">
-                            仓库编码
-                    </td>
-                       <td  width="210px">
-                            &nbsp;<input id="txtWarehouseCode" name="WarehouseCode" 
-                                class="easyui-textbox" data-options="required:true,disabled:true" maxlength="20" style="width:180px"/>
-                                <input name="PageState" id="Hidden1" type="hidden" />
-                    <td align="center" class="musttitle"style="width:90px">
-                            区域名称
-                    </td>
-                    <td width="210px"> 
-                        &nbsp;<input id="SelectAreaName" name="AreaCode" class="easyui-combobox" data-options="required:true,editable:false,valueField:'AreaCode',
-                       textField:'AreaName'" maxlength="50" style="width:180px"/>
-                    </td>
-                </tr>   
+				   
                 <tr>
                     <td align="center" class="musttitle"style="width:90px">
                             库区编码
@@ -264,6 +255,23 @@
                         &nbsp;<input id="txtRegionNameI" name="RegionName" class="easyui-textbox" data-options="required:true" maxlength="50" style="width:180px"/>
                     </td>
                 </tr>
+                <tr>
+                    <td align="center" class="musttitle"style="width:90px">
+                            区域名称
+                    </td>
+                    <td width="210px"> 
+                        &nbsp;<input id="SelectAreaName" name="AreaCode" class="easyui-combobox" data-options="required:true,editable:false,onSelect:ComboxSelect" maxlength="50" style="width:180px"/>
+                    </td>
+                    <td align="center" class="musttitle"style="width:90px">
+                                仓库
+                    </td>
+                    <td  width="210px">
+                        &nbsp;<input id="txtWarehouseName" name="WarehouseName" 
+                            class="easyui-textbox" data-options="required:true,disabled:true" maxlength="20" style="width:180px"/>
+                            <input name="WarehouseCode" id="txtWarehouseCode" type="hidden" />
+                    </td>
+                    
+                </tr>
                 <tr style=" height:80px">
                     <td align="center"  class="smalltitle" style="width:120px;height:80px;">
                         备注
@@ -271,7 +279,7 @@
                     <td colspan="3" style="height:80px;">
                        &nbsp;<input 
                             id="txtMemo" name="Memo" class="easyui-textbox" 
-                            data-options="multiline:true" style="width:478px; height:72px"/>
+                            data-options="multiline:true" style="width:471px; height:72px"/>
 
                     </td>
                 </tr>
