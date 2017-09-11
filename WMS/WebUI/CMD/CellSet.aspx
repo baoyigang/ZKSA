@@ -24,6 +24,11 @@
         var FormID = "Cell";
         var ActiveValue = [{ ActiveCode: '1', ActiveText: '无异常' }, { ActiveCode: '0', ActiveText: '异常'}];
         var LockValue = [{ LockCode: '0', LockText: '未锁定' }, { LockCode: '1', LockText: '锁定'}];
+        function AddRow(ObjName, RowData) {
+            $("#txtEditProductCode").textbox('setValue', RowData.ProductCode);
+            $("#txtEditProductName").textbox('setValue', RowData.ProductName);
+            BindDropDownList();
+        }
         function getQueryParams(objname, queryParams) {
             var Where = "1=1 ";
             var CellCode = $("#txtCellCode").textbox("getValue");
@@ -33,19 +38,19 @@
             var Ceng = $("#txtCeng").textbox("getValue");
 
             if (CellCode != "") {
-                Where += " and CellCode like '%" + CellCode + "%'";
+                Where += " and c.CellCode like '%" + CellCode + "%'";
             }
             if (RegionName != "") {
                 Where += " and RegionName like '%" + RegionName + "%'";
             }
             if (Pai != "") {
-                Where += " and SUBSTRING(cellcode,1,3) like '%" + Pai + "%'";
+                Where += " and SUBSTRING(c.cellcode,1,3) like '%" + Pai + "%'";
             }
             if (Lie != "") {
-                Where += " and SUBSTRING(cellcode,4,3) like '%" + Lie + "%'";
+                Where += " and SUBSTRING(c.cellcode,4,3) like '%" + Lie + "%'";
             }
             if (Ceng != "") {
-                Where += " and SUBSTRING(cellcode,7,3) like '%" + Ceng + "%'";
+                Where += " and SUBSTRING(c.cellcode,7,3) like '%" + Ceng + "%'";
             }
             queryParams.Where = encodeURIComponent(Where);
             //queryParams.t = new Date().getTime(); //使系统每次从后台执行动作，而不是使用缓存。
@@ -260,6 +265,9 @@
                 if (SessionTimeOut(SessionUrl)) {
                     return false;
                 }
+                if (!$("#Form1").form('validate')) {
+                    return false;
+                }
                 var test = $('#txtPageState').val();
                 if (test == 'AddCell') 
                 {
@@ -397,7 +405,21 @@
                 return value;
             }
         }
+        function BindSelectUrl(objName) {
+
+            var Comd = "CMD.SelectProduct";
+            var AreaCode = '';
+            $('#dgSelect').datagrid({
+                url: '../../Handler/BaseHandler.ashx?Action=PageDate&Comd=' + Comd,
+                pageNumber: 1,
+                queryParams: { Where: encodeURIComponent("1=1 ") }
+            });
+        }
         $(function () {
+            $("input", $("#txtEditProductCode").next("span")).dblclick(function () {
+                SelectWinShow('SelectWin', '产品资料--选择');
+            });
+
             $("#ddlAreaName").combobox({
                 onSelect: function (record) {
                     var val = $('#ddlAreaName').combobox('getValue'); var eadata = { Action: 'FillDataTable', Comd: 'cmd.SelectRegionEdit', Where: "a.AreaCode='" + val + "'" };
@@ -575,14 +597,14 @@
                         </td>
                    </tr>
                    <tr>
-                        <td align="center" class="musttitle"style="width:15%">
+                        <td align="center" class="smalltitle"style="width:15%">
                                 区域名称
                         </td>
                         <td  style="width:33%">
                                 &nbsp;<input id="ddlAreaName" name="AreaCode" 
                                     class="easyui-combobox" data-options="editable:false" maxlength="20" style="width:160px"/>
                         </td>
-                        <td align="center" class="musttitle"style="width:15%"  >
+                        <td align="center" class="smalltitle"style="width:15%"  >
                                 库区名称
                         </td>
                         <td style="width:33%"> 
@@ -592,30 +614,24 @@
                         </td>
                     </tr>
                     <tr> 
-                        <td align="center" class="musttitle"style="width:15%">
+                        <td align="center" class="smalltitle"style="width:15%">
                             产品编号 </td>
-                        <td style="width:33%" >
+                        <td colspan="3" >
                         
-                            &nbsp;<input id="txtEditProductCode" name="ProductCode" class="easyui-textbox" data-options="onChange:GetProduct" style="width:160px"/> 
-                        
-                        </td>
-                        <td align="center" class="musttitle"style="width:15%">
-                            产品名称 </td>
-                        <td style="width:33%" >
-                        
-                            &nbsp;<input id="txtEditProductName" name="ProductName" class="easyui-textbox" data-options="disabled:true" style="width:160px"/> 
+                            &nbsp;<input id="txtEditProductCode" name="ProductCode" class="easyui-textbox" data-options="onChange:GetProduct" style="width:235px"/> 
+                            <input id="txtEditProductName" name="ProductName" class="easyui-textbox" data-options="disabled:true,editable:false" style="width:220px"/> 
                         
                         </td>
                     </tr>
                     <tr>
-                        <td align="center" class="musttitle"style="width:15%">
+                        <td align="center" class="smalltitle"style="width:15%">
                                 批次
                         </td>
                         <td  style="width:33%">
                                 &nbsp;<input id="ddlEditBatchNo" name="BatchNo" 
                                     class="easyui-combobox" data-options="editable:false" maxlength="20" style="width:160px"/>
                         </td>
-                        <td align="center" class="musttitle"style="width:15%"  >
+                        <td align="center" class="smalltitle"style="width:15%"  >
                                 每盘数量
                         </td>
                         <td style="width:33%"> 
@@ -626,14 +642,14 @@
                         
                     </tr>
                     <tr> 
-                        <td align="center" class="musttitle"style="width:15%">
+                        <td align="center" class="smalltitle"style="width:15%">
                             阶段 </td>
                         <td style="width:33%" >
                         
                             &nbsp;<input id="ddlEditRowID" name="RowID" class="easyui-combobox" data-options="editable:false,onSelect:GetSection" style="width:160px"/> 
                         
                         </td>
-                        <td align="center" class="musttitle"style="width:15%"  >
+                        <td align="center" class="smalltitle"style="width:15%"  >
                                 入库日期
                         </td>
                         <td > 
@@ -670,5 +686,38 @@
         <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="SaveCell()">保存</a>
         <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" onclick="javascript:$('#AddCell').dialog('close')">关闭</a>
     </div>
+     <div id="SelectWin" style="width:600px;height:500px">
+       <table id="dgSelect" class="easyui-datagrid"
+            data-options="loadMsg: '正在加载数据，请稍等...',fit:true, rownumbers:true,
+                         pagination:true,pageSize:PageSize, pageList:[15, 20, 30, 50],method:'post',striped:true,fitcolumns:true,toolbar:'#tbSelect',singleSelect:true,selectOnCheck:true,checkOnSelect:true,onCheck:SelectSingleCheckRow,onUncheck:SelectSingleUnCheckRow,onLoadSuccess:SelectLoadSelectSuccess,onDblClickRow:DblClickRow"> 
+            <thead>
+                    <tr>
+                        <th data-options="field:'',checkbox:true"></th> 
+                        <th data-options="field:'ProductCode',width:100">产品编号</th>
+                        <th data-options="field:'ProductName',width:120">品名</th>
+                        <th data-options="field:'CategoryName',width:120">产品类别</th>
+                    </tr>
+            </thead>            
+        </table>
+        <div id="tbSelect" style="padding:5px;height:auto">
+           <table>
+                <tr>
+                     <td>
+                        库区
+                        <input id="txtQueryAreaCodee" class ="easyui-textbox" style="width: 100px" /> 
+                        货架
+                        <input id="textQueryShelf" class ="easyui-textbox" style="width: 100px" /> 
+                        货位
+                        <input id="txtQueryCellCode" class="easyui-textbox" style="width: 100px" />  
+                        <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" onclick="ReloadGrid('dgSelect')" >查询</a> 
+                    </td>
+                    <td>
+                         <a href="javascript:void(0)"onclick="closeSelectWin()" class="easyui-linkbutton" data-options="iconCls:'icon-return'">取回</a>  
+                    </td>
+                </tr>          
+           </table>
+        </div>
+    </div>
+
 </body>
 </html>

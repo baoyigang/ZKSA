@@ -193,7 +193,7 @@
 
   <Command ID="SelectCellEdit">
     <CommandString>
-      select c.CellCode,c.CellName,c.AreaCode,Cmd_area.AreaName,c.RegionCode,c.Memo,c.Depth,c.CellRow,c.CellColumn,c.DisInStation,c.DisOutStation,CMD_Region.RegionName,c.IsActive,c.IsLock,WMS_Pallet.ProductCode  from CMD_Cell  c
+      select c.*,WMS_Pallet.ProductCode  from CMD_Cell  c
       left join CMD_Region on CMD_Region.RegionCode=c.RegionCode
       LEFT join CMD_Area on CMD_Region.AreaCode=cmd_area.AreaCode
       left join WMS_Pallet on WMS_Pallet.CellCode=c.CellCode
