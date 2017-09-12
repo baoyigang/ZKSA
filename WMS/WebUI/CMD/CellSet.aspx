@@ -208,7 +208,7 @@
             var data = { Action: 'FillDataTable', Comd: 'cmd.SelectAreaEdit', Where: "1=1" };
             BindComboList(data, 'ddlAreaName', 'AreaCode', 'AreaName');
 
-            var edata = { Action: 'FillDataTable', Comd: 'cmd.SelectRowID', Where: "ProductCode=" + $('#dg').datagrid('getSelected').ProductCode };
+            var edata = { Action: 'FillDataTable', Comd: 'cmd.SelectRowID', Where: "ProductCode='" + $('#dg').datagrid('getSelected').ProductCode +"'" };
              $.ajax({
                type: "post",
                url: BaseUrl,
@@ -272,7 +272,7 @@
                 if (test == 'AddCell') 
                 {
                     var mainjs = "{\"CellCode\":\"" + $("#txtEditCellCode").textbox("getValue") + "\"," + "\"AreaCode\":\"" + $("#ddlAreaName").combobox("getValue") + "\"," + "\"RegionCode\":\"" + $("#ddlRegionName").combobox("getValue") + "\"," + "\"IsActive\":\"" + $("#ddlEditActive").combobox("getValue") + "\"," + "\"IsLock\":\"" + $("#ddlEditLock").combobox("getValue") + "\"," + "\"CellName\":\"" + $("#txtEditCellName").textbox("getValue") + "\"," + "\"Memo\":\"" + $("#txtEditMemo").textbox("getValue") + "\"," + "\"Indate\":\"" + $("#txtEditIndate").textbox("getValue") + "\"}";
-                    var subjs = "{\"CellCode\":\"" + $("#txtEditCellCode").textbox("getValue") + "\"," + "\"ProductCode\":\"" + $("#txtEditProductCode").textbox("getValue") + "\"," + "\"BatchNo\":\"" + $("#ddlEditBatchNo").combobox("getValue") + "\"," + "\"PreQty\":\"" + $("#txtEditPreQty").textbox("getValue") + "\"," + "\"RowID\":\"" + $("#ddlEditRowID").combobox("getValue") + "\"," + "\"Indate\":\"" + $("#txtEditIndate").textbox("getValue") + "\"," + "\"PalletCode\":\"" + $("#txtEditCellCode").textbox("getValue") + "\"," + "\"LockQty\":\"" + 0 + "\"," + "\"IsLock\":\"" + $("#ddlEditLock").combobox("getValue") + "\"}";
+                    var subjs = "{\"CellCode\":\"" + $("#txtEditCellCode").textbox("getValue") + "\"," + "\"ProductCode\":\"" + $("#txtEditProductCode").textbox("getValue") + "\"," + "\"BatchNo\":\"" + $("#txtEditBatchNo").textbox("getValue") + "\"," + "\"PreQty\":\"" + $("#txtEditPreQty").textbox("getValue") + "\"," + "\"RowID\":\"" + $("#ddlEditRowID").combobox("getValue") + "\"," + "\"Indate\":\"" + $("#txtEditIndate").textbox("getValue") + "\"," + "\"PalletCode\":\"" + $("#txtEditCellCode").textbox("getValue") + "\"," + "\"LockQty\":\"" + 0 + "\"," + "\"IsLock\":\"" + $("#ddlEditLock").combobox("getValue") + "\"}";
                     var MainQuery = "[" + encodeURIComponent(mainjs) + "]";
                     var SubQuery = "[" + encodeURIComponent(subjs) + "]";
 
@@ -289,13 +289,13 @@
                 }
                 else (test == 'EditCell')
                 {
-                    if ($("#txtEditPalletCode").textbox("getValue") != "") {
+                    if ($("#txtEditPalletCode").val() != "") {
                         var mainjs = "{\"CellCode\":\"" + $("#txtEditCellCode").textbox("getValue") + "\"," + "\"AreaCode\":\"" + $("#ddlAreaName").combobox("getValue") + "\"," + "\"RegionCode\":\"" + $("#ddlRegionName").combobox("getValue") + "\"," + "\"IsActive\":\"" + $("#ddlEditActive").combobox("getValue") + "\"," + "\"IsLock\":\"" + $("#ddlEditLock").combobox("getValue") + "\"," + "\"CellName\":\"" + $("#txtEditCellName").textbox("getValue") + "\"," + "\"Memo\":\"" + $("#txtEditMemo").textbox("getValue") + "\"," + "\"PalletCode\":\"" + $("#txtEditCellCode").textbox("getValue") + "\"," + "\"Indate\":\"" + $("#txtEditIndate").textbox("getValue") + "\"}";
-                        var subjs = "{\"CellCode\":\"" + $("#txtEditCellCode").textbox("getValue") + "\"," + "\"ProductCode\":\"" + $("#txtEditProductCode").textbox("getValue") + "\"," + "\"BatchNo\":\"" + $("#ddlEditBatchNo").combobox("getValue") + "\"," + "\"PreQty\":\"" + $("#txtEditPreQty").textbox("getValue") + "\"," + "\"RowID\":\"" + $("#ddlEditRowID").combobox("getValue") + "\"," + "\"Indate\":\"" + $("#txtEditIndate").textbox("getValue") + "\"," + "\"PalletCode\":\"" + $("#txtEditPalletCode").textbox("getValue") + "\"," + "\"LockQty\":\"" + 0 + "\"," + "\"IsLock\":\"" + $("#ddlEditLock").combobox("getValue") + "\"}";
+                        var subjs = "{\"CellCode\":\"" + $("#txtEditCellCode").textbox("getValue") + "\"," + "\"ProductCode\":\"" + $("#txtEditProductCode").textbox("getValue") + "\"," + "\"BatchNo\":\"" + $("#txtEditBatchNo").textbox("getValue") + "\"," + "\"PreQty\":\"" + $("#txtEditPreQty").textbox("getValue") + "\"," + "\"RowID\":\"" + $("#ddlEditRowID").combobox("getValue") + "\"," + "\"Indate\":\"" + $("#txtEditIndate").textbox("getValue") + "\"," + "\"PalletCode\":\"" + $("#txtEditPalletCode").val() + "\"," + "\"LockQty\":\"" + 0 + "\"," + "\"IsLock\":\"" + $("#ddlEditLock").combobox("getValue") + "\"}";
                     }
                     else {
-                        var mainjs = "{\"CellCode\":\"" + $("#txtEditCellCode").textbox("getValue") + "\"," + "\"AreaCode\":\"" + $("#ddlAreaName").combobox("getValue") + "\"," + "\"RegionCode\":\"" + $("#ddlRegionName").combobox("getValue") + "\"," + "\"IsActive\":\"" + $("#ddlEditActive").combobox("getValue") + "\"," + "\"IsLock\":\"" + $("#ddlEditLock").combobox("getValue") + "\"," + "\"CellName\":\"" + $("#txtEditCellName").textbox("getValue") + "\"," + "\"Memo\":\"" + $("#txtEditMemo").textbox("getValue") + "\"," + "\"PalletCode\":\"" + $("#txtEditPalletCode").textbox("getValue") + "\"," + "\"Indate\":\"" + $("#txtEditIndate").textbox("getValue") + "\"}";
-                        var subjs = "{\"CellCode\":\"" + $("#txtEditCellCode").textbox("getValue") + "\"," + "\"ProductCode\":\"" + $("#txtEditProductCode").textbox("getValue") + "\"," + "\"BatchNo\":\"" + $("#ddlEditBatchNo").combobox("getValue") + "\"," + "\"PreQty\":\"" + $("#txtEditPreQty").textbox("getValue") + "\"," + "\"RowID\":\"" + $("#ddlEditRowID").combobox("getValue") + "\"," + "\"Indate\":\"" + $("#txtEditIndate").textbox("getValue") + "\"," + "\"PalletCode\":\"" + $("#txtEditCellCode").textbox("getValue") + "\"," + "\"LockQty\":\"" + 0 + "\"," + "\"IsLock\":\"" + $("#ddlEditLock").combobox("getValue") + "\"}";
+                        var mainjs = "{\"CellCode\":\"" + $("#txtEditCellCode").textbox("getValue") + "\"," + "\"AreaCode\":\"" + $("#ddlAreaName").combobox("getValue") + "\"," + "\"RegionCode\":\"" + $("#ddlRegionName").combobox("getValue") + "\"," + "\"IsActive\":\"" + $("#ddlEditActive").combobox("getValue") + "\"," + "\"IsLock\":\"" + $("#ddlEditLock").combobox("getValue") + "\"," + "\"CellName\":\"" + $("#txtEditCellName").textbox("getValue") + "\"," + "\"Memo\":\"" + $("#txtEditMemo").textbox("getValue") + "\"," + "\"PalletCode\":\"" + $("#txtEditPalletCode").val() + "\"," + "\"Indate\":\"" + $("#txtEditIndate").textbox("getValue") + "\"}";
+                        var subjs = "{\"CellCode\":\"" + $("#txtEditCellCode").textbox("getValue") + "\"," + "\"ProductCode\":\"" + $("#txtEditProductCode").textbox("getValue") + "\"," + "\"BatchNo\":\"" + $("#txtEditBatchNo").textbox("getValue") + "\"," + "\"PreQty\":\"" + $("#txtEditPreQty").textbox("getValue") + "\"," + "\"RowID\":\"" + $("#ddlEditRowID").combobox("getValue") + "\"," + "\"Indate\":\"" + $("#txtEditIndate").textbox("getValue") + "\"," + "\"PalletCode\":\"" + $("#txtEditCellCode").textbox("getValue") + "\"," + "\"LockQty\":\"" + 0 + "\"," + "\"IsLock\":\"" + $("#ddlEditLock").combobox("getValue") + "\"}";
                     }
                     var MainQuery = "[" + encodeURIComponent(mainjs) + "]";
                     var SubQuery = "[" + encodeURIComponent(subjs) + "]";
@@ -316,7 +316,7 @@
           //  CheckSelectRow('dg', rowIndex, rowData);
         }
         function BindProduct() {
-            var edata = { Action: 'FillDataTable', Comd: 'cmd.SelectRowID', Where: "ProductCode=" + $('#txtEditProductCode').textbox('getValue') };
+            var edata = { Action: 'FillDataTable', Comd: 'cmd.SelectRowID', Where: "ProductCode='" + $('#txtEditProductCode').textbox('getValue') +"'" };
             $.ajax({
                 type: "post",
                 url: BaseUrl,
@@ -335,25 +335,25 @@
                     alert(msg);
                 }
             });
-            var cdata = { Action: 'FillDataTable', Comd: 'cmd.SelectBatchNo', Where: "ProductCode=" + $('#txtEditProductCode').textbox('getValue') };
-            $.ajax({
-                type: "post",
-                url: BaseUrl,
-                data: cdata,
-                //contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                async: false,
-                success: function (json) {
-                    $('#ddlEditBatchNo').combobox({
-                        data: json.rows,
-                        valueField: 'BatchNo',
-                        textField: 'BatchNo'
-                    });
-                },
-                error: function (msg) {
-                    alert(msg);
-                }
-            });    
+//            var cdata = { Action: 'FillDataTable', Comd: 'cmd.SelectBatchNo', Where: "ProductCode=" + $('#txtEditProductCode').textbox('getValue') };
+//            $.ajax({
+//                type: "post",
+//                url: BaseUrl,
+//                data: cdata,
+//                //contentType: "application/json; charset=utf-8",
+//                dataType: "json",
+//                async: false,
+//                success: function (json) {
+//                    $('#txtEditBatchNo').combobox({
+//                        data: json.rows,
+//                        valueField: 'BatchNo',
+//                        textField: 'BatchNo'
+//                    });
+//                },
+//                error: function (msg) {
+//                    alert(msg);
+//                }
+//            });    
         }
         //绑定产品名称
         var blnProductChange = false;
@@ -650,7 +650,7 @@
                                 入库日期
                         </td>
                         <td > 
-                            &nbsp;<input  id="txtEditIndate" name="Indate" class="easyui-datebox" data-options="required:true,editable:false" style="width:160px"/>
+                            &nbsp;<input  id="txtEditIndate" name="Indate" class="easyui-datebox" data-options="editable:false" style="width:160px"/>
                                 <input type="hidden" id="txtEditPalletCode" name="PalletCode" />  
                         </td>
                      </tr>   
