@@ -84,7 +84,7 @@ public class OtherHandler : IHttpHandler, IRequiresSessionState
                 paras.Add(AddPara);
 
                 comds.Add("WMS.UpdatePalletOutStock");
-                paras.Add(new DataParameter[] { new DataParameter("@ProductCode", dtSub.Rows[j]["ProductCode"].ToString()), new DataParameter("@BatchNo", dtSub.Rows[j]["BatchNo"].ToString()), new DataParameter("@RowID", dtSub.Rows[j]["RowID"].ToString()) });
+                paras.Add(new DataParameter[] { new DataParameter("@ProductCode", dtSub.Rows[j]["ProductCode"].ToString()), new DataParameter("@BatchNo", dtSub.Rows[j]["BatchNo"].ToString()), new DataParameter("@RowID", dtSub.Rows[j]["SectionID"].ToString()) });
                 
             }
 

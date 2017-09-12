@@ -77,7 +77,7 @@
   <Command ID="InsertOutStock">
     <CommandString>
       insert into WMS_Bill(BillID, BillDate, ProductCode, BatchNo, SectionID, BillTypeCode,  Creator, CreateDate, Updater, UpdateDate)
-      values( @BillID,@BillDate,@ProductCode,@BatchNo,@RowID,@BillTypeCode,@Creator, getdate(), @Updater, getdate())
+      values( @BillID,@BillDate,@ProductCode,@BatchNo,@SectionID,@BillTypeCode,@Creator, getdate(), @Updater, getdate())
     </CommandString>
   </Command>
   <Command ID="UpdatePalletOutStock">

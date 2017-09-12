@@ -32,6 +32,7 @@
         var SessionUrl = '<% =ResolveUrl("~/Login.aspx")%>';
         var FormID = "InStock";
         var BaseWhere = encodeURIComponent("BillID like 'OS%'");
+        var blnChange = true;
 
         function getQueryParams(objname, queryParams) {
             var Where = "1=1 ";
@@ -125,13 +126,14 @@
             }
 
             if (row) {
-                var data = { Action: 'FillDataTable', Comd: 'WMS.SelectBill', Where: "BillID='" + row.BillID + "'" };
+                var data = { Action: 'FillDataTable', Comd: 'WMS.SelectBillMaster', Where: "BillID='" + row.BillID + "'" };
                 $.post(url, data, function (result) {
+                    blnChange = false;
                     var Product = result.rows[0];
                     $('#AddWin').dialog('open').dialog('setTitle', '出库单--编辑');
                     $('#fm').form('load', Product);
+                    blnChange = true;
                     BindDropDownList();
-                    $('#txtSectionID').combobox('setValue', Product.SectionID);
                 }, 'json');
             }
             SetTextRead('txtProductName');
@@ -177,17 +179,25 @@
 
             }
             else {
-                data = { Action: 'Edit', Comd: 'WMS.UpdateOutStock', json: query };
+                var data = { Action: 'Delete', FormID: FormID, Comd: 'WMS.DeleteOutStock', json: "'"+ $('#txtID').textbox('getValue') +"'" };
                 $.post(url, data, function (result) {
                     if (result.status == 1) {
-                        ReloadGrid('dg');
-                        $('#AddWin').window('close');
+                        debugger;
+                        var Adddata = { Action: 'CreateOutStock', SubJson: query };
+                        $.post(OtherUrl, Adddata, function (result) {
+                            if (result.status == 1) {
+                                ReloadGrid('dg');
+                                $('#AddWin').window('close');
+
+                            } else {
+                                $.messager.alert('错误', result.msg, 'error');
+                            }
+                        }, 'json');
 
                     } else {
                         $.messager.alert('错误', result.msg, 'error');
                     }
                 }, 'json');
-
             }
         }
         //删除管理员
@@ -439,7 +449,8 @@
         }
         
         function GetProduct(newValue, oldValue) {
-           
+            if (!blnChange)
+                return;
             var row = GetFieldValue("VCMD_ProductInStock", "*", encodeURIComponent("ProductCode='" + newValue + "'"));
             if (row.length>0) {
                 $("#txtProductName").textbox('setValue', row[0].ProductName);
@@ -537,7 +548,7 @@
                 </td>
                 <td style="width:*" align="right">
                     <a href="javascript:void(0)" onclick="Add()"   class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true">新增</a> 
-                    <a href="javascript:void(0)" onclick="Edit()" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true">修改</a>
+                   <%-- <a href="javascript:void(0)" onclick="Edit()" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true">修改</a>--%>
                     <a href="javascript:void(0)" onclick="Delete()" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true">删除</a>
                     <a href="javascript:void(0)"  onclick="CheckBill()" class="easyui-linkbutton" data-options="iconCls:'icon-man',plain:true">审核</a> 
                     <a href="javascript:void(0)" onclick="UnCheckBill()" class="easyui-linkbutton" data-options="iconCls:'icon-undo',plain:true">取消审核</a> 
@@ -600,7 +611,7 @@
                         阶段</td>
                     <td colspan="2">
                        &nbsp;<input id="txtSectionName" name="SectionName" class="easyui-textbox" data-options="editable:false" maxlength="50" style="width: 186px;" />
-                        <input type="hidden" id="txtSectionID" name="RowID" />
+                        <input type="hidden" id="txtSectionID" name="SectionID" />
                         <input type="hidden" id="txtBillTypeCode" name="BillTypeCode" />
                     </td>
                 </tr>
