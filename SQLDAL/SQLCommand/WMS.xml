@@ -40,7 +40,7 @@
   </Command>
   <Command ID="UpdateInStockBill">
     <CommandString>
-      update WMS_BillMaster set BillDate=@BillDate, ProductCode=@ProductCode, BatchNo=@BatchNo, SectionID=@SectionID, PalletQty=@PalletQty, Memo=@Memo, Updater=@Updater, UpdateDate=getdate() where BillID=@BillID
+      update WMS_Bill set BillDate=@BillDate, ProductCode=@ProductCode, BatchNo=@BatchNo, SectionID=@SectionID, PalletQty=@PalletQty, Memo=@Memo, Updater=@Updater, UpdateDate=getdate() where BillID=@BillID
     </CommandString>
   </Command>
 

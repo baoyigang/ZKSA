@@ -131,9 +131,11 @@
                 $.post(url, data, function (result) {
                     var Product = result.rows[0];
                     $('#AddWin').dialog('open').dialog('setTitle', '入库单--编辑');
+                    blnProductChange = true;
                     $('#fm').form('load', Product);
                     BindDropDownList();
-                    $('#txtSectionID').combobox('setValue', Product.SectionID);
+                    $('#ddlSectionID').combobox('setValue', Product.SectionID);
+                    blnProductChange = false;
                 }, 'json');
             }
           
@@ -148,6 +150,7 @@
             var data = { Action: 'FillDataTable', Comd: 'cmd.SelectProductDetail', Where: encodeURIComponent("ProductCode='" + Product + "'") };
             BindComboList(data, 'ddlSectionID', 'RowID', 'SectionName');
         }
+        
         var blnProductChange = false;
         function GetProduct(newValue, oldValue) {
             if (blnProductChange)

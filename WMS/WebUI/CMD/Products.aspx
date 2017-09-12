@@ -237,7 +237,7 @@
             }
 
             //判断单号是否存在
-            if (HasExists('cmd_product', "ProductCode='" + $('#txtBatchNewProductCode').textbox('getValue') + "'", '模具编号已经存在，请重新修改！'))
+            if (HasExists('cmd_product', "ProductCode='" + $('#txtBatchNewProductCode').textbox('getValue') + "'", '产品编号已经存在，请重新修改！'))
                 return false;
             var productcode = $('#txtBatchProductCode').textbox('getValue');
             var Newproductcode = $('#txtBatchNewProductCode').textbox('getValue');
@@ -499,6 +499,7 @@
 		                <th data-options="field:'RowID',width:100">序号</th>
                         <th data-options="field:'SectionName',width:100">产品阶段</th>
                         <th data-options="field:'RegionCode',width:100">库区编号</th>
+                        <th data-options="field:'RegionName',width:100">库区名称</th>
                         <th data-options="field:'GrowDay',width:100">成长天数</th>
                         <th data-options="field:'PreQty',width:100">每盆数量</th>
 		            </tr>

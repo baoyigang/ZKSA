@@ -618,8 +618,8 @@
                             产品编号 </td>
                         <td colspan="3" >
                         
-                            &nbsp;<input id="txtEditProductCode" name="ProductCode" class="easyui-textbox" data-options="onChange:GetProduct" style="width:235px"/> 
-                            <input id="txtEditProductName" name="ProductName" class="easyui-textbox" data-options="disabled:true,editable:false" style="width:220px"/> 
+                            &nbsp;<input id="txtEditProductCode" name="ProductCode" class="easyui-textbox" data-options="onChange:GetProduct" style="width:160px"/> 
+                            <input id="txtEditProductName" name="ProductName" class="easyui-textbox" data-options="disabled:true,editable:false" style="width:294px"/> 
                         
                         </td>
                     </tr>
@@ -628,16 +628,13 @@
                                 批次
                         </td>
                         <td  style="width:33%">
-                                &nbsp;<input id="ddlEditBatchNo" name="BatchNo" 
-                                    class="easyui-combobox" data-options="editable:false" maxlength="20" style="width:160px"/>
+                                &nbsp;<input id="txtEditBatchNo" name="BatchNo" class="easyui-textbox"  maxlength="20" style="width:160px"/>
                         </td>
                         <td align="center" class="smalltitle"style="width:15%"  >
                                 每盘数量
                         </td>
                         <td style="width:33%"> 
-                            &nbsp;<input 
-                                id="txtEditPreQty" name="PreQty" class="easyui-textbox" 
-                                data-options="" maxlength="50" style="width:160px"/>
+                            &nbsp;<input id="txtEditPreQty" name="PreQty" class="easyui-numberbox" data-options="min:0,precision:0" maxlength="50" style="width:160px"/>
                         </td>
                         
                     </tr>
@@ -653,27 +650,17 @@
                                 入库日期
                         </td>
                         <td > 
-                            &nbsp;<input 
-                                id="txtEditIndate" name="Indate" class="easyui-textbox" 
-                                data-options="" maxlength="50" style="width:160px"/>
+                            &nbsp;<input  id="txtEditIndate" name="Indate" class="easyui-datebox" data-options="required:true,editable:false" style="width:160px"/>
+                                <input type="hidden" id="txtEditPalletCode" name="PalletCode" />  
                         </td>
                      </tr>   
-                     <tr style="display:none"> 
-                        <td align="center" class="musttitle"style="width:9%">
-                            任务号 </td>
-                        <td style="width:21%" >
-                        
-                            &nbsp;<input id="txtEditPalletCode" name="PalletCode" class="easyui-textbox" data-options="required:true" style="width:160px"/>                        
-                        </td>
-                    </tr>
+                     
                     <tr style="height:40px;">
                         <td align="center"  class="smalltitle" style="width:15%;">
                             备注
                         </td>
                         <td colspan="3">
-                            &nbsp;<input 
-                                id="txtEditMemo" name="Memo" class="easyui-textbox" 
-                                data-options="multiline:true" style="width:460px; height:32px"/>
+                            &nbsp;<input id="txtEditMemo" name="Memo" class="easyui-textbox" data-options="multiline:true" style="width:460px; height:32px"/>
 
                         </td>
                         </tr>
