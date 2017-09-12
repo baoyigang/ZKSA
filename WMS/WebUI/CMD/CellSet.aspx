@@ -69,6 +69,26 @@
 
             $('#Form1').form('clear');
             BindDropDownList();
+            var data = { Action: 'FillDataTable', Comd: 'cmd.SelectAreaEdit', Where: "1=1" };
+            $.ajax({
+                type: "post",
+                url: BaseUrl,
+                data: data,
+                //contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: false,
+                success: function (json) {
+                    $('#ddlAreaName').combobox({
+                        data: json.rows,
+                        valueField: 'AreaCode',
+                        textField: 'AreaName'
+                    });
+                },
+                error: function (msg) {
+                    alert(msg);
+                }
+            });
+
             $('#AddCell').dialog('open').dialog('setTitle', '库位--新增');
             $('#txtPageState').val("AddCell");
             $("#txtEditCellCode").textbox('readonly', false);
@@ -450,20 +470,23 @@
 		    <tr>
                 <th data-options="field:'',checkbox:true"></th> 
 		        <th data-options="field:'CellCode',width:100,sortable:true">货位编码</th>
-                <th data-options="field:'CellName',width:180,sortable:true">名称</th>
+                <th data-options="field:'CellName',width:100,sortable:true">货位名称</th>
                 <th data-options="field:'IsActive',width:60,formatter:formatActive">异常</th>
                 <th data-options="field:'IsLock',width:60,sortable:true,formatter:formatLock">锁定</th>
-                <th data-options="field:'CellRow',width:80">层</th>
-                <th data-options="field:'CellColumn',width:80">列</th>
-                <th data-options="field:'Depth',width:80">深度</th>
-                <th data-options="field:'Memo',width:130">备注</th>
-                <th data-options="field:'DisOutStation',width:100">距出库站台距离</th>
-                <th data-options="field:'DisInStation',width:100">距入库站台距离</th>
+                <th data-options="field:'CellRow',width:50">层</th>
+                <th data-options="field:'CellColumn',width:50">列</th>
+                <th data-options="field:'Depth',width:50">深度</th>
+                <th data-options="field:'Memo',width:100">备注</th>
                 <th data-options="field:'AreaCode',width:80,formatter:formatSet">区域编码</th>
-                <th data-options="field:'AreaName',width:160">区域名称</th>
+                <th data-options="field:'AreaName',width:120">区域名称</th>
                 <th data-options="field:'RegionCode',width:80,sortable:true,formatter:formatSet">库区编码</th>
-                <th data-options="field:'RegionName',width:160,sortable:true">库区名称</th>
-                <th data-options="field:'ProductCode',width:160,sortable:true">产品编码</th>
+                <th data-options="field:'RegionName',width:120,sortable:true">库区名称</th>
+                <th data-options="field:'ProductCode',width:120,sortable:true">产品编码</th>
+                <th data-options="field:'ProductName',width:120,sortable:true">产品名称</th>
+                <th data-options="field:'BatchNo',width:120,sortable:true">批次</th>
+                <th data-options="field:'PreQty',width:120,sortable:true">每盘数量</th>
+                <th data-options="field:'SectionName',width:120,sortable:true">阶段</th>
+                <th data-options="field:'InDate',width:200,sortable:true">入库日期</th>
 		    </tr>
         </thead>
     </table>    
