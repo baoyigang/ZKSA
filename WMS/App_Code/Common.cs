@@ -38,7 +38,7 @@ public class Common
             DataParameter[] AddPara = new DataParameter[dt.Columns.Count];
             for (int K = 0; K < dt.Columns.Count; K++)
             {
-                if (dt.Columns[K].ColumnName.IndexOf("Date") > 0 && dt.Rows[j][K].ToString() == "")
+                if (dt.Columns[K].ColumnName.ToLower().IndexOf("date") > 0 && dt.Rows[j][K].ToString() == "")
                     AddPara[K] = new DataParameter("@" + dt.Columns[K].ColumnName, null);
                 else if (dt.Columns[K].ColumnName.IndexOf("{") >= 0)
                     AddPara[K] = new DataParameter(dt.Columns[K].ColumnName, dt.Rows[j][K]);

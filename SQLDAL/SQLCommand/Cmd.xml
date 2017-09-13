@@ -191,34 +191,23 @@
     </CommandString>
   </Command>
 
-  <Command ID="SelectCellEdit">
-    <CommandString>
-      select c.*,WMS_Pallet.ProductCode,CMD_Area.AreaName,CMD_Region.RegionName,WMS_Pallet.BatchNo,CMD_ProductDetail.SectionName,CMD_ProductDetail.PreQty,CMD_Product.ProductName   from CMD_Cell  c
-      left join CMD_Region on CMD_Region.RegionCode=c.RegionCode
-      LEFT join CMD_Area on CMD_Region.AreaCode=cmd_area.AreaCode
-      left join WMS_Pallet on WMS_Pallet.CellCode=c.CellCode
-      left join CMD_ProductDetail on CMD_ProductDetail.ProductCode=WMS_Pallet.ProductCode and CMD_ProductDetail.RowID=WMS_Pallet.RowID
-      left join CMD_Product on CMD_Product.ProductCode=CMD_ProductDetail.ProductCode
-      WHERE {0} ORDER BY {1}
-    </CommandString>
-  </Command>
-
   <Command ID="UpdateCellEdit">
     <CommandString>
       update CMD_Cell set AreaCode=@AreaCode,RegionCode=@RegionCode,IsActive=@ActiveCode,IsLock=@LockCode  where CellCode in ({0})
     </CommandString> 
   </Command>
-
-  <Command ID="SelectCellSetEdit">
+  <Command ID="SelectCellEdit">
     <CommandString>
-      select c.CellCode,c.CellName,c.AreaCode,Cmd_area.AreaName,c.RegionCode,c.Memo,c.Depth,c.CellRow,c.CellColumn,c.DisInStation,c.DisOutStation,CMD_Region.RegionName,c.IsActive,c.IsLock,WMS_Pallet.ProductCode,WMS_Pallet.BatchNo,CMD_ProductDetail.RowID,CMD_ProductDetail.SectionName,CMD_ProductDetail.PreQty,WMS_Pallet.Indate,WMS_Pallet.PalletCode,WMS_Pallet.LockQty from CMD_Cell c
-      inner join WMS_Pallet on WMS_Pallet.CellCode=c.CellCode
-      inner join CMD_ProductDetail on CMD_ProductDetail.RowID=WMS_Pallet.RowID and CMD_ProductDetail.ProductCode=WMS_Pallet.ProductCode
+      select c.*,CMD_Area.AreaName,CMD_Region.RegionName,CMD_ProductDetail.SectionName,CMD_Product.ProductName   from CMD_Cell  c
       left join CMD_Region on CMD_Region.RegionCode=c.RegionCode
       LEFT join CMD_Area on CMD_Region.AreaCode=cmd_area.AreaCode
+      left join CMD_ProductDetail on CMD_ProductDetail.ProductCode=c.PalletBarCode and CMD_ProductDetail.RowID=c.SectionID
+      left join CMD_Product on CMD_Product.ProductCode=CMD_ProductDetail.ProductCode
       where {0}
+      order by {1}
     </CommandString>
   </Command>
+
   <Command ID="SelectCellSetEdit11111">
     <CommandString>
       select c.CellCode,c.CellName,c.AreaCode,Cmd_area.AreaName,c.RegionCode,c.Memo,c.Depth,c.CellRow,c.CellColumn,c.DisInStation,c.DisOutStation,CMD_Region.RegionName,c.IsActive,c.IsLock,WMS_Pallet.ProductCode,WMS_Pallet.BatchNo,CMD_ProductDetail.RowID,CMD_ProductDetail.SectionName,CMD_ProductDetail.PreQty,WMS_Pallet.Indate,WMS_Pallet.PalletCode,WMS_Pallet.LockQty from CMD_Cell c
@@ -564,7 +553,7 @@
 
   <Command ID="UpdateCmdCell">
     <CommandString>
-      update Cmd_cell set IsActive=@IsActive,@IsLock=@IsLock,CellName=@CellName,AreaCode=@AreaCode,RegionCode=@RegionCode,PalletBarCode=@PalletCode,Indate=@Indate Where CellCode=@CellCode
+      update Cmd_cell set IsActive=@IsActive,@IsLock=@IsLock,CellName=@CellName,AreaCode=@AreaCode,RegionCode=@RegionCode,PalletBarCode=@PalletBarCode,Indate=@Indate,Qty=@Qty,BatchNo=@BatchNo,SectionID=@SectionID Where CellCode=@CellCode
     </CommandString>
   </Command>
   
@@ -584,7 +573,7 @@
   <Command ID="InsertCmdCell">
     <CommandString>
       if not exists(select * from Cmd_Cell where @CellCode='')
-      insert into Cmd_CEll Values(@CellCode,@CellName,'001'+SUBSTRING(@CellCode,1,3),@AreaCode,@RegionCode,SUBSTRING(@CellCode,7,3),SUBSTRING(@CellCode,4,3),SUBSTRING(@CellCode,10,1),'','',@IsActive,0,1,1,'','',@IsLock,0,0,null,null)
+      insert into Cmd_CEll Values(@CellCode,@CellName,'001'+SUBSTRING(@CellCode,1,3),@AreaCode,@RegionCode,SUBSTRING(@CellCode,7,3),SUBSTRING(@CellCode,4,3),SUBSTRING(@CellCode,10,1),'','',@IsActive,1,1,1,@IsLock,0,'',@Indate,@Memo,@PalletBarCode,'',@BatchNo,@SectionID,@Qty)
     </CommandString>
   </Command>
   
