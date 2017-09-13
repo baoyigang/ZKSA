@@ -484,9 +484,9 @@
                 <th data-options="field:'ProductCode',width:120,sortable:true">产品编码</th>
                 <th data-options="field:'ProductName',width:120,sortable:true">产品名称</th>
                 <th data-options="field:'BatchNo',width:120,sortable:true">批次</th>
-                <th data-options="field:'PreQty',width:120,sortable:true">每盘数量</th>
-                <th data-options="field:'SectionName',width:120,sortable:true">阶段</th>
-                <th data-options="field:'InDate',width:200,sortable:true">入库日期</th>
+                <th data-options="field:'PreQty',width:80,sortable:true">每盘数量</th>
+                <th data-options="field:'SectionName',width:80,sortable:true">阶段</th>
+                <th data-options="field:'InDate',width:180,sortable:true">入库日期</th>
 		    </tr>
         </thead>
     </table>    
