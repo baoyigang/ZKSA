@@ -3,7 +3,7 @@ var BaseUrl = "../../Handler/BaseHandler.ashx";
 
 //绑定下拉控件
 //data:数据源参数,CtlID:控件ID,FieldID:绑定控件值栏位,FieldName:绑定控制显示栏位
-var BindComboList = function ( data, CtlID, FieldID, FieldName) {
+var BindComboList = function (data, CtlID, FieldID, FieldName) {
     $.ajax({
         type: "post",
         url: BaseUrl,
@@ -15,7 +15,11 @@ var BindComboList = function ( data, CtlID, FieldID, FieldName) {
             $('#' + CtlID).combobox({
                 data: json.rows,
                 valueField: FieldID,
-                textField: FieldName
+                textField: FieldName,
+                loadFilter: function (data) {
+                    data.unshift({ FieldID: '', FieldName: '' });
+                    return data;
+                }
             });
             if (json.rows.length > 0)
                 $('#' + CtlID).combobox('select', eval('json.rows[0].' + FieldID));
