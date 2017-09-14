@@ -66,32 +66,17 @@
                 alert("您没有新增权限！");
                 return false;
             }
+            $('#ddlEditRowID').combobox({
+                data: [],
+                valueField: 'RowID',
+                textField: 'SectionName'
+            });
+
 
             $('#Form1').form('clear');
-            BindDropDownList();
             var data = { Action: 'FillDataTable', Comd: 'cmd.SelectAreaEdit', Where: "1=1" };
-            $.ajax({
-                type: "post",
-                url: BaseUrl,
-                data: data,
-                //contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                async: false,
-                success: function (json) {
-                    $('#ddlAreaName').combobox({
-                        data: json.rows,
-                        valueField: 'AreaCode',
-                        textField: 'AreaName',
-                        loadFilter: function (data) {
-                            data.unshift({ RegionCode: '', RegionName: '' });
-                            return data;
-                        }
-                    });
-                },
-                error: function (msg) {
-                    alert(msg);
-                }
-            });
+            BindComboList(data, 'ddlAreaName', 'AreaCode', 'AreaName');
+        
 
             $('#AddCell').dialog('open').dialog('setTitle', '库位--新增');
             $('#txtPageState').val("AddCell");
@@ -161,30 +146,13 @@
 
                     var data = { Action: 'FillDataTable', Comd: 'CMD.SelectCellEdit', Where: "c.CellCode='" + row.CellCode + "'" };
 
-                $.post(url, data, function (result) {
-                    var Product = result.rows[0];
-                    $('#AddCell').dialog('open').dialog('setTitle', '库位--编辑');
-                    var eadata = { Action: 'FillDataTable', Comd: 'cmd.SelectRegionEdit', Where: "a.AreaCode='" + Product.AreaCode + "'" };
-                    $.ajax({
-                        type: 'post',
-                        url: url,
-                        data: eadata,
-                        dataType: 'json',
-                        async: false,
-                        success: function (json) {
-                            $("#ddlRegionName").combobox({
-                                data: json.rows,
-                                valueField: 'RegionCode',
-                                textField: 'RegionName',
-                                loadFilter:function(data){
-                                    data.unshift({ RegionCode: '', RegionName: '' });
-                                return data;
-                                 }
-                            });
-                        }
-                    })
-                    $('#Form1').form('load', Product);
-                }, 'json');
+                    $.post(url, data, function (result) {
+                        var Product = result.rows[0];
+                        $('#AddCell').dialog('open').dialog('setTitle', '库位--编辑');
+                        var eadata = { Action: 'FillDataTable', Comd: 'cmd.SelectRegionEdit', Where: "a.AreaCode='" + Product.AreaCode + "'" };
+                        BindComboList(eadata, 'ddlRegionName', 'RegionCode', 'RegionName');
+                        $('#Form1').form('load', Product);
+                    }, 'json');
             }
             
             $('#txtPageState').val("EditCell");
@@ -233,7 +201,8 @@
             var data = { Action: 'FillDataTable', Comd: 'cmd.SelectAreaEdit', Where: "1=1" };
             BindComboList(data, 'ddlAreaName', 'AreaCode', 'AreaName');
 
-            var edata = { Action: 'FillDataTable', Comd: 'cmd.SelectRowID', Where: "ProductCode='" + $('#dg').datagrid('getSelected').ProductCode +"'" };
+            var edata = { Action: 'FillDataTable', Comd: 'cmd.SelectRowID', Where: "ProductCode='" + $('#dg').datagrid('getSelected').ProductCode + "'" };
+//            BindComboList(edata, 'ddlEditRowID', 'RowID', 'SectionName','0');
             $.ajax({
                 type: "post",
                 url: BaseUrl,
@@ -298,8 +267,13 @@
                     return false;
                 }
                 var test = $('#txtPageState').val();
-                if (test == 'AddCell') 
-                {
+                if (test == 'AddCell') {
+
+                    if ($("#txtEditProductCode").textbox('getValue') == "") {
+                        $("#txtEditBatchNo").textbox('setValue', '');
+                        $("#ddlEditRowID").combobox('setValue', '');
+                        $("#txtEditIndate").textbox('setValue', '');
+                    }
 //                    var paramjs = "{\"CellCode\":\"" + $("#txtEditCellCode").textbox("getValue") + "\"," + "\"AreaCode\":\"" + $("#ddlAreaName").combobox("getValue") + "\"," + "\"RegionCode\":\"" + $("#ddlRegionName").combobox("getValue") + "\"," + "\"IsActive\":\"" + $("#ddlEditActive").combobox("getValue") + "\"," + "\"IsLock\":\"" + $("#ddlEditLock").combobox("getValue") + "\"," + "\"CellName\":\"" + $("#txtEditCellName").textbox("getValue") + "\"," + "\"PalletBarCode\":\"" + $("#txtEditProductCode").textbox("getValue") + "\"," + "\"BatchNo\":\"" + $("#txtEditBatchNo").textbox("getValue") + "\"," + "\"Qty\":\"" + $("#txtEditPreQty").textbox("getValue") + "\"," + "\"SectionID\":\"" + $("#ddlEditRowID").combobox("getValue") + "\"," + "\"Indate\":\"" + $("#txtEditIndate").textbox("getValue") + "\","  + "\"Memo\":\"" + $("#txtEditMemo").textbox("getValue") + "\"," + "\"Indate\":\"" + $("#txtEditIndate").textbox("getValue") + "\"}";
                     var query = $("#Form1").serializeArray();
                     query = convertArray(query);
@@ -321,12 +295,17 @@
 //                    var paramjs = "{\"CellCode\":\"" + $("#txtEditCellCode").textbox("getValue") + "\"," + "\"AreaCode\":\"" + $("#ddlAreaName").combobox("getValue") + "\"," + "\"RegionCode\":\"" + $("#ddlRegionName").combobox("getValue") + "\"," + "\"IsActive\":\"" + $("#ddlEditActive").combobox("getValue") + "\"," + "\"IsLock\":\"" + $("#ddlEditLock").combobox("getValue") + "\"," + "\"CellName\":\"" + $("#txtEditCellName").textbox("getValue") + "\"," + "\"Memo\":\"" + $("#txtEditMemo").textbox("getValue") + "\"," + "\"PalletBarCode\":\"" + $("#txtEditProductCode").textbox("getValue") + "\"," + "\"BatchNo\":\"" + $("#txtEditBatchNo").textbox("getValue") + "\"," + "\"Qty\":\"" + $("#txtEditPreQty").textbox("getValue") + "\"," + "\"SectionID\":\"" + $("#ddlEditRowID").combobox("getValue") + "\"," + "\"Indate\":\"" + $("#txtEditIndate").textbox("getValue") + "\"}";
 
 //                    var ParamQuery = "[" + encodeURIComponent(paramjs) + "]";
+                    if ($("#txtEditProductCode").textbox('getValue') == "") {
+                        $("#txtEditBatchNo").textbox('setValue', '');
+                        $("#ddlEditRowID").combobox('setValue', '');
+                        $("#txtEditIndate").textbox('setValue', '');
+                    }
 
                     var query = $("#Form1").serializeArray();
                     query = convertArray(query);
                     var ParamQuery = "[" + encodeURIComponent(jsonToStr(query)) + "]";
 
-                    if ($("#txtEditProductCode").textbox("getValue")!="") {
+               
                         data = { Action: 'Edit', Comd: 'Cmd.UpdateCmdCell', json: ParamQuery };
                         $.post(url, data, function (result) {
                             if (result.status == 1) {
@@ -337,19 +316,7 @@
                                 $.messager.alert('错误', result.msg, 'error');
                             }
                         }, 'json');
-                    }
-                    else {
-                        data = { Action: 'Edit', Comd: 'Cmd.UpdateCmdCellEmpty', json: ParamQuery };
-                        $.post(url, data, function (result) {
-                            if (result.status == 1) {
-                                ReloadGrid('dg');
-                                $('#AddCell').window('close');
-
-                            } else {
-                                $.messager.alert('错误', result.msg, 'error');
-                            }
-                        }, 'json');
-                    }
+                  
                 }
         }
         function CheckRow(rowIndex, rowData) {
@@ -395,6 +362,7 @@
                 $("#txtEditProductCode").textbox('setValue', '');
                 $("#txtEditProductName").textbox('setValue', ProductName);
                 $('#txtEditProductCode').next('span').find('input').focus();
+                BindProduct();
                 blnProductChange = false;
 
             }
@@ -447,21 +415,9 @@
 
             $("#ddlAreaName").combobox({
                 onSelect: function (record) {
-                    var val = $('#ddlAreaName').combobox('getValue'); var eadata = { Action: 'FillDataTable', Comd: 'cmd.SelectRegionEdit', Where: "a.AreaCode='" + val + "'" };
-                    $.ajax({
-                        type: 'post',
-                        url: url,
-                        data: eadata,
-                        dataType: 'json',
-                        async: false,
-                        success: function (json) {
-                            $("#ddlRegionName").combobox({
-                                data: json.rows,
-                                valueField: 'RegionCode',
-                                textField: 'RegionName'
-                            });
-                        }
-                    })
+                    var val = $('#ddlAreaName').combobox('getValue');
+                    var eadata = { Action: 'FillDataTable', Comd: 'cmd.SelectRegionEdit', Where: "a.AreaCode='" + val + "'" };
+                    BindComboList(eadata, 'ddlRegionName', 'RegionCode', 'RegionName');
                 }
             });
         })
