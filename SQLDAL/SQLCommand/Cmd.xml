@@ -556,6 +556,11 @@
       update Cmd_cell set IsActive=@IsActive,@IsLock=@IsLock,CellName=@CellName,AreaCode=@AreaCode,RegionCode=@RegionCode,PalletBarCode=@PalletBarCode,Indate=@Indate,Qty=@Qty,BatchNo=@BatchNo,SectionID=@SectionID Where CellCode=@CellCode
     </CommandString>
   </Command>
+  <Command ID="UpdateCmdCellEmpty">
+    <CommandString>
+      update Cmd_cell set IsActive=@IsActive,@IsLock=@IsLock,CellName=@CellName,AreaCode=@AreaCode,RegionCode=@RegionCode,PalletBarCode='',Indate=null,Qty='',BatchNo='',SectionID='' Where CellCode=@CellCode
+    </CommandString>
+  </Command>
   
   <Command ID="DeleteWmsPallet">
     <CommandString>

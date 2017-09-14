@@ -300,9 +300,10 @@
                 var test = $('#txtPageState').val();
                 if (test == 'AddCell') 
                 {
-                    var paramjs = "{\"CellCode\":\"" + $("#txtEditCellCode").textbox("getValue") + "\"," + "\"AreaCode\":\"" + $("#ddlAreaName").combobox("getValue") + "\"," + "\"RegionCode\":\"" + $("#ddlRegionName").combobox("getValue") + "\"," + "\"IsActive\":\"" + $("#ddlEditActive").combobox("getValue") + "\"," + "\"IsLock\":\"" + $("#ddlEditLock").combobox("getValue") + "\"," + "\"CellName\":\"" + $("#txtEditCellName").textbox("getValue") + "\"," + "\"PalletBarCode\":\"" + $("#txtEditProductCode").textbox("getValue") + "\"," + "\"BatchNo\":\"" + $("#txtEditBatchNo").textbox("getValue") + "\"," + "\"Qty\":\"" + $("#txtEditPreQty").textbox("getValue") + "\"," + "\"SectionID\":\"" + $("#ddlEditRowID").combobox("getValue") + "\"," + "\"Indate\":\"" + $("#txtEditIndate").textbox("getValue") + "\","  + "\"Memo\":\"" + $("#txtEditMemo").textbox("getValue") + "\"," + "\"Indate\":\"" + $("#txtEditIndate").textbox("getValue") + "\"}";
-                   
-                    var ParamQuery = "[" + encodeURIComponent(paramjs) + "]";
+//                    var paramjs = "{\"CellCode\":\"" + $("#txtEditCellCode").textbox("getValue") + "\"," + "\"AreaCode\":\"" + $("#ddlAreaName").combobox("getValue") + "\"," + "\"RegionCode\":\"" + $("#ddlRegionName").combobox("getValue") + "\"," + "\"IsActive\":\"" + $("#ddlEditActive").combobox("getValue") + "\"," + "\"IsLock\":\"" + $("#ddlEditLock").combobox("getValue") + "\"," + "\"CellName\":\"" + $("#txtEditCellName").textbox("getValue") + "\"," + "\"PalletBarCode\":\"" + $("#txtEditProductCode").textbox("getValue") + "\"," + "\"BatchNo\":\"" + $("#txtEditBatchNo").textbox("getValue") + "\"," + "\"Qty\":\"" + $("#txtEditPreQty").textbox("getValue") + "\"," + "\"SectionID\":\"" + $("#ddlEditRowID").combobox("getValue") + "\"," + "\"Indate\":\"" + $("#txtEditIndate").textbox("getValue") + "\","  + "\"Memo\":\"" + $("#txtEditMemo").textbox("getValue") + "\"," + "\"Indate\":\"" + $("#txtEditIndate").textbox("getValue") + "\"}";
+                    var query = $("#Form1").serializeArray();
+                    query = convertArray(query);
+                    var ParamQuery = "[" + encodeURIComponent(jsonToStr(query)) + "]";
 
                     data = { Action: 'Add', Comd: 'Cmd.InsertCmdCell', json: ParamQuery };
                     $.post(url, data, function (result) {
@@ -317,20 +318,38 @@
                 }
                 else (test == 'EditCell')
                 {
-                    var paramjs = "{\"CellCode\":\"" + $("#txtEditCellCode").textbox("getValue") + "\"," + "\"AreaCode\":\"" + $("#ddlAreaName").combobox("getValue") + "\"," + "\"RegionCode\":\"" + $("#ddlRegionName").combobox("getValue") + "\"," + "\"IsActive\":\"" + $("#ddlEditActive").combobox("getValue") + "\"," + "\"IsLock\":\"" + $("#ddlEditLock").combobox("getValue") + "\"," + "\"CellName\":\"" + $("#txtEditCellName").textbox("getValue") + "\"," + "\"Memo\":\"" + $("#txtEditMemo").textbox("getValue") + "\"," + "\"PalletBarCode\":\"" + $("#txtEditProductCode").textbox("getValue") + "\"," + "\"BatchNo\":\"" + $("#txtEditBatchNo").textbox("getValue") + "\"," + "\"Qty\":\"" + $("#txtEditPreQty").textbox("getValue") + "\"," + "\"SectionID\":\"" + $("#ddlEditRowID").combobox("getValue") + "\"," + "\"Indate\":\"" + $("#txtEditIndate").textbox("getValue") + "\"}";
+//                    var paramjs = "{\"CellCode\":\"" + $("#txtEditCellCode").textbox("getValue") + "\"," + "\"AreaCode\":\"" + $("#ddlAreaName").combobox("getValue") + "\"," + "\"RegionCode\":\"" + $("#ddlRegionName").combobox("getValue") + "\"," + "\"IsActive\":\"" + $("#ddlEditActive").combobox("getValue") + "\"," + "\"IsLock\":\"" + $("#ddlEditLock").combobox("getValue") + "\"," + "\"CellName\":\"" + $("#txtEditCellName").textbox("getValue") + "\"," + "\"Memo\":\"" + $("#txtEditMemo").textbox("getValue") + "\"," + "\"PalletBarCode\":\"" + $("#txtEditProductCode").textbox("getValue") + "\"," + "\"BatchNo\":\"" + $("#txtEditBatchNo").textbox("getValue") + "\"," + "\"Qty\":\"" + $("#txtEditPreQty").textbox("getValue") + "\"," + "\"SectionID\":\"" + $("#ddlEditRowID").combobox("getValue") + "\"," + "\"Indate\":\"" + $("#txtEditIndate").textbox("getValue") + "\"}";
 
-                    var ParamQuery = "[" + encodeURIComponent(paramjs) + "]";
+//                    var ParamQuery = "[" + encodeURIComponent(paramjs) + "]";
 
-                    data = { Action: 'Edit', Comd: 'Cmd.UpdateCmdCell', json: ParamQuery };
-                    $.post(url, data, function (result) {
-                        if (result.status == 1) {
-                            ReloadGrid('dg');
-                            $('#AddCell').window('close');
+                    var query = $("#Form1").serializeArray();
+                    query = convertArray(query);
+                    var ParamQuery = "[" + encodeURIComponent(jsonToStr(query)) + "]";
 
-                        } else {
-                            $.messager.alert('错误', result.msg, 'error');
-                        }
-                    }, 'json');
+                    if ($("#txtEditProductCode").textbox("getValue")!="") {
+                        data = { Action: 'Edit', Comd: 'Cmd.UpdateCmdCell', json: ParamQuery };
+                        $.post(url, data, function (result) {
+                            if (result.status == 1) {
+                                ReloadGrid('dg');
+                                $('#AddCell').window('close');
+
+                            } else {
+                                $.messager.alert('错误', result.msg, 'error');
+                            }
+                        }, 'json');
+                    }
+                    else {
+                        data = { Action: 'Edit', Comd: 'Cmd.UpdateCmdCellEmpty', json: ParamQuery };
+                        $.post(url, data, function (result) {
+                            if (result.status == 1) {
+                                ReloadGrid('dg');
+                                $('#AddCell').window('close');
+
+                            } else {
+                                $.messager.alert('错误', result.msg, 'error');
+                            }
+                        }, 'json');
+                    }
                 }
         }
         function CheckRow(rowIndex, rowData) {
