@@ -253,7 +253,7 @@
                            仓库
                     </td>
                     <td width="210px"> 
-                        &nbsp;<input id="txtWareHouseCode" name="WareHouseCode" class="easyui-combobox" data-options="required:false,editable:false" maxlength="50" style="width:200px"/>
+                        &nbsp;<input id="txtWareHouseCode" name="WarehouseCode" class="easyui-combobox" data-options="required:false,editable:false" maxlength="50" style="width:200px"/>
                     </td>
                 </tr>
                 <tr style=" height:80px">
