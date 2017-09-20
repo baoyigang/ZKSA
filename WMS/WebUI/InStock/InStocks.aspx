@@ -504,7 +504,7 @@
                         <th data-options="field:'TaskNo',width:100">任务号</th>
                         <th data-options="field:'StateDesc',width:80">状态</th>
                         <th data-options="field:'CellCode',width:100">货位</th>
-                        <th data-options="field:'Quantity',width:100">数量</th>
+                        <th data-options="field:'Qty',width:100">数量</th>
                         <th data-options="field:'StartDate',width:120">开始时间</th>
                         <th data-options="field:'FinishDate',width:120">结束时间</th>
                          

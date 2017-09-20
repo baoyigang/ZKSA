@@ -455,7 +455,7 @@
             if (row.length>0) {
                 $("#txtProductName").textbox('setValue', row[0].ProductName);
                 $("#txtBatchNo").textbox('setValue', row[0].BatchNo);
-                $("#txtSectionID").val(row[0].RowID);
+                $("#txtSectionID").val(row[0].SectionID);
                 $("#txtSectionName").textbox('setValue', row[0].SectionName);
             }
             else {
@@ -476,7 +476,7 @@
             $("#txtProductCode").textbox('setValue', RowData.ProductCode);
             $("#txtProductName").textbox('setValue', RowData.ProductName);
             $("#txtBatchNo").textbox('setValue', RowData.BatchNo);
-            $("#txtSectionID").val(RowData.RowID);
+            $("#txtSectionID").val(RowData.SectionID);
             $("#txtSectionName").textbox('setValue', RowData.SectionName);
         }
  </script>  

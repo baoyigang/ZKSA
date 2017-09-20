@@ -82,7 +82,7 @@
   </Command>
   <Command ID="UpdatePalletOutStock">
     <CommandString>
-      update WMS_Pallet set LockQty=Quantity where ProductCode=@ProductCode and BatchNo=@BatchNo and RowID=@RowID
+      update cmd_cell set isLock=1 where PalletBarCode=@ProductCode and BatchNo=@BatchNo and SectionID=@RowID
     </CommandString>
   </Command>
   <Command ID="DeleteOutStock">
