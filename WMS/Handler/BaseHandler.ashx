@@ -212,10 +212,8 @@ public class BaseHandler : IHttpHandler, IRequiresSessionState
             string Comd = context.Request["Comd"].ToString();
             string where = context.Server.UrlDecode(context.Request["json"].ToString());
 
-
-
             BLL.BLLBase bll = new BLL.BLLBase();
-            bll.ExecNonQuery(Comd, new DataParameter[] { new DataParameter("{0}", where) });
+            bll.ExecNonQuery(Comd, new DataParameter[] { new DataParameter("{0}", where), new DataParameter("@Where", where) });
 
             Common.AddOperateLog(context.Session["G_user"].ToString(), Module, "删除单号：" + where.Replace("'", ""));
             

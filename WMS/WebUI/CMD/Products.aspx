@@ -237,7 +237,7 @@
             }
 
             //判断单号是否存在
-            if (HasExists('cmd_product', "ProductCode='" + $('#txtBatchNewProductCode').textbox('getValue') + "'", '模具编号已经存在，请重新修改！'))
+            if (HasExists('cmd_product', "ProductCode='" + $('#txtBatchNewProductCode').textbox('getValue') + "'", '产品编号已经存在，请重新修改！'))
                 return false;
             var productcode = $('#txtBatchProductCode').textbox('getValue');
             var Newproductcode = $('#txtBatchNewProductCode').textbox('getValue');
@@ -468,8 +468,7 @@
 <body class="easyui-layout">
     <div class="easyui-layout" data-options="fit:true">
     <div data-options="region:'north',split:true" style="height:300px;">
-    <table id="dg"  class="easyui-datagrid" 
-        data-options="loadMsg: '正在加载数据，请稍等...',fit:true, rownumbers:true,url:'../../Handler/BaseHandler.ashx?Action=PageDate&FormID='+FormID,
+    <table id="dg"  class="easyui-datagrid" data-options="loadMsg: '正在加载数据，请稍等...',fit:true, rownumbers:true,url:'../../Handler/BaseHandler.ashx?Action=PageDate&FormID='+FormID,
                      pagination:true,pageSize:PageSize, pageList:[15, 20, 30, 50],method:'post',striped:true,fitcolumns:true,toolbar:'#tb',onLoadSuccess: function(data){ 
                              $('#dg').datagrid('selectRow',0);},singleSelect:true,selectOnCheck:false,checkOnSelect:false,onSelect:getDetail,onCheck:CheckRow,onUncheck:CheckRow"> 
         <thead data-options="frozen:true">
@@ -500,6 +499,7 @@
 		                <th data-options="field:'RowID',width:100">序号</th>
                         <th data-options="field:'SectionName',width:100">产品阶段</th>
                         <th data-options="field:'RegionCode',width:100">库区编号</th>
+                        <th data-options="field:'RegionName',width:100">库区名称</th>
                         <th data-options="field:'GrowDay',width:100">成长天数</th>
                         <th data-options="field:'PreQty',width:100">每盆数量</th>
 		            </tr>
@@ -560,7 +560,7 @@
                         <td > 
                             &nbsp;<input 
                                 id="ddlCategoryCode" name="CategoryCode" class="easyui-combobox" 
-                                data-options="required:true" maxlength="50" style="width:270px"/>
+                                data-options="required:true,editable:false" maxlength="50" style="width:270px"/>
                         </td>
                         
                     </tr>

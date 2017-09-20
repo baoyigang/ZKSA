@@ -59,8 +59,21 @@
 
                 Where = BaseWhere + encodeURIComponent(" and " + Where);
             }
-            else { 
-            
+            else {
+
+                var ProductCode = $("#txtSelectProductCode").textbox("getValue");
+                var ProductName = $("#txtSelectProductName").textbox("getValue");
+                var CategoryName = $("#txtSelectCategoryName").textbox("getValue");
+                if (ProductCode != "") {
+                    Where += " and ProductCode like '%" + ProductCode + "%'";
+                }
+                if (ProductName != "") {
+                    Where += " and ProductName like '%" + ProductName + "%'";
+                }
+                if (CategoryName != "") {
+                    Where += " and CategoryName like '%" + CategoryName + "%'";
+                }
+                Where = encodeURIComponent(Where);
 
             }
             queryParams.Where = Where;
@@ -86,6 +99,7 @@
             $("#txtBatchNo").textbox('setValue', new Date().Format("yyMMdd")); //设置批次号
             SetTextRead('txtProductName');
             $('#txtPageState').val("Add");
+            $('#txtBillTypeCode').val("001");
 
             $("#txtID").textbox('readonly', false);
             SetInitValue('<%=Session["G_user"] %>');
@@ -105,20 +119,28 @@
                 $.messager.alert("提示", "请选择要修改的行！", "info");
                 return false;
             }
-           
+            var BillID = row.BillID;
+            var state = GetFieldValue("WMS_BillMaster", "State", "BillID='" + BillID + "'");
+            if (state >= 1) {
+                var StateDes = GetFieldValue("View_WMS_BillMaster", "StateDesc", "BillID='" + BillID + "'");
+                $.messager.alert("提示", BillID + "单号已" + StateDes + "，无法修改!", "info");
+                return false;
+            }
             if (row) {
-                var data = { Action: 'FillDataTable', Comd: 'WMS.SelectBill', Where: "BillID='" + row.BillID + "'" };
+                var data = { Action: 'FillDataTable', Comd: 'WMS.SelectBillMaster', Where: "BillID='" + row.BillID + "'" };
                 $.post(url, data, function (result) {
                     var Product = result.rows[0];
-                    $('#AddWin').dialog('open').dialog('setTitle', '客户资料--编辑');
+                    $('#AddWin').dialog('open').dialog('setTitle', '入库单--编辑');
+                    blnProductChange = true;
                     $('#fm').form('load', Product);
                     BindDropDownList();
-                    $('#txtSectionID').combobox('setValue', Product.SectionID);
+                    $('#ddlSectionID').combobox('setValue', Product.SectionID);
+                    blnProductChange = false;
                 }, 'json');
             }
           
             $('#txtPageState').val("Edit");
-
+            $('#txtBillTypeCode').val("001");
             $("#txtID").textbox("readonly", true);
             SetInitColor();
         }
@@ -128,6 +150,7 @@
             var data = { Action: 'FillDataTable', Comd: 'cmd.SelectProductDetail', Where: encodeURIComponent("ProductCode='" + Product + "'") };
             BindComboList(data, 'ddlSectionID', 'RowID', 'SectionName');
         }
+        
         var blnProductChange = false;
         function GetProduct(newValue, oldValue) {
             if (blnProductChange)
@@ -211,7 +234,7 @@
                         var deleteCode = [];
                         var blnUsed = false;
                         $.each(checkedItems, function (index, item) {
-                            var StateDes = GetFieldValue("View_WMS_Bill", "StateDesc", "BillID='" + item.BillID + "'");
+                            var StateDes = GetFieldValue("View_WMS_BillMaster", "StateDesc", "BillID='" + item.BillID + "'");
                             if (HasExists('WMS_Bill', "BillID='" + item.BillID + "'and State!=0", "入库单号 " + item.BillID + "已" + StateDes + ",无法删除！")) {
                                 blnUsed = true;
                             }  
@@ -254,7 +277,7 @@
                 var blnUsed = false;
                 $.each(checkedItems, function (index, item) {
                     var BillID = item.BillID;
-                    var state = GetFieldValue("WMS_Bill", "State", encodeURIComponent("BillID='" + BillID + "'"));
+                    var state = GetFieldValue("View_WMS_BillMaster", "State", encodeURIComponent("BillID='" + BillID + "'"));
                     if (state == 1) {
                         $.messager.alert("提示", BillID + "单号已审核!", "info");
                         blnUsed = true;
@@ -298,7 +321,7 @@
                 var blnUsed = false;
                 $.each(checkedItems, function (index, item) {
                     var BillID = item.BillID;
-                    var state = GetFieldValue("WMS_Bill", "State", encodeURIComponent("BillID='" + BillID + "'"));
+                    var state = GetFieldValue("View_WMS_BillMaster", "State", encodeURIComponent("BillID='" + BillID + "'"));
                     if (state == 0) {
                         $.messager.alert("提示", BillID + "单号未审核!", "info");
                         blnUsed = true;
@@ -342,7 +365,7 @@
                 var blnUsed = false;
                 $.each(checkedItems, function (index, item) {
                     var BillID = item.BillID;
-                    var state = GetFieldValue("WMS_Bill", "State", encodeURIComponent("BillID='" + BillID + "'"));
+                    var state = GetFieldValue("View_WMS_BillMaster", "State", encodeURIComponent("BillID='" + BillID + "'"));
                     if (state == 0) {
                         $.messager.alert("提示", BillID + "单号还未审核，不能进行入库作业!", "info");
                         blnUsed = true;
@@ -385,7 +408,7 @@
                 var blnUsed = false;
                 $.each(checkedItems, function (index, item) {
                     var BillID = item.BillID;
-                    var state = GetFieldValue("WMS_Bill", "State", encodeURIComponent("BillID='" + BillID + "'"));
+                    var state = GetFieldValue("View_WMS_BillMaster", "State", encodeURIComponent("BillID='" + BillID + "'"));
                     if (state > 2) {
                         var StateDes = GetFieldValue("View_WMS_BillMaster", "StateDesc", "BillID='" + BillID + "'");
                         $.messager.alert("提示", BillID + "单号已" + StateDes + "，不能再进行取消作业。", "info");
@@ -571,6 +594,7 @@
                         托盘数</td>
                     <td colspan="2">
                         <input id="txtPalletQty" name="PalletQty" class="easyui-numberbox"  maxlength="200" data-options="min:0,precision:0,required:true" style="width:190px"/>
+                        <input id="txtBillTypeCode" name="BillTypeCode" type="hidden" value="001" />
                     </td>
                 </tr>
               
@@ -633,7 +657,7 @@
                     <tr>
                         <th data-options="field:'',checkbox:true"></th> 
                         <th data-options="field:'ProductCode',width:100">产品编号</th>
-                        <th data-options="field:'ProductName',width:120">品名</th>
+                        <th data-options="field:'ProductName',width:120">产品名称</th>
                         <th data-options="field:'CategoryName',width:120">产品类别</th>
                     </tr>
             </thead>            
@@ -642,12 +666,12 @@
            <table>
                 <tr>
                      <td>
-                        库区
-                        <input id="txtQueryAreaCodee" class ="easyui-textbox" style="width: 100px" /> 
-                        货架
-                        <input id="textQueryShelf" class ="easyui-textbox" style="width: 100px" /> 
-                        货位
-                        <input id="txtQueryCellCode" class="easyui-textbox" style="width: 100px" />  
+                         产品编号
+                        <input id="txtSelectProductCode" class ="easyui-textbox" style="width: 80px" /> 
+                        品名
+                        <input id="txtSelectProductName" class ="easyui-textbox" style="width: 80px" /> 
+                        产品类别
+                        <input id="txtSelectCategoryName" class="easyui-textbox" style="width: 80px" />  
                         <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" onclick="ReloadGrid('dgSelect')" >查询</a> 
                     </td>
                     <td>

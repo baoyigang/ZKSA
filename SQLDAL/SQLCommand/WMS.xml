@@ -17,6 +17,12 @@
     </CommandString>
   </Command>
 
+  <Command ID="DeleteBill">
+    <CommandString>
+      delete from  WMS_Bill where BillID in ({0})
+    </CommandString>
+  </Command>
+  
   <Command ID="UpdateCheckBillMaster">
     <CommandString>
       update WMS_Bill set Checker=@Checker,CheckDate=getdate(),State=@State  where BillID in ({0})
@@ -28,13 +34,13 @@
   <!--入库单-->
   <Command ID="InsertInStockBill">
     <CommandString>
-      insert into WMS_Bill(BillID, BillDate, ProductCode, BatchNo, SectionID, PalletQty, Memo, Creator, CreateDate, Updater, UpdateDate)
-      values( @BillID,@BillDate,@ProductCode,@BatchNo,@SectionID,@PalletQty,@Memo,@Creator, getdate(), @Updater, getdate())
+      insert into WMS_Bill(BillID, BillDate, ProductCode, BatchNo, SectionID, PalletQty,BillTypeCode, Memo, Creator, CreateDate, Updater, UpdateDate)
+      values( @BillID,@BillDate,@ProductCode,@BatchNo,@SectionID,@PalletQty,@BillTypeCode,@Memo,@Creator, getdate(), @Updater, getdate())
     </CommandString>
   </Command>
   <Command ID="UpdateInStockBill">
     <CommandString>
-      update WMS_BillMaster set BillDate=@BillDate, ProductCode=@ProductCode, BatchNo=@BatchNo, SectionID=@SectionID, PalletQty=@PalletQty, Memo=@Memo, Updater=@Updater, UpdateDate=getdate() where BillID=@BillID
+      update WMS_Bill set BillDate=@BillDate, ProductCode=@ProductCode, BatchNo=@BatchNo, SectionID=@SectionID, PalletQty=@PalletQty, Memo=@Memo, Updater=@Updater, UpdateDate=getdate() where BillID=@BillID
     </CommandString>
   </Command>
 
@@ -51,18 +57,27 @@
   
   
   <!--出库单-->
-
-  <Command ID="SelectProductInStock">
+ 
+  <!--到期出库产品-->
+  <Command ID="SelectProductAttermOutStock">
     <CommandString>
-      select * from VCMD_ProductInstock
+      select * from VCMD_ProductAttermOutStock
       where {0}
       order by {1}
     </CommandString>
   </Command>
+  <!--在库产品-->
+  <Command ID="SelectProductInStock">
+    <CommandString>
+      select * from VCMD_ProductInStock
+      where {0}
+       
+    </CommandString>
+  </Command>
   <Command ID="InsertOutStock">
     <CommandString>
-      insert into WMS_Bill(BillID, BillDate, ProductCode, BatchNo, SectionID, Creator, CreateDate, Updater, UpdateDate)
-      values( @BillID,@BillDate,@ProductCode,@BatchNo,@RowID,@Creator, getdate(), @Updater, getdate())
+      insert into WMS_Bill(BillID, BillDate, ProductCode, BatchNo, SectionID, BillTypeCode,  Creator, CreateDate, Updater, UpdateDate)
+      values( @BillID,@BillDate,@ProductCode,@BatchNo,@SectionID,@BillTypeCode,@Creator, getdate(), @Updater, getdate())
     </CommandString>
   </Command>
   <Command ID="UpdatePalletOutStock">
@@ -70,9 +85,28 @@
       update WMS_Pallet set LockQty=Quantity where ProductCode=@ProductCode and BatchNo=@BatchNo and RowID=@RowID
     </CommandString>
   </Command>
-  
-  
-  
+  <Command ID="DeleteOutStock">
+    <CommandString>
+      Sp_DeleteOutStock
+    </CommandString>
+  </Command>
+  <Command ID="SpOutStockTask">
+    <CommandString>
+      Sp_OutStockTask
+    </CommandString>
+  </Command>
+  <Command ID="SpCancelOutstockTask">
+    <CommandString>
+      Sp_OutstockCancelTask
+    </CommandString>
+  </Command>
+
+  <Command ID="UpdateOutStock">
+    <CommandString>
+      update WMS_BillMaster set BillDate=@BillDate, BillTypeCode=@BillTypeCode , Memo=@Memo, Updater=@Updater, UpdateDate=getdate() where BillID=@BillID
+    </CommandString>
+  </Command>
+
   <Command ID="SelectProductDetailView">
     <CommandString>
       select * from View_ProductDetail
@@ -80,8 +114,6 @@
       order by {1}
     </CommandString>
   </Command>
-  
-  
   <Command ID="SelectInventoryBillDetail">
     <CommandString>
       select detail.*,cell.CellName,area.AreaName,shelf.ShelfName from WMS_BillDetail detail
@@ -92,56 +124,8 @@
       order by {1}
     </CommandString>
   </Command>
-
- 
-
-  <Command ID="DeleteBillMaster">
-    <CommandString>
-      delete from  WMS_BillMaster where BillId in ({0})
-    </CommandString>
-  </Command>
-  <Command ID="DeleteBillDetail">
-    <CommandString>
-      delete from WMS_BillDetail  where BillId in ({0})
-    </CommandString>
-  </Command>
-
+   
   
- 
-  <!--出库单-->
-  <Command ID="SpOutStockTask">
-    <CommandString>
-      Sp_OutstockTask
-    </CommandString>
-  </Command>
-  <Command ID="SpCancelOutstockTask">
-    <CommandString>
-      Sp_OutstockCancelTask
-    </CommandString>
-  </Command>  
-  <Command ID="InsertOutStockBill">
-    <CommandString>
-      insert into WMS_BillMaster(BillID, BillDate,  BillTypeCode,Memo,Creator, CreateDate, Updater, UpdateDate)
-      values( @BillID,@BillDate, @BillTypeCode,@Memo,@Creator, getdate(), @Updater, getdate())
-    </CommandString>
-  </Command> 
-  <Command ID="InsertOutStockDetail">
-    <CommandString>
-      insert into WMS_BillDetail(BillID,RowID, ProductCode,Quantity,Memo)
-      values(@BillID,@RowID, @ProductCode,@Quantity,@Memo)
-    </CommandString>
-  </Command> 
-  <Command ID="UpdateOutStock">
-    <CommandString>
-      update WMS_BillMaster set BillDate=@BillDate, BillTypeCode=@BillTypeCode , Memo=@Memo, Updater=@Updater, UpdateDate=getdate() where BillID=@BillID
-    </CommandString>
-  </Command>  
-  <Command ID="DeleteBillDetail">
-    <CommandString>
-      delete from  WMS_BillDetail  where BillID in ({0})
-    </CommandString>
-  </Command>
-
   <!--盘库单-->
   <Command ID="InsertInventoryStockBill">
     <CommandString>

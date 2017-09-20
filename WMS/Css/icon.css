@@ -1,5 +1,7 @@
 .icon-WareHouse  {  background: url('../Images/icon/Warehouse.png') no-repeat;width:18px; line-height:18px; display:inline-block;  }
 .icon-Area  {  background: url('../Images/icon/Area.png') no-repeat;width:18px; line-height:18px; display:inline-block;  }
+.icon-Region  {  background: url('../Images/icon/Region.png') no-repeat;width:18px; line-height:18px; display:inline-block;  }
+.icon-Cell  {  background: url('../Images/icon/Cell.png') no-repeat;width:18px; line-height:18px; display:inline-block;  }
 .icon-ProductType  {  background: url('../Images/icon/ProductType.png') no-repeat;width:18px; line-height:18px; display:inline-block;  }
 .icon-Product  {  background: url('../Images/icon/Product.png') no-repeat ;width:18px; line-height:18px; display:inline-block;  }
 .icon-Customer  {  background: url('../Images/icon/Customer.png')  no-repeat;width:18px; line-height:18px; display:inline-block;   }
@@ -36,3 +38,5 @@
 .icon-Line  {  background: url('../Images/icon/Line.png')  no-repeat;width:18px; line-height:18px; display:inline-block;  }
 .icon-Batch  {  background: url('../Images/icon/Batch.png') no-repeat;width:18px; line-height:18px; display:inline-block;  }
 .icon-area  {  background: url('../Images/icon/area.png') no-repeat;width:18px; line-height:18px; display:inline-block;  }
+.icon-region  {  background: url('../Images/icon/region.png') no-repeat;width:18px; line-height:18px; display:inline-block;  }
+.icon-cell  {  background: url('../Images/icon/cell.png') no-repeat;width:18px; line-height:18px; display:inline-block;  }
