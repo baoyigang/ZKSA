@@ -73,7 +73,7 @@ public class OtherHandler : IHttpHandler, IRequiresSessionState
                 DataParameter[] AddPara = new DataParameter[dtSub.Columns.Count];
                 for (int K = 0; K < dtSub.Columns.Count; K++)
                 {
-                    if (dtSub.Columns[K].ColumnName.IndexOf("Date") > 0 && dtSub.Rows[j][K].ToString() == "")
+                    if (dtSub.Columns[K].ColumnName.ToLower().IndexOf("date") > 0 && dtSub.Rows[j][K].ToString() == "")
                         AddPara[K] = new DataParameter("@" + dtSub.Columns[K].ColumnName, null);
                     else if (dtSub.Columns[K].ColumnName.IndexOf("{") >= 0)
                         AddPara[K] = new DataParameter(dtSub.Columns[K].ColumnName, dtSub.Rows[j][K]);
