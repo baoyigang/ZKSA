@@ -36,7 +36,7 @@
             var Pai = $("#txtPai").textbox("getValue");
             var Lie = $("#txtLie").textbox("getValue");
             var Ceng = $("#txtCeng").textbox("getValue");
-
+            var cellValue = $("#comboCell").is(':checked');
             if (CellCode != "") {
                 Where += " and c.CellCode like '%" + CellCode + "%'";
             }
@@ -47,10 +47,13 @@
                 Where += " and SUBSTRING(c.cellcode,1,3) like '%" + Pai + "%'";
             }
             if (Lie != "") {
-                Where += " and SUBSTRING(c.cellcode,4,3) like '%" + Lie + "%'";
+                Where += " and Convert(int,SUBSTRING(c.cellcode,4,3)) = " + Lie + "";
             }
             if (Ceng != "") {
-                Where += " and SUBSTRING(c.cellcode,7,3) like '%" + Ceng + "%'";
+                Where += " and Convert(int,SUBSTRING(c.cellcode,7,3)) = " + Ceng + "";
+            }
+            if (cellValue) {
+                Where += " and PalletBarCode =''";
             }
             queryParams.Where = encodeURIComponent(Where);
             //queryParams.t = new Date().getTime(); //使系统每次从后台执行动作，而不是使用缓存。
@@ -125,7 +128,7 @@
                 });
             }
         }
-        //修改管理员
+        //修改单个货位
         function EditCell() {
             if (SessionTimeOut(SessionUrl)) {
                 return false;
@@ -140,12 +143,17 @@
                 return false;
             }
             $("#txtEditCellCode").textbox('readonly', true);
+            $("#ddlAreaName").combobox({ disabled: false });
+            $("#ddlRegionName").combobox({ disabled: false });
             BindCellDrop();
             if (row) {
-                   $('#Form1').form('clear');
-
+                $('#Form1').form('clear');
                     var data = { Action: 'FillDataTable', Comd: 'CMD.SelectCellEdit', Where: "c.CellCode='" + row.CellCode + "'" };
 
+                    if (row.PalletBarCode != '') {
+                        $("#ddlAreaName").combobox({ disabled: true });
+                        $("#ddlRegionName").combobox({ disabled: true });
+                    }
                     $.post(url, data, function (result) {
                         var Product = result.rows[0];
                         $('#AddCell').dialog('open').dialog('setTitle', '库位--编辑');
@@ -160,7 +168,7 @@
             $("#txtID").textbox("readonly", true);
             SetInitColor();
         }
-        //修改管理员
+        //批量修改
         function Edit() {
             if (SessionTimeOut(SessionUrl)) {
                 return false;
@@ -245,6 +253,9 @@
                 //                                                            blnUsed = true;
                 updateCode.push(item.CellCode);
             });
+            if (HasExists('CMD_Cell', "CellCode in ('" + updateCode.join("','") +"') and PalletBarCode!=''", '所选货位中存在非空货位，请重新修改！')) {
+                return false;
+            }
             if (blnUsed)
                 return false;
             var data = { Action: 'Edit', Comd: 'Cmd.UpdateCellEdit', json: js + "\"{0}\":\"'" + updateCode.join("','") + "'\"" + "}]" };
@@ -467,6 +478,9 @@
                     列
                     <input id="txtCeng" class="easyui-textbox" style="width: 50px" />
                     层
+                    &nbsp;&nbsp;
+                    <input id="comboCell" type="checkbox" style="width:20px;position: relative;top:2px"/>
+                    空货位
                     &nbsp;&nbsp;
                     <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" onclick="ReloadGrid('dg')">查询</a> 
                 </td>
