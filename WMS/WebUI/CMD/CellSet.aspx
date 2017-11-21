@@ -244,14 +244,18 @@
                 return false;
             }
             var checkedItems = $('#dg').datagrid('getChecked');
+            var RegionCode = checkedItems[0].RegionCode;
             var query = createParam();
             var js = "[{\"AreaCode\":\"" + $("#SelectAreaName").combobox("getValue") + "\"," + "\"RegionCode\":\"" + $("#SelectRegionName").combobox("getValue") + "\"," + "\"ActiveCode\":\"" + $("#SelectActive").combobox("getValue") + "\"," + "\"LockCode\":\"" + $("#SelectLock").combobox("getValue") + "\",";
             var updateCode = [];
             var blnUsed = false;
             $.each(checkedItems, function (index, item) {
-                //                                                        if (HasExists('VUsed_CMD_ProductCategory', "CategoryCode='" + item.CategoryCode + "'", "类别编码 " + item.CategoryCode + " 已经被其它单据使用，无法删除！"))
-                //                                                            blnUsed = true;
                 updateCode.push(item.CellCode);
+                if (item.RegionCode != RegionCode) {
+                    blnUsed = true;
+                    alert("请修改相同库区库位");
+                    return false;
+                }
             });
             if (HasExists('CMD_Cell', "CellCode in ('" + updateCode.join("','") +"') and PalletBarCode!=''", '所选货位中存在非空货位，请重新修改！')) {
                 return false;
