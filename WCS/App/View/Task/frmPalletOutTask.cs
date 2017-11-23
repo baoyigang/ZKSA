@@ -45,7 +45,7 @@ namespace App.View.Task
             }
             string ProductCode = "00" + this.cmbCraneNo.Text;
             
-            //判断货位是否空闲，且只有空托盘
+            //判断货位是否空闲,且只有空托盘
             param = new DataParameter[] 
             { 
                 new DataParameter("{0}", string.Format("ProductCode='{0}' and IsActive='1' and IsLock='0' and CellCode='{1}'", ProductCode,this.txtCellCode.Text))

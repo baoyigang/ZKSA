@@ -46,8 +46,8 @@ public class OtherHandler : IHttpHandler, IRequiresSessionState
             case "CancelTaskWork":
                 strJson = CancelTaskWork(context);
                 break;
-            case "ClearZero":
-                strJson = ClearZero(context);
+            case "GetInStockProductQty":
+                strJson = GetInStockProductQty(context);
                 break;
         }
         context.Response.Clear();
@@ -234,25 +234,19 @@ public class OtherHandler : IHttpHandler, IRequiresSessionState
         return strJson;
     }
 
-    private string ClearZero(HttpContext context)
+    private string GetInStockProductQty(HttpContext context)
     {
-        JsonResult jr = new JsonResult();
-        try
-        {
-            string Comd = context.Request["Comd"].ToString();
-            string where = context.Server.UrlDecode(context.Request["Where"].ToString());
-            BLL.BLLBase bll = new BLL.BLLBase();
-            bll.ExecNonQuery(Comd, new DataParameter[] { new DataParameter("{0}", where) });
-            jr.status = 1;
-            jr.msg = "冲程清零成功！";
-        }
-        catch (Exception ex)
-        {
-            jr.status = 0;
-            jr.msg = ex.Message;
-        }
-        string strJson = JsonConvert.SerializeObject(jr);
-        return strJson;
+        string strNewID = "0";
+        string ProductCode = context.Request["ProductCode"].ToString();
+        string SectionID = context.Request["SectionID"].ToString();
+        string BatchNo = context.Request["BatchNo"].ToString();
+        string ProductQty =context.Request["ProductQty"].ToString();
+        BLL.BLLBase bll = new BLL.BLLBase();
+        DataTable dt = bll.FillDataTable("WMS.SPGetInStockProductQty", new DataParameter[] { new DataParameter("@ProductCode", ProductCode), new DataParameter("@SectionID", SectionID), new DataParameter("@BatchNo", BatchNo), new DataParameter("@ProductQty", ProductQty) });
+        if (dt.Rows.Count > 0)
+            strNewID = dt.Rows[0][0].ToString();
+        return strNewID;
+      
     }   
     
     private string Clear(HttpContext context)

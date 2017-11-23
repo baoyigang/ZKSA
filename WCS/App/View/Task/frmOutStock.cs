@@ -8,7 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using Util;
 using DataGridViewAutoFilter;
-using MCP;
+
 namespace App.View.Task
 {
     public partial class frmOutStock : BaseForm
@@ -18,7 +18,6 @@ namespace App.View.Task
         public frmOutStock()
         {
             InitializeComponent();
-            this.dgvMain.DataError += delegate(object sender, DataGridViewDataErrorEventArgs e) { }; 
         }
 
         private void toolStripButton_Close_Click(object sender, EventArgs e)
@@ -40,31 +39,19 @@ namespace App.View.Task
             {
                 if (this.dgvMain.SelectedRows[0].Cells["colState"].Value.ToString() == "等待")
                 {
-                    string TaskNo = this.dgvMain.SelectedRows[0].Cells["colTaskNo"].Value.ToString();
-                    string state = bll.GetFieldValue("WCS_Task", "State", string.Format("TaskNo='{0}'", TaskNo));
-                    if (state == "0")
+                    if (DialogResult.Yes == MessageBox.Show("您确定要取消此任务吗？", "询问", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
                     {
-                        if (DialogResult.Yes == MessageBox.Show("您确定要取消此任务吗？", "询问", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
-                        {
-                           
-                            //bll.ExecNonQuery("WCS.UpdateTaskStateByTaskNo", new DataParameter[] { new DataParameter("@State", 9), new DataParameter("@TaskNo", TaskNo) });
+                        string TaskNo = this.dgvMain.SelectedRows[0].Cells["colTaskNo"].Value.ToString();
+                        //bll.ExecNonQuery("WCS.UpdateTaskStateByTaskNo", new DataParameter[] { new DataParameter("@State", 9), new DataParameter("@TaskNo", TaskNo) });
 
-                            DataParameter[] param = new DataParameter[] { new DataParameter("@TaskNo", TaskNo) };
-                            bll.ExecNonQueryTran("WCS.Sp_TaskCancelProcess", param);
-                            this.BindData();
-                        }
-                    }
-                    else
-                    {
-                        BindData();
-                        Logger.Info("选中的状态非[等待],请确认！");
-                        return;
-
+                        DataParameter[] param = new DataParameter[] { new DataParameter("@TaskNo", TaskNo) };
+                        bll.ExecNonQueryTran("WCS.Sp_TaskCancelProcess", param);
+                        this.BindData();
                     }
                 }
                 else
                 {
-                    Logger.Info("选中的状态非[等待],请确认！");
+                    MessageBox.Show("选中的状态非[等待],请确认！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
             }
@@ -80,7 +67,7 @@ namespace App.View.Task
         }
         private void BindData()
         {
-            DataTable dt = bll.FillDataTable("WCS.SelectTask", new DataParameter[] { new DataParameter("{0}", "WCS_TASK.State in('0','1','2','3') and WCS_TASK.TaskType in ('12','15')") }); 
+            DataTable dt = bll.FillDataTable("WCS.SelectTask", new DataParameter[] { new DataParameter("{0}", "WCS_TASK.State in('0','1','2','3','8') and WCS_TASK.TaskType in ('12','15') And WCS_TASK.AreaCode='" + BLL.Server.GetAreaCode() + "'") }); 
             bsMain.DataSource = dt;
         }
 
@@ -92,25 +79,25 @@ namespace App.View.Task
         }
         private void dgvMain_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            //if (e.Button == MouseButtons.Right)
-            //{
-            //    if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
-            //    {
-            //        //若行已是选中状态就不再进行设置
-            //        if (dgvMain.Rows[e.RowIndex].Selected == false)
-            //        {
-            //            dgvMain.ClearSelection();
-            //            dgvMain.Rows[e.RowIndex].Selected = true;
-            //        }
-            //        //只选中一行时设置活动单元格
-            //        if (dgvMain.SelectedRows.Count == 1)
-            //        {
-            //            dgvMain.CurrentCell = dgvMain.Rows[e.RowIndex].Cells[e.ColumnIndex];
-            //        }
-            //        //弹出操作菜单
-            //        contextMenuStrip1.Show(MousePosition.X, MousePosition.Y);
-            //    }
-            //}
+            if (e.Button == MouseButtons.Right)
+            {
+                if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
+                {
+                    //若行已是选中状态就不再进行设置
+                    if (dgvMain.Rows[e.RowIndex].Selected == false)
+                    {
+                        dgvMain.ClearSelection();
+                        dgvMain.Rows[e.RowIndex].Selected = true;
+                    }
+                    //只选中一行时设置活动单元格
+                    if (dgvMain.SelectedRows.Count == 1)
+                    {
+                        dgvMain.CurrentCell = dgvMain.Rows[e.RowIndex].Cells[e.ColumnIndex];
+                    }
+                    //弹出操作菜单
+                    contextMenuStrip1.Show(MousePosition.X, MousePosition.Y);
+                }
+            }
         }
         private void toolStripMenuItem2_Click(object sender, EventArgs e)
         {
@@ -119,7 +106,7 @@ namespace App.View.Task
 
         private void toolStripMenuItem3_Click(object sender, EventArgs e)
         {
-            UpdatedgvMainState("3");
+            UpdatedgvMainState("8");
         }
 
         private void toolStripMenuItem4_Click(object sender, EventArgs e)
@@ -129,18 +116,51 @@ namespace App.View.Task
 
         private void toolStripMenuItem5_Click(object sender, EventArgs e)
         {
+            DataRow dr = ((DataRowView)dgvMain.Rows[this.dgvMain.CurrentCell.RowIndex].DataBoundItem).Row;
+            string State = dr["State"].ToString();
+            if (State != "0" || State != "8")
+            {
+                string TaskNo = dr["TaskNo"].ToString();
+                MCP.Logger.Info("任务号:" + TaskNo + "正在执行中请在监控界面变更状态为取消!");
+                return;
+            }
+
+
             UpdatedgvMainState("9");
         }
         private void UpdatedgvMainState(string State)
         {
             if (this.dgvMain.CurrentCell != null)
             {
-                string TaskNo = this.dgvMain.Rows[this.dgvMain.CurrentCell.RowIndex].Cells["colTaskNo"].Value.ToString();
+                string TaskNo = this.dgvMain.Rows[this.dgvMain.CurrentCell.RowIndex].Cells[0].Value.ToString();
                 DataParameter[] param = new DataParameter[] { new DataParameter("@TaskNo", TaskNo), new DataParameter("@State", State) };
-
                 bll.ExecNonQueryTran("WCS.Sp_UpdateTaskState", param);
-                MCP.Logger.Info("frmOutStock中任何号：" + TaskNo + "手动更新为" + State);
+
+                //堆垛机完成执行
+                //if (State == "7")
+                //{
+                //    if (CellCode != "")
+                //    {
+                //        DataParameter[] param = new DataParameter[] { new DataParameter("@TaskNo", TaskNo) };
+                //        bll.ExecNonQueryTran("WCS.Sp_TaskProcess", param);
+                //    }
+                //    else
+                //    {
+                //        DataTable dtXml = bll.FillDataTable("WCS.Sp_TaskProcessNoShelf", new DataParameter[] { new DataParameter("@TaskNo", TaskNo) });
+                //        if (dtXml.Rows.Count > 0)
+                //        {
+                //            string BillNo = dtXml.Rows[0][0].ToString();
+                //            if (BillNo.Trim().Length > 0)
+                //            {
+                //                string xml = Util.ConvertObj.ConvertDataTableToXmlOperation(dtXml, "BatchOutStock");
+                //                Context.ProcessDispatcher.WriteToService("ERP", "ACK", xml);
+                //                MCP.Logger.Info("单号" + dtXml.Rows[0][0].ToString() + "已完成,开始上报ERP系统");
+                //            }
+                //        }
+                //    }
+                //}
                 BindData();
+                MCP.Logger.Info("任务号:" + TaskNo + "手动更新为:" + State);
             }
         }
 
@@ -148,11 +168,10 @@ namespace App.View.Task
         {
             this.BindData();
         }
-        private void dgvMain_RowEnter(object sender, DataGridViewCellEventArgs e)
+
+        private void ToolStripMenuItem3_Click_1(object sender, EventArgs e)
         {
-            string TaskNo = this.dgvMain.Rows[e.RowIndex].Cells[1].Value.ToString();
-            DataTable dt = bll.FillDataTable("WCS.SelectTaskDetail", new DataParameter[] { new DataParameter("{0}", string.Format("T.TaskNo='{0}'", TaskNo)) });
-            bsDetail.DataSource = dt;
-        }
+            UpdatedgvMainState("3");
+        }        
     }
 }

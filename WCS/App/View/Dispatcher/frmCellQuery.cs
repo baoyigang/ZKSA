@@ -16,6 +16,7 @@ namespace App.View.Dispatcher
         
         private Dictionary<int, DataRow[]> shelf = new Dictionary<int, DataRow[]>();
         private Dictionary<int, string> ShelfCode = new Dictionary<int, string>();
+        private Dictionary<int, string> ShelfName = new Dictionary<int, string>();
         private Dictionary<int, int> ShelfRow = new Dictionary<int, int>();
         private Dictionary<int, int> ShelfColumn = new Dictionary<int, int>();
 
@@ -23,8 +24,11 @@ namespace App.View.Dispatcher
         private bool needDraw = false;
         private bool filtered = false;
 
-        private int[] Columns = new int[3];
-        private int[] Rows = new int[3];
+        private int[] Columns = new int[17];
+        private int[] Rows = new int[17];
+            
+        private int[] Page = new int[17];
+        private int[] PageShelf = new int[17];
         private int cellWidth = 0;
         private int cellHeight = 0;
         private int currentPage = 1;
@@ -32,6 +36,7 @@ namespace App.View.Dispatcher
         private int left = 5;
         string CellCode = "";
         private bool IsWheel = true;
+        private bool blnEdit;
 
         public frmCellQuery()
         {
@@ -52,6 +57,26 @@ namespace App.View.Dispatcher
 
             this.PColor.Visible = false;
         }
+        public frmCellQuery(bool blnedit)
+        {
+            InitializeComponent();
+            //设置双缓冲
+            SetStyle(ControlStyles.DoubleBuffer |
+                ControlStyles.UserPaint |
+                ControlStyles.AllPaintingInWmPaint, true);
+
+            Filter.EnableFilter(dgvMain);
+            pnlData.Visible = true;
+            pnlData.Dock = DockStyle.Fill;
+
+            pnlChart.Visible = false;
+            pnlChart.Dock = DockStyle.Fill;
+
+            pnlChart.MouseWheel += new MouseEventHandler(pnlChart_MouseWheel);
+
+            this.PColor.Visible = false;
+            blnEdit = blnedit;
+        }
         private void btnRefresh_Click(object sender, EventArgs e)
         {
             try
@@ -69,12 +94,15 @@ namespace App.View.Dispatcher
                     }
                 }
                 ShelfCode.Clear();
+                ShelfName.Clear();
 
                 DataTable dtShelf = bll.FillDataTable("CMD.SelectShelf");
                 for (int i = 0; i < dtShelf.Rows.Count; i++)
                 {
                     ShelfCode.Add(i + 1, dtShelf.Rows[i]["ShelfCode"].ToString());
+                    ShelfName.Add(i + 1, dtShelf.Rows[i]["ShelfName"].ToString());
                 }
+          
 
                 btnRefresh.Enabled = false;
                 btnChart.Enabled = false;
@@ -93,7 +121,7 @@ namespace App.View.Dispatcher
             }
             catch (Exception exp)
             {
-                MessageBox.Show("读入数据失败，原因：" + exp.Message);
+                MessageBox.Show("读入数据失败,原因:" + exp.Message);
             }
         }
 
@@ -103,7 +131,7 @@ namespace App.View.Dispatcher
             {
                 if (pnlData.Visible)
                 {
-                    this.PColor.Visible = false;
+                    this.PColor.Visible = true;
                     filtered = bsMain.Filter != null;
                     needDraw = true;
                     btnRefresh.Enabled = false;
@@ -134,81 +162,49 @@ namespace App.View.Dispatcher
             {
                 if (needDraw)
                 {
-                    for (int i = 0; i <= 1; i++)
+                    for (int i = 0; i <= PageShelf[currentPage - 1]-1; i++)
                     {
-                        int key = currentPage * 2 + i - 1;
+                        int key = 0;//currentPage * PageShelf[currentPage-1] + i - 1;
+
+
+                        for (int j = 0; j < currentPage; j++)
+                        {
+                            key += PageShelf[j];
+                        }
+                        if (PageShelf[currentPage - 1] > 1)
+                            key += i - 1;
                         if (!shelf.ContainsKey(key))
                         {
                             DataRow[] rows = cellTable.Select(string.Format("ShelfCode='{0}'", ShelfCode[key]), "CellCode desc");
                             shelf.Add(key, rows);
                             ShelfRow.Add(key, int.Parse(rows[0]["Rows"].ToString()));
                             ShelfColumn.Add(key, int.Parse(rows[0]["Columns"].ToString()));
-                            SetCellSize(ShelfColumn[key], ShelfRow[key]);
+
+                            SetCellSize(ShelfColumn[key], ShelfRow[key], PageShelf[currentPage - 1]);
                         }
                         else
                         {
                             DataRow[] rows = cellTable.Select(string.Format("ShelfCode='{0}'", ShelfCode[key]), "CellCode desc");
                             shelf[key] = rows;
                         }
-                        Font font = new Font("微软雅黑", 10);
-                        SizeF size = e.Graphics.MeasureString("第1排第5层", font);
+                        Font font = new Font("微软雅黑", 9);
+                        SizeF size = e.Graphics.MeasureString("A排01层", font);
                         float adjustHeight = Math.Abs(size.Height - cellHeight) / 2;
                         size = e.Graphics.MeasureString("13", font);
                         float adjustWidth = (cellWidth - size.Width) / 2;
 
-
                         DrawShelf(shelf[key], e.Graphics, top[i], font, adjustWidth);
 
-                        int tmpLeft = left + ShelfColumn[key] * cellWidth + 5;
+                        int tmpLeft = left + Columns[currentPage - 1]* cellWidth + 5;
 
                         for (int j = 0; j < Rows[currentPage-1]; j++)
                         {
-                            string s = string.Format("第{0}排第{1}层", key, Convert.ToString( ShelfRow[key] - j).PadLeft(2, '0'));
-                            e.Graphics.DrawString(s, font, Brushes.DarkCyan, tmpLeft, top[i] + (j + 1) * cellHeight);
-                        }
-                    }
 
-                    if (filtered)
-                    {
-                        int i = currentPage * 2;
-                        foreach (DataGridViewRow gridRow in dgvMain.Rows)
-                        {
-                            DataRowView cellRow = (DataRowView)gridRow.DataBoundItem;
-                            int shelf = 0;
-                            for (int j = 1; j <= ShelfCode.Count; j++)
-                            {
-                                if (ShelfCode[j].CompareTo(cellRow["ShelfCode"].ToString()) >= 0)
-                                {
-                                    shelf = j;
-                                    break;
-                                }
-                            }
-                            if (shelf == i || shelf == i - 1)
-                            {
-                                int top = 0;
-                                if (shelf % 2 == 0)
-                                    top = pnlContent.Height / 2;
-
-                                int column = Convert.ToInt32(cellRow["CellColumn"]);
-                                int row = Rows[currentPage-1] - Convert.ToInt32(cellRow["CellRow"]) + 1;
-                                int quantity = ReturnColorFlag(cellRow["PalletCode"].ToString(), cellRow["IsActive"].ToString(), cellRow["IsLock"].ToString(), cellRow["ErrorFlag"].ToString());
-
-                                int x = left + (Columns[currentPage - 1] - column) * cellWidth;
-                                int y = top + row * cellHeight;
-                                string strMsg = GetProductByPalletCode(cellRow["PalletCode"].ToString());
-
-                                e.Graphics.DrawString(strMsg, new Font("微软雅黑", 8), Brushes.Black, new Point(x + 1, y + 1));
-                                if (cellRow["PalletCode"].ToString() != "" && strMsg == "")
-                                {
-                                    FillCell(e.Graphics, top, row, column, 6, cellRow["ShelfCode"].ToString());
-                                }
-                                //FillCell(e.Graphics, top, row, column, quantity);
-                                //FillCell(e.Graphics, top, row, column, quantity, cellRow["ShelfCode"].ToString());
-                            }
+                            string s = string.Format("{0}排{1}层", ShelfName[key], Convert.ToString(ShelfRow[key] - j).PadLeft(2, '0'));
+                            e.Graphics.DrawString(s, font, Brushes.DarkCyan, tmpLeft, top[i] + (j + 1) * cellHeight);                            
                         }
                     }
                 }
-                PColor.Refresh();
                 IsWheel = false;
             }
             catch (Exception ex)
@@ -219,14 +215,14 @@ namespace App.View.Dispatcher
 
         private void DrawShelf(DataRow[] cellRows, Graphics g, int top, Font font, float adjustWidth)
         {
-            string shelfCode = "001";
+            string shelfCode = cellRows[0]["ShelfCode"].ToString();
             foreach (DataRow cellRow in cellRows)
             {
-                shelfCode = cellRow["ShelfCode"].ToString();
-                int column = Convert.ToInt32(cellRow["CellColumn"]) ;
-                
 
-                int row = Rows[currentPage-1] - Convert.ToInt32(cellRow["CellRow"]) + 1;
+                int column = Convert.ToInt32(cellRow["CellColumn"]);
+                string cellCode = cellRow["CellCode"].ToString();
+
+                int row = Rows[currentPage - 1] - Convert.ToInt32(cellRow["CellRow"]) + 1;
                 int quantity = ReturnColorFlag(cellRow["PalletCode"].ToString(), cellRow["IsActive"].ToString(), cellRow["IsLock"].ToString(), cellRow["ErrorFlag"].ToString());
 
                 int x = left + (Columns[currentPage - 1] - column) * cellWidth;
@@ -234,48 +230,23 @@ namespace App.View.Dispatcher
 
                 Pen pen = new Pen(Color.DarkCyan, 2);
                 g.DrawRectangle(pen, new Rectangle(x, y, cellWidth, cellHeight));
-                string strMsg = GetProductByPalletCode(cellRow["PalletCode"].ToString());
 
-                g.DrawString(strMsg, new Font("微软雅黑", 8), Brushes.Black, new Point(x + 1, y + 1));
-                if (!filtered)
-                {
-                    if (cellRow["PalletCode"].ToString() != "" && strMsg == "")
-                    {
-                        FillCell(g, top, row, column, 6, shelfCode);
-                    }
-                    //FillCell(g, top, row, column, quantity, shelfCode);
-                }
+
+                FillCell(g, top, row, column, quantity);
+
             }
-            for (int j = 1; j <= Columns[currentPage - 1]; j++)
+            for (int j = 1; j <= int.Parse(cellRows[0]["Columns"].ToString()); j++)
             {
-                if (j == 1 && cellRows.Length < Columns[currentPage - 1] * Rows[currentPage - 1])
-                    continue;
-                g.DrawString(Convert.ToString(j), new Font("微软雅黑", 10), Brushes.DarkCyan, left + (Columns[currentPage - 1] - j) * cellWidth + adjustWidth, top + cellHeight * (Rows[currentPage - 1] + 1) + 3);
+                DataRow[] drsExists = cellTable.Select(string.Format("shelfcode='{0}' and CellColumn={1}", shelfCode, j));
+                if (drsExists.Length > 0)
+                    g.DrawString(j.ToString(), new Font("微軟雅黑", 9), Brushes.DarkCyan, left + (Columns[currentPage - 1] - j) * cellWidth + adjustWidth, top + cellHeight * (Rows[currentPage - 1] + 1) + 3);
             }
         }
 
+     
         private void FillCell(Graphics g, int top, int row, int column, int quantity)
         {
             int x = left + (Columns[currentPage - 1] - column) * cellWidth;
-            int y = top + row * cellHeight;
-            if (quantity == 1)  //空货位锁定
-                g.FillRectangle(Brushes.Yellow, new Rectangle(x + 2, y + 2, cellWidth - 3, cellHeight - 3));
-            else if (quantity == 2) //有货未锁定
-                g.FillRectangle(Brushes.Blue, new Rectangle(x + 2, y + 2, cellWidth - 3, cellHeight - 3));
-            else if (quantity == 3) //有货且锁定
-                g.FillRectangle(Brushes.Green, new Rectangle(x + 2, y + 2, cellWidth - 3, cellHeight - 3));
-            else if (quantity == 4) //禁用
-                g.FillRectangle(Brushes.Gray, new Rectangle(x + 2, y + 2, cellWidth - 3, cellHeight - 3));
-            else if (quantity == 5) //有问题
-                g.FillRectangle(Brushes.Red, new Rectangle(x + 2, y + 2, cellWidth - 3, cellHeight - 3));
-            else if (quantity == 6) //托盘
-                g.FillRectangle(Brushes.Orange, new Rectangle(x + 2, y + 2, cellWidth - 3, cellHeight - 3));
-            else if (quantity == 7) //托盘锁定
-                g.FillRectangle(Brushes.Gold, new Rectangle(x + 2, y + 2, cellWidth - 3, cellHeight - 3));
-        }
-        private void FillCell(Graphics g, int top, int row, int column, int quantity,string shelfCode)
-        {           
-            int x = left + (Columns[currentPage - 1]-column) * cellWidth;
 
             int y = top + row * cellHeight;
             if (quantity == 1)  //空货位锁定
@@ -292,31 +263,41 @@ namespace App.View.Dispatcher
                 g.FillRectangle(Brushes.Orange, new Rectangle(x + 2, y + 2, cellWidth - 3, cellHeight - 3));
             else if (quantity == 7) //托盘锁定
                 g.FillRectangle(Brushes.Gold, new Rectangle(x + 2, y + 2, cellWidth - 3, cellHeight - 3));
+            
         }
         private void pnlChart_Resize(object sender, EventArgs e)
         {
-            Columns[0] = 26;
-            Columns[1] = 26;
-            Columns[2] = 26;
-            Rows[0] = 6;
-            Rows[1] = 6;
-            Rows[2] = 6;
-
-            SetCellSize(Columns[currentPage - 1], Rows[currentPage - 1]);
-            top[0] = 0;
-            top[1] = pnlContent.Height / 2;            
+            SetCellSize(Columns[currentPage - 1], Rows[currentPage - 1], PageShelf[currentPage - 1]);
+           
         }
 
-        private void SetCellSize(int Columns, int Rows)
+        private void SetCellSize(int Columns, int Rows,int PageShelf)
         {
+            top[0] = 0;
+            top[1] = pnlContent.Height / 2;
+            if (PageShelf == 1)
+                top[1] = pnlContent.Height;
+
             cellWidth = (pnlContent.Width - 90 - sbShelf.Width - 20) / Columns;
-            cellHeight = (pnlContent.Height / 2) / (Rows + 2);
+            cellHeight = (pnlContent.Height / PageShelf) / (Rows + PageShelf);
+            
         }
 
         private void pnlChart_MouseClick(object sender, MouseEventArgs e)
         {
             int i = e.Y < top[1] ? 0 : 1;
-            int shelf = currentPage * 2 + i - 1;
+             
+
+            int shelf = 0;//currentPage * PageShelf[currentPage-1] + i - 1;
+
+
+            for (int j = 0; j < currentPage; j++)
+            {
+                shelf += PageShelf[j];
+            }
+            if (PageShelf[currentPage - 1] > 1)
+                shelf += i - 1;
+
 
             int column = Columns[currentPage - 1] - (e.X - left) / cellWidth;
 
@@ -327,32 +308,13 @@ namespace App.View.Dispatcher
                 DataRow[] cellRows = cellTable.Select(string.Format("ShelfCode='{0}' AND CellColumn='{1}' AND CellRow='{2}'", ShelfCode[shelf], column, row));
                 if (cellRows.Length != 0)
                     CellCode = cellRows[0]["CellCode"].ToString();
-                if (e.Button == System.Windows.Forms.MouseButtons.Left)
+                if (e.Button == System.Windows.Forms.MouseButtons.Right && blnEdit)
                 {
-                    if (cellRows.Length != 0)
-                    {
-
-                        frmCellInfo f = new frmCellInfo(CellCode,cellRows[0]["PalletCode"].ToString());
-                        f.ShowDialog();
-
-                    }
-                }
-                else if (e.Button == System.Windows.Forms.MouseButtons.Right)
-                {
-                    if (cellRows[0]["PalletCode"].ToString() != "")
-                    {
-                        ToolStripMenuItemOutStock.Visible = true;
-                    }
-                    else
-                    {
-                        ToolStripMenuItemOutStock.Visible = false;
-                    }
                     contextMenuStrip1.Show(MousePosition.X, MousePosition.Y);
                 }
             }
 
-        }
-      
+        }        
         private void pnlChart_MouseEnter(object sender, EventArgs e)
         {
             pnlChart.Focus();
@@ -361,7 +323,7 @@ namespace App.View.Dispatcher
         private void pnlChart_MouseWheel(object sender, MouseEventArgs e)
         {
             IsWheel = true;
-            if (e.Delta < 0 && currentPage + 1 <= 6)
+            if (e.Delta < 0 && currentPage + 1 <= 17)
                 sbShelf.Value = (currentPage) * 30;
             else if (e.Delta > 0 && currentPage - 1 >= 1)
                 sbShelf.Value = (currentPage - 2) * 30;
@@ -370,14 +332,14 @@ namespace App.View.Dispatcher
         private void sbShelf_ValueChanged(object sender, EventArgs e)
         {
             int pos = sbShelf.Value / 30 + 1;
-            if (pos > 2)
+            if (pos > 17)
                 return;
             if (pos != currentPage)
             {
                 currentPage = pos;
+                SetCellSize(Columns[currentPage - 1], Rows[currentPage - 1], PageShelf[currentPage - 1]);
                 pnlChart.Invalidate();
-                cellWidth = (pnlContent.Width - 90 - sbShelf.Width - 20) / Columns[currentPage - 1];
-                cellHeight = (pnlContent.Height / 2) / (Rows[currentPage - 1] + 2);
+               
             }
         }
 
@@ -392,50 +354,17 @@ namespace App.View.Dispatcher
             int Flag = 0;
             if (ProductCode == "")
             {
-                if (IsLock == "1")
-                {
-                    Flag = 1;
-                }
+                if (IsActive == "0")
+                    Flag = 4;
+                if (ErrFlag == "1")
+                    Flag = 5;
             }
             else
-            {
-                if (IsLock == "0")
-                {
-                    if (ProductCode == "0001")
-                        Flag = 6;
-                    else
-                        Flag = 2;
-                }
-                else
-                {
-                    if (ProductCode == "0001")
-                        Flag = 7;
-                    else
-                        Flag = 3;
-                }
-            }
-            if (IsActive == "0")
-                Flag = 4;
-            if (ErrFlag == "1")
-                Flag = 5;
+                Flag = 2;
             return Flag;
         }
 
-        private void ToolStripMenuItem1_Click(object sender, EventArgs e)
-        {
-            DataRow[] drs = cellTable.Select(string.Format("CellCode='{0}'", CellCode));
-            if (drs.Length > 0)
-            {
-                DataRow dr = drs[0];
-                frmCellOpDialog cellDialog = new frmCellOpDialog(dr);
-                if (cellDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                {
-                    cellTable = bll.FillDataTable("WCS.SelectCell");
-                    bsMain.DataSource = cellTable;
-                    pnlChart.Invalidate();
-                }
-            }
-        }
+         
 
         private int X, Y;
         private void pnlChart_MouseMove(object sender, MouseEventArgs e)
@@ -445,78 +374,95 @@ namespace App.View.Dispatcher
             if (X != e.X || Y != e.Y)
             {
                 int i = e.Y < top[1] ? 0 : 1;
-                int shelf = currentPage * 2 + i - 1;
+                int shelf = 0;//currentPage * PageShelf[currentPage-1] + i - 1;
+
+
+                for (int j = 0; j < currentPage; j++)
+                {
+                    shelf += PageShelf[j];
+                }
+                if (PageShelf[currentPage - 1] > 1)
+                    shelf += i - 1;
+               
 
                 int column = Columns[currentPage - 1] - (e.X - left) / cellWidth;
                 int row = Rows[currentPage - 1] - (e.Y - top[i]) / cellHeight + 1;
-                if (column <= Columns[currentPage - 1] && row <= Rows[currentPage - 1] && row > 0 && column > 0)
+
+                DataRow[] drsExists = cellTable.Select(string.Format("shelfcode='{0}' and CellColumn={1} and CellRow={2}", ShelfCode[shelf], column, row));
+
+                if (drsExists.Length > 0)
                 {
-                    string tip = "货架:" + shelf.ToString() + ";列:" + column.ToString() + ";层:" + row.ToString();
-                    toolTip1.SetToolTip(pnlChart, tip);
+                    if (column <= Columns[currentPage - 1] && row <= Rows[currentPage - 1] && row > 0 && column > 0)
+                    {
+                        string tip ="貨位:"+ drsExists[0]["CellName"].ToString() +( drsExists[0]["PalletCode"].ToString().Length > 0 ? " 箱/托盤條碼:" + drsExists[0]["PalletCode"].ToString() : "");
+                        toolTip1.SetToolTip(pnlChart, tip);
+                    }
+                    else
+                        toolTip1.SetToolTip(pnlChart, null);
                 }
                 else
+                {
                     toolTip1.SetToolTip(pnlChart, null);
+                }
 
                 X = e.X;
                 Y = e.Y;
             }
         }
+        private void btnReQuery_Click(object sender, EventArgs e)
+        {
+            cellTable = bll.FillDataTable("WCS.SelectCell");
+            bsMain.DataSource = cellTable;
+            pnlChart.Invalidate();
+            IsWheel = false;
+        }
 
-        private void ToolStripMenuItemOutStock_Click(object sender, EventArgs e)
+        private void frmCellQuery_Load(object sender, EventArgs e)
+        {
+            for (int i = 0; i < 11; i++)
+            {
+                Columns[i] = 60;
+                PageShelf[i] = 2;
+            }
+            Rows[0] = 5;
+            Rows[1] = 5;
+            Rows[2] = 5;
+            Rows[3] = 4;
+            Rows[4] = 4;
+            Rows[5] = 6;
+            Rows[6] = 6;
+            Rows[7] = 6;
+            Rows[8] = 6;
+            Rows[9] = 4;
+            Rows[10] = 4;
+            for (int i = 11; i < 17; i++)
+            {
+                Columns[i] = 98;
+                Rows[i] = 16;
+                PageShelf[i] = 1;
+            }
+
+            
+           
+          
+        }
+
+        private void ToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             DataRow[] drs = cellTable.Select(string.Format("CellCode='{0}'", CellCode));
             if (drs.Length > 0)
             {
                 DataRow dr = drs[0];
-                string strPallet = bll.GetFieldValue("CMD_Cell", "PalletCode", string.Format("CellCode='{0}'", CellCode));
-                if (strPallet.Trim() == "")
+                
+                frmCellOpDialog cellDialog = new frmCellOpDialog(dr);
+                ((BaseForm)cellDialog).Context = Context;
+                if (cellDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
-                    MCP.Logger.Error("该货位已经出库,请刷新后,再次检查!");
-                    return;
-                }
-
-                int Count = bll.GetRowCount("WCS_Task", "TaskType in ('11','14') and State<7");
-                if (Count > 0)
-                {
-                    MCP.Logger.Error("系统正在进行入库作业,请稍后出库!");
-                    return;
-                }
-
-                bll.ExecNonQuery("WCS.SpCreateOutStockByPallet", new DataParameter[] { new DataParameter("@PalletCode", dr["PalletCode"].ToString()) });
-            }
-        }
-
-        private string GetProductByPalletCode(string PalletCode)
-        {
-            string strMsg = "";
-            if (PalletCode.Trim() != "")
-            {
-                DataTable dt = bll.FillDataTable("WMS.SelectWmsPallet", new DataParameter[] { new DataParameter("{0}", string.Format("PalletCode='{0}'", PalletCode)) });
-                for (int i = 0; i < dt.Rows.Count; i++)
-                {
-                    if (i >= 3)
-                        break;
-                    DataRow dr = dt.Rows[i];
-                    if (i == dt.Rows.Count - 1)
-                        strMsg += dr["ProductCode"].ToString();
-                    else
-                        strMsg += dr["ProductCode"].ToString() + Environment.NewLine;
+                    cellTable = bll.FillDataTable("WCS.SelectCell");
+                    bsMain.DataSource = cellTable;
+                    pnlChart.Invalidate();
                 }
             }
-            return strMsg;
-        }
-
-        private void frmCellQuery_Load(object sender, EventArgs e)
-        {
-            btnRefresh_Click(null, null);
-            btnChart_Click(null, null);
-        }
-
-        private void btnRef_Click(object sender, EventArgs e)
-        {
-            cellTable = bll.FillDataTable("WCS.SelectCell");
-            bsMain.DataSource = cellTable;
-            pnlChart.Invalidate();
-        }
+        }       
     }
 }

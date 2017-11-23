@@ -298,12 +298,21 @@
                     return false;
                 }
                 var test = $('#txtPageState').val();
+                if ($("#txtEditProductCode").textbox("getValue") == "") {
+                    $("#txtEditProductCode").textbox("setValue", "");
+
+
+                }
+                var query = $("#Form1").serializeArray();
+                query = convertArray(query);
+                var ParamQuery = "[" + encodeURIComponent(jsonToStr(query)) + "]";
+
+
+
+
                 if (test == 'AddCell') 
                 {
-//                    var paramjs = "{\"CellCode\":\"" + $("#txtEditCellCode").textbox("getValue") + "\"," + "\"AreaCode\":\"" + $("#ddlAreaName").combobox("getValue") + "\"," + "\"RegionCode\":\"" + $("#ddlRegionName").combobox("getValue") + "\"," + "\"IsActive\":\"" + $("#ddlEditActive").combobox("getValue") + "\"," + "\"IsLock\":\"" + $("#ddlEditLock").combobox("getValue") + "\"," + "\"CellName\":\"" + $("#txtEditCellName").textbox("getValue") + "\"," + "\"PalletBarCode\":\"" + $("#txtEditProductCode").textbox("getValue") + "\"," + "\"BatchNo\":\"" + $("#txtEditBatchNo").textbox("getValue") + "\"," + "\"Qty\":\"" + $("#txtEditPreQty").textbox("getValue") + "\"," + "\"SectionID\":\"" + $("#ddlEditRowID").combobox("getValue") + "\"," + "\"Indate\":\"" + $("#txtEditIndate").textbox("getValue") + "\","  + "\"Memo\":\"" + $("#txtEditMemo").textbox("getValue") + "\"," + "\"Indate\":\"" + $("#txtEditIndate").textbox("getValue") + "\"}";
-                    var query = $("#Form1").serializeArray();
-                    query = convertArray(query);
-                    var ParamQuery = "[" + encodeURIComponent(jsonToStr(query)) + "]";
+//                    
 
                     data = { Action: 'Add', Comd: 'Cmd.InsertCmdCell', json: ParamQuery };
                     $.post(url, data, function (result) {
@@ -393,6 +402,7 @@
             else {
                 blnProductChange = true;
                 $("#txtEditProductCode").textbox('setValue', '');
+                BindProduct();
                 $("#txtEditProductName").textbox('setValue', ProductName);
                 $('#txtEditProductCode').next('span').find('input').focus();
                 blnProductChange = false;

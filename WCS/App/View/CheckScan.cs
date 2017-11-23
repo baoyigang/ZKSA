@@ -25,7 +25,19 @@ namespace App.View
         private int CheckCount = 0;
      
         StringBuilder builder = new StringBuilder();
+        private const int CP_NOCLOSE_BUTTON = 0x200;
+        protected override CreateParams CreateParams
+        {
+            get
+            {
 
+                CreateParams myCp = base.CreateParams;
+                myCp.ClassStyle = myCp.ClassStyle | CP_NOCLOSE_BUTTON;
+
+                return myCp;
+
+            }
+        }
         public CheckScan()
         {
             InitializeComponent();
@@ -86,6 +98,7 @@ namespace App.View
                 bll.ExecNonQuery("WCS.updateCheckScanDetail", new DataParameter[] { new DataParameter("@BarCode", this.txtCode.Text.Trim()), new DataParameter("@TaskNo", TaskNo), new DataParameter("@BillID", BillID) });
                 DataTable dt = bll.FillDataTable("WCS.SelectCheckScanDetail", new DataParameter[] { new DataParameter("@TaskNo", TaskNo) });
                 this.bsCheck.DataSource = dt;
+                this.txtCode.Text = "";
             }            
         }
 
@@ -121,7 +134,7 @@ namespace App.View
             //}
             //catch (Exception ex)
             //{
-            //    //捕获到异常信息，创建一个新的comm对象，之前的不能用了。
+            //    //捕获到异常信息,创建一个新的comm对象,之前的不能用了。
             //    comm = new SerialPort();
             //    //现实异常信息给客户。
             //    MessageBox.Show(ex.Message);
@@ -136,19 +149,19 @@ namespace App.View
 
         //void comm_DataReceived(object sender, SerialDataReceivedEventArgs e)
         //{
-        //    int n = comm.BytesToRead;//先记录下来，避免某种原因，人为的原因，操作几次之间时间长，缓存不一致
+        //    int n = comm.BytesToRead;//先记录下来,避免某种原因,人为的原因,操作几次之间时间长,缓存不一致
         //    byte[] buf = new byte[n];//声明一个临时数组存储当前来的串口数据
          
         //    comm.Read(buf, 0, n);//读取缓冲数据
         //    builder.Remove(0, builder.Length);//清除字符串构造器的内容
-        //    //因为要访问ui资源，所以需要使用invoke方式同步ui。
+        //    //因为要访问ui资源,所以需要使用invoke方式同步ui。
         //    this.Invoke((EventHandler)(delegate
         //    {
 
         //        //直接按ASCII规则转换成字符串
         //        builder.Append(Encoding.ASCII.GetString(buf));
 
-        //        //追加的形式添加到文本框末端，并滚动到最后。
+        //        //追加的形式添加到文本框末端,并滚动到最后。
         //        this.txtCode.AppendText(builder.ToString());
         //        if (this.txtCode.Text.IndexOf("\r\n") > 0)
         //        {

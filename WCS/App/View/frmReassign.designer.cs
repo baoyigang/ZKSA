@@ -103,7 +103,7 @@
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(68, 17);
             this.label5.TabIndex = 26;
-            this.label5.Text = "产品规格：";
+            this.label5.Text = "产品规格:";
             // 
             // txtAisleNo
             // 
@@ -120,7 +120,7 @@
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(68, 17);
             this.label4.TabIndex = 24;
-            this.label4.Text = "巷道编号：";
+            this.label4.Text = "巷道编号:";
             // 
             // txtCellCode
             // 
@@ -137,7 +137,7 @@
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(68, 17);
             this.label3.TabIndex = 22;
-            this.label3.Text = "货位编号：";
+            this.label3.Text = "货位编号:";
             // 
             // txtCraneNo
             // 
@@ -154,7 +154,7 @@
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(68, 17);
             this.label2.TabIndex = 20;
-            this.label2.Text = "堆垛机号：";
+            this.label2.Text = "堆垛机号:";
             // 
             // txtProductName
             // 
@@ -171,7 +171,7 @@
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(68, 17);
             this.label10.TabIndex = 18;
-            this.label10.Text = "产品名称：";
+            this.label10.Text = "产品名称:";
             // 
             // txtProductCode
             // 
@@ -188,7 +188,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(68, 17);
             this.label1.TabIndex = 14;
-            this.label1.Text = "产品编号：";
+            this.label1.Text = "产品编号:";
             // 
             // txtTaskNo
             // 
@@ -205,7 +205,7 @@
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(68, 17);
             this.label6.TabIndex = 4;
-            this.label6.Text = "任务编号：";
+            this.label6.Text = "任务编号:";
             // 
             // btnOK
             // 

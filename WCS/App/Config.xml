@@ -4,21 +4,153 @@
   <Attributes>
     <Attribute Name="ScanPortName" Value="COM2" />
     <Attribute Name="ScanBaudRate" Value="19200" />
-    <Attribute Name="TaskTest" Value="1" />
-    <Attribute Name="AreaCode" Value="001" />
+    <Attribute Name="TaskTest" Value="0" />
+    <Attribute Name="AreaCode" Value="UL" />
+    <Attribute Name="ShowCellEdit" Value="0" />
   </Attributes>
   <Services>
-    <Service Name="CranePLC1" Type="MCP.Service.Siemens.dll, MCP.Service.Siemens.OPCService" ConfigFile="CranePLC1.xml" />
-    <Service Name="CarPLC1" Type="MCP.Service.Siemens.dll, MCP.Service.Siemens.OPCService" ConfigFile="CarPLC1.xml" />
+    <Service Name="MConvey" Type="MCP.Service.Siemens.dll, MCP.Service.Siemens.OPCService" ConfigFile="MConvey_UL.xml" />
+    <Service Name="Convey" Type="MCP.Service.Siemens.dll, MCP.Service.Siemens.OPCService" ConfigFile="Convey.xml" />
+    <Service Name="CranePLC01" Type="MCP.Service.Siemens.dll, MCP.Service.Siemens.OPCService" ConfigFile="CranePLC01.xml" />
+    <Service Name="CranePLC02" Type="MCP.Service.Siemens.dll, MCP.Service.Siemens.OPCService" ConfigFile="CranePLC02.xml" />
+    <Service Name="CranePLC03" Type="MCP.Service.Siemens.dll, MCP.Service.Siemens.OPCService" ConfigFile="CranePLC03.xml" />
+    <Service Name="CranePLC04" Type="MCP.Service.Siemens.dll, MCP.Service.Siemens.OPCService" ConfigFile="CranePLC04.xml" />
+    <Service Name="CranePLC05" Type="MCP.Service.Siemens.dll, MCP.Service.Siemens.OPCService" ConfigFile="CranePLC05.xml" />
+    <Service Name="CranePLC06" Type="MCP.Service.Siemens.dll, MCP.Service.Siemens.OPCService" ConfigFile="CranePLC06.xml" />
+    <Service Name="CranePLC07" Type="MCP.Service.Siemens.dll, MCP.Service.Siemens.OPCService" ConfigFile="CranePLC07.xml" />
+    <Service Name="CranePLC08" Type="MCP.Service.Siemens.dll, MCP.Service.Siemens.OPCService" ConfigFile="CranePLC08.xml" />
+    <Service Name="CranePLC09" Type="MCP.Service.Siemens.dll, MCP.Service.Siemens.OPCService" ConfigFile="CranePLC09.xml" />
+
+    <Service Name="MiniLoad01" Type="MCP.Service.Siemens.dll, MCP.Service.Siemens.OPCService" ConfigFile="MiniLoad01_UL.xml" />
+    <Service Name="MiniLoad02" Type="MCP.Service.Siemens.dll, MCP.Service.Siemens.OPCService" ConfigFile="MiniLoad02_UL.xml" />
+    <Service Name="MiniLoad03" Type="MCP.Service.Siemens.dll, MCP.Service.Siemens.OPCService" ConfigFile="MiniLoad03_UL.xml" />
+    
+    
   </Services>
   <Processes>
-    <!--堆垛机Process-->
+    <Process Name="ConveyRequestProcess" Type="App.exe, App.Dispatching.Process.ConveyRequestProcess">
+      <Item ServiceName="Convey" ItemName="101_HightFlag" />
+      <Item ServiceName="Convey" ItemName="109_HightFlag" />
+      <Item ServiceName="Convey" ItemName="101_Request" />
+      <Item ServiceName="Convey" ItemName="109_Request" />
+     
+    </Process>
+    <Process Name="ConveyInStockProcess" Type="App.exe, App.Dispatching.Process.ConveyInStockProcess">
+      <Item ServiceName="Convey" ItemName="154_Request" />
+      <Item ServiceName="Convey" ItemName="108_Request" />
+      <Item ServiceName="Convey" ItemName="116_Request" />
+      <Item ServiceName="Convey" ItemName="121_Request" />
+      <Item ServiceName="Convey" ItemName="127_Request" />
+      <Item ServiceName="Convey" ItemName="133_Request" />
+      <Item ServiceName="Convey" ItemName="138_Request" />
+      <Item ServiceName="Convey" ItemName="143_Request" />
+      <Item ServiceName="Convey" ItemName="148_Request" />
+    </Process>
+    
+    <Process Name="ConveyPickProcess" Type="App.exe, App.Dispatching.Process.ConveyPickProcess">
+      <Item ServiceName="Convey" ItemName="158_Request" />
+      <Item ServiceName="Convey" ItemName="161_Request" />
+      <Item ServiceName="Convey" ItemName="162_Request" />
+      <Item ServiceName="Convey" ItemName="164_Request" />
+      <Item ServiceName="Convey" ItemName="165_Request" />
+      <Item ServiceName="Convey" ItemName="167_Request" />
+      <Item ServiceName="Convey" ItemName="168_Request" />
+      <Item ServiceName="Convey" ItemName="170_Request" />
+      <Item ServiceName="Convey" ItemName="171_Request" />
+      <Item ServiceName="Convey" ItemName="174_Request" />
+      <Item ServiceName="Convey" ItemName="175_Request" />
+      <Item ServiceName="Convey" ItemName="178_Request" />
+      <Item ServiceName="Convey" ItemName="179_Request" />
+      <Item ServiceName="Convey" ItemName="181_Request" />
+      <Item ServiceName="Convey" ItemName="182_Request" />
+      <Item ServiceName="Convey" ItemName="184_Request" />
+      <Item ServiceName="Convey" ItemName="185_Request" />
+    </Process>
+
+    <Process Name="ConveyPalletOutProcess" Type="App.exe, App.Dispatching.Process.ConveyPalletOutProcess">
+      <Item ServiceName="Convey" ItemName="103_Request" />
+    </Process>
+   
+    <!--Process-->
+
     <Process Name="CraneProcess" Type="App.exe, App.Dispatching.Process.CraneProcess">
-      <Item ServiceName="CranePLC1" ItemName="CraneTaskFinished" />
+      <Item ServiceName="CranePLC01" ItemName="CraneTaskFinished" />
+      <Item ServiceName="CranePLC02" ItemName="CraneTaskFinished" />
+      <Item ServiceName="CranePLC03" ItemName="CraneTaskFinished" />
+      <Item ServiceName="CranePLC04" ItemName="CraneTaskFinished" />
+      <Item ServiceName="CranePLC05" ItemName="CraneTaskFinished" />
+      <Item ServiceName="CranePLC06" ItemName="CraneTaskFinished" />
+      <Item ServiceName="CranePLC07" ItemName="CraneTaskFinished" />
+      <Item ServiceName="CranePLC08" ItemName="CraneTaskFinished" />
+      <Item ServiceName="CranePLC09" ItemName="CraneTaskFinished" />
+      
+      <Item ServiceName="CranePLC01" ItemName="CraneAlarmCode" />
+      <Item ServiceName="CranePLC02" ItemName="CraneAlarmCode" />
+      <Item ServiceName="CranePLC03" ItemName="CraneAlarmCode" />
+      <Item ServiceName="CranePLC04" ItemName="CraneAlarmCode" />
+      <Item ServiceName="CranePLC05" ItemName="CraneAlarmCode" />
+      <Item ServiceName="CranePLC06" ItemName="CraneAlarmCode" />
+      <Item ServiceName="CranePLC07" ItemName="CraneAlarmCode" />
+      <Item ServiceName="CranePLC08" ItemName="CraneAlarmCode" />
+      <Item ServiceName="CranePLC09" ItemName="CraneAlarmCode" />
     </Process>
-    <Process Name="CarProcess" Type="App.exe, App.Dispatching.Process.CarProcess">
-      <Item ServiceName="CarPLC1" ItemName="ReadFinished" />
-      <Item ServiceName="CarPLC1" ItemName="AlarmCode" />
+    
+    <Process Name="CraneCheckProcess" Type="App.exe, App.Dispatching.Process.CraneCheckProcess">
+      <Item ServiceName="CranePLC01" ItemName="PLCCheck" />
+      <Item ServiceName="CranePLC02" ItemName="PLCCheck" />
+      <Item ServiceName="CranePLC03" ItemName="PLCCheck" />
+      <Item ServiceName="CranePLC04" ItemName="PLCCheck" />
+      <Item ServiceName="CranePLC05" ItemName="PLCCheck" />
+      <Item ServiceName="CranePLC06" ItemName="PLCCheck" />
+      <Item ServiceName="CranePLC07" ItemName="PLCCheck" />
+      <Item ServiceName="CranePLC08" ItemName="PLCCheck" />
+      <Item ServiceName="CranePLC09" ItemName="PLCCheck" />
     </Process>
+
+    <Process Name="MConveyRequestProcess" Type="App.exe, App.Dispatching.Process.MConveyRequestProcess">
+      <Item ServiceName="MConvey" ItemName="1_Request" />
+      
+    </Process>
+    
+    <Process Name="MConveyInStockProcess" Type="App.exe, App.Dispatching.Process.MConveyInStockProcess">
+      <Item ServiceName="MConvey" ItemName="13_Request" />
+      <Item ServiceName="MConvey" ItemName="12_Request" />
+      <Item ServiceName="MConvey" ItemName="25_Request" />
+      <Item ServiceName="MConvey" ItemName="24_Request" />
+      <Item ServiceName="MConvey" ItemName="37_Request" />
+      <Item ServiceName="MConvey" ItemName="36_Request" />
+      
+    </Process>
+
+    <Process Name="MConveyPickProcess" Type="App.exe, App.Dispatching.Process.MConveyPickProcess">
+      <Item ServiceName="MConvey" ItemName="49_Request" />
+      <Item ServiceName="MConvey" ItemName="48_Request" />
+      <Item ServiceName="MConvey" ItemName="47_Request" />
+    </Process>
+
+    <Process Name="MConveyPalletOutProcess" Type="App.exe, App.Dispatching.Process.MConveyPalletOutProcess">
+      <Item ServiceName="MConvey" ItemName="57_Request" />
+    </Process>
+    <Process Name="MConveySplitProcess" Type="App.exe, App.Dispatching.Process.MConveySplitProcess">
+      <Item ServiceName="MConvey" ItemName="104_Request" />
+    </Process>
+
+    <Process Name="MiniLoadProcess" Type="App.exe, App.Dispatching.Process.MiniLoadProcess">
+      <Item ServiceName="MiniLoad01" ItemName="CraneTaskFinished1" />
+      <Item ServiceName="MiniLoad01" ItemName="CraneTaskFinished2" />
+      <Item ServiceName="MiniLoad02" ItemName="CraneTaskFinished1" />
+      <Item ServiceName="MiniLoad02" ItemName="CraneTaskFinished2" />
+      <Item ServiceName="MiniLoad03" ItemName="CraneTaskFinished1" />
+      <Item ServiceName="MiniLoad03" ItemName="CraneTaskFinished2" />
+
+      <Item ServiceName="MiniLoad01" ItemName="PLCCheck" />
+      <Item ServiceName="MiniLoad02" ItemName="PLCCheck" />
+      <Item ServiceName="MiniLoad03" ItemName="PLCCheck" />
+
+      <Item ServiceName="MiniLoad01" ItemName="CraneAlarmCode" />
+      <Item ServiceName="MiniLoad02" ItemName="CraneAlarmCode" />
+      <Item ServiceName="MiniLoad03" ItemName="CraneAlarmCode" />
+    </Process>
+   
   </Processes>
 </Configuration>

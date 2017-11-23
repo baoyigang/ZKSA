@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Configuration>
+  <Servers>
+    <Server Name="MiniloadServer01" ConnectionString="OPC.SimaticNET" GroupName="PLCGroup" GroupString="S7:[MiniLoad01]" UpdateRate="350">
+      <OPCItem ItemName="Station" ClientHandler="1"  OPCItemName="DB541,INT12,2" />
+      <OPCItem ItemName="Mode" ClientHandler="2" OPCItemName="DB541,INT4,1"  />
+      <OPCItem ItemName="State1" ClientHandler="3" OPCItemName="DB541,INT46,1" />
+      <OPCItem ItemName="Fork1"  ClientHandler="4" OPCItemName="DB541,INT16,1" />
+      <OPCItem ItemName="TaskNo1" ClientHandler="5"  OPCItemName="DB541,CHAR62,20" />
+      <OPCItem ItemName="State2" ClientHandler="6" OPCItemName="DB541,INT58,1" />
+      <OPCItem ItemName="Fork2"  ClientHandler="7" OPCItemName="DB541,INT18,1" />
+      <OPCItem ItemName="TaskNo2" ClientHandler="8" OPCItemName="DB541,CHAR82,20"/>
+      <OPCItem ItemName="AlarmCode" ClientHandler="9" OPCItemName="DB541,INT60,1" />
+    </Server>
+    <Server Name="MiniloadServer02" ConnectionString="OPC.SimaticNET" GroupName="PLCGroup" GroupString="S7:[MiniLoad02]" UpdateRate="350">
+      <OPCItem ItemName="Station" ClientHandler="1"  OPCItemName="DB541,INT12,2" />
+      <OPCItem ItemName="Mode" ClientHandler="2" OPCItemName="DB541,INT4,1"  />
+      <OPCItem ItemName="State1" ClientHandler="3" OPCItemName="DB541,INT46,1" />
+      <OPCItem ItemName="Fork1"  ClientHandler="4" OPCItemName="DB541,INT16,1" />
+      <OPCItem ItemName="TaskNo1" ClientHandler="5"  OPCItemName="DB541,CHAR62,20" />
+      <OPCItem ItemName="State2" ClientHandler="6" OPCItemName="DB541,INT58,1" />
+      <OPCItem ItemName="Fork2"  ClientHandler="7" OPCItemName="DB541,INT18,1" />
+      <OPCItem ItemName="TaskNo2" ClientHandler="8" OPCItemName="DB541,CHAR82,20"/>
+      <OPCItem ItemName="AlarmCode" ClientHandler="9" OPCItemName="DB541,INT60,1" />
+    </Server>
+    <Server Name="MiniloadServer03" ConnectionString="OPC.SimaticNET" GroupName="PLCGroup" GroupString="S7:[MiniLoad03]" UpdateRate="350">
+      <OPCItem ItemName="Station" ClientHandler="1"  OPCItemName="DB541,INT12,2" />
+      <OPCItem ItemName="Mode" ClientHandler="2" OPCItemName="DB541,INT4,1"  />
+      <OPCItem ItemName="State1" ClientHandler="3" OPCItemName="DB541,INT46,1" />
+      <OPCItem ItemName="Fork1"  ClientHandler="4" OPCItemName="DB541,INT16,1" />
+      <OPCItem ItemName="TaskNo1" ClientHandler="5"  OPCItemName="DB541,CHAR62,20" />
+      <OPCItem ItemName="State2" ClientHandler="6" OPCItemName="DB541,INT58,1" />
+      <OPCItem ItemName="Fork2"  ClientHandler="7" OPCItemName="DB541,INT18,1" />
+      <OPCItem ItemName="TaskNo2" ClientHandler="8" OPCItemName="DB541,CHAR82,20"/>
+      <OPCItem ItemName="AlarmCode" ClientHandler="9" OPCItemName="DB541,INT60,1" />
+    </Server>
+    <Server Name="CraneServer01" ConnectionString="OPC.SimaticNET" GroupName="PLCGroup" GroupString="S7:[CranePLC01]" UpdateRate="350">
+      <OPCItem ItemName="Station" ClientHandler="1"  OPCItemName="DB541,INT12,2" />
+      <OPCItem ItemName="Mode" ClientHandler="2" OPCItemName="DB541,INT4,1"  />
+      <OPCItem ItemName="State" ClientHandler="3" OPCItemName="DB541,INT46,1" />
+      <OPCItem ItemName="Fork"  ClientHandler="4" OPCItemName="DB541,INT16,1" />
+      <OPCItem ItemName="TaskNo" ClientHandler="5"  OPCItemName="DB541,CHAR62,20" />
+      <OPCItem ItemName="AlarmCode" ClientHandler="6" OPCItemName="DB541,INT60,1" />
+    </Server>
+    <Server Name="CraneServer02" ConnectionString="OPC.SimaticNET" GroupName="PLCGroup" GroupString="S7:[CranePLC02]" UpdateRate="350">
+      <OPCItem ItemName="Station" ClientHandler="1"  OPCItemName="DB541,INT12,2" />
+      <OPCItem ItemName="Mode" ClientHandler="2" OPCItemName="DB541,INT4,1"  />
+      <OPCItem ItemName="State" ClientHandler="3" OPCItemName="DB541,INT46,1" />
+      <OPCItem ItemName="Fork"  ClientHandler="4" OPCItemName="DB541,INT16,1" />
+      <OPCItem ItemName="TaskNo" ClientHandler="5"  OPCItemName="DB541,CHAR62,20" />
+      <OPCItem ItemName="AlarmCode" ClientHandler="6" OPCItemName="DB541,INT60,1" />
+    </Server>
+    <Server Name="CraneServer03" ConnectionString="OPC.SimaticNET" GroupName="PLCGroup" GroupString="S7:[CranePLC03]" UpdateRate="350">
+      <OPCItem ItemName="Station" ClientHandler="1"  OPCItemName="DB541,INT12,2" />
+      <OPCItem ItemName="Mode" ClientHandler="2" OPCItemName="DB541,INT4,1"  />
+      <OPCItem ItemName="State" ClientHandler="3" OPCItemName="DB541,INT46,1" />
+      <OPCItem ItemName="Fork"  ClientHandler="4" OPCItemName="DB541,INT16,1" />
+      <OPCItem ItemName="TaskNo" ClientHandler="5"  OPCItemName="DB541,CHAR62,20" />
+      <OPCItem ItemName="AlarmCode" ClientHandler="6" OPCItemName="DB541,INT60,1" />
+    </Server>
+    <Server Name="CraneServer04" ConnectionString="OPC.SimaticNET" GroupName="PLCGroup" GroupString="S7:[CranePLC04]" UpdateRate="350">
+      <OPCItem ItemName="Station" ClientHandler="1"  OPCItemName="DB541,INT12,2" />
+      <OPCItem ItemName="Mode" ClientHandler="2" OPCItemName="DB541,INT4,1"  />
+      <OPCItem ItemName="State" ClientHandler="3" OPCItemName="DB541,INT46,1" />
+      <OPCItem ItemName="Fork"  ClientHandler="4" OPCItemName="DB541,INT16,1" />
+      <OPCItem ItemName="TaskNo" ClientHandler="5"  OPCItemName="DB541,CHAR62,20" />
+      <OPCItem ItemName="AlarmCode" ClientHandler="6" OPCItemName="DB541,INT60,1" />
+    </Server>
+    <Server Name="CraneServer05" ConnectionString="OPC.SimaticNET" GroupName="PLCGroup" GroupString="S7:[CranePLC05]" UpdateRate="350">
+      <OPCItem ItemName="Station" ClientHandler="1"  OPCItemName="DB541,INT12,2" />
+      <OPCItem ItemName="Mode" ClientHandler="2" OPCItemName="DB541,INT4,1"  />
+      <OPCItem ItemName="State" ClientHandler="3" OPCItemName="DB541,INT46,1" />
+      <OPCItem ItemName="Fork"  ClientHandler="4" OPCItemName="DB541,INT16,1" />
+      <OPCItem ItemName="TaskNo" ClientHandler="5"  OPCItemName="DB541,CHAR62,20" />
+      <OPCItem ItemName="AlarmCode" ClientHandler="6" OPCItemName="DB541,INT60,1" />
+    </Server>
+    <Server Name="CraneServer06" ConnectionString="OPC.SimaticNET" GroupName="PLCGroup" GroupString="S7:[CranePLC06]" UpdateRate="350">
+      <OPCItem ItemName="Station" ClientHandler="1"  OPCItemName="DB541,INT12,2" />
+      <OPCItem ItemName="Mode" ClientHandler="2" OPCItemName="DB541,INT4,1"  />
+      <OPCItem ItemName="State" ClientHandler="3" OPCItemName="DB541,INT46,1" />
+      <OPCItem ItemName="Fork"  ClientHandler="4" OPCItemName="DB541,INT16,1" />
+      <OPCItem ItemName="TaskNo" ClientHandler="5"  OPCItemName="DB541,CHAR62,20" />
+      <OPCItem ItemName="AlarmCode" ClientHandler="6" OPCItemName="DB541,INT60,1" />
+    </Server>
+    <Server Name="CraneServer07" ConnectionString="OPC.SimaticNET" GroupName="PLCGroup" GroupString="S7:[CranePLC07]" UpdateRate="350">
+      <OPCItem ItemName="Station" ClientHandler="1"  OPCItemName="DB541,INT12,2" />
+      <OPCItem ItemName="Mode" ClientHandler="2" OPCItemName="DB541,INT4,1"  />
+      <OPCItem ItemName="State" ClientHandler="3" OPCItemName="DB541,INT46,1" />
+      <OPCItem ItemName="Fork"  ClientHandler="4" OPCItemName="DB541,INT16,1" />
+      <OPCItem ItemName="TaskNo" ClientHandler="5"  OPCItemName="DB541,CHAR62,20" />
+      <OPCItem ItemName="AlarmCode" ClientHandler="6" OPCItemName="DB541,INT60,1" />
+    </Server>
+    <Server Name="CraneServer08" ConnectionString="OPC.SimaticNET" GroupName="PLCGroup" GroupString="S7:[CranePLC08]" UpdateRate="350">
+      <OPCItem ItemName="Station" ClientHandler="1"  OPCItemName="DB541,INT12,2" />
+      <OPCItem ItemName="Mode" ClientHandler="2" OPCItemName="DB541,INT4,1"  />
+      <OPCItem ItemName="State" ClientHandler="3" OPCItemName="DB541,INT46,1" />
+      <OPCItem ItemName="Fork"  ClientHandler="4" OPCItemName="DB541,INT16,1" />
+      <OPCItem ItemName="TaskNo" ClientHandler="5"  OPCItemName="DB541,CHAR62,20" />
+      <OPCItem ItemName="AlarmCode" ClientHandler="6" OPCItemName="DB541,INT60,1" />
+    </Server>
+    <Server Name="CraneServer09" ConnectionString="OPC.SimaticNET" GroupName="PLCGroup" GroupString="S7:[CranePLC09]" UpdateRate="350">
+      <OPCItem ItemName="Station" ClientHandler="1"  OPCItemName="DB541,INT12,2" />
+      <OPCItem ItemName="Mode" ClientHandler="2" OPCItemName="DB541,INT4,1"  />
+      <OPCItem ItemName="State" ClientHandler="3" OPCItemName="DB541,INT46,1" />
+      <OPCItem ItemName="Fork"  ClientHandler="4" OPCItemName="DB541,INT16,1" />
+      <OPCItem ItemName="TaskNo" ClientHandler="5"  OPCItemName="DB541,CHAR62,20" />
+      <OPCItem ItemName="AlarmCode" ClientHandler="6" OPCItemName="DB541,INT60,1" />
+    </Server>
+  </Servers>
+</Configuration>

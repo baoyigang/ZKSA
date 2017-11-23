@@ -365,7 +365,7 @@ namespace App.View
 
             dicCraneState.Add(0, "未知");
             dicCraneState.Add(1, "空閒");
-            dicCraneState.Add(2, "檢查任務數據");
+            dicCraneState.Add(2, "檢查任务數據");
             dicCraneState.Add(3, "定位到取貨位");
             dicCraneState.Add(4, "取貨中");
             dicCraneState.Add(7, "取貨完成");
@@ -374,7 +374,7 @@ namespace App.View
             dicCraneState.Add(10, "放貨中");
             dicCraneState.Add(13, "搬運完成");
             dicCraneState.Add(14, "空載避讓");
-            dicCraneState.Add(15, "檢查任務數據");
+            dicCraneState.Add(15, "檢查任务數據");
             dicCraneState.Add(20, "檢查源位置");
             dicCraneState.Add(21, "檢查目標位置");
             dicCraneState.Add(99, "報警");
@@ -432,10 +432,10 @@ namespace App.View
                 CraneNo = btnNam.Replace("btnMStop", "");
             }
             string ServerName = PrefixName + CraneNo;
-            if (MessageBox.Show(string.Format("是否要急停{0}堆垛機?", AreaCode + CraneNo), "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
+            if (MessageBox.Show(string.Format("是否要急停{0}堆垛机?", AreaCode + CraneNo), "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
             {
                 Context.ProcessDispatcher.WriteToService(ServerName, "Stop", 1);
-                Logger.Info(string.Format("{0}堆垛機下發急停命令", AreaCode + CraneNo));
+                Logger.Info(string.Format("{0}堆垛机下發急停命令", AreaCode + CraneNo));
             }
         }
 
@@ -481,11 +481,11 @@ namespace App.View
                 ItemName = "TaskType2";
             }
             string ServerName = PrefixName + CraneNo;
-            if (MessageBox.Show(string.Format("是否要召回{0}堆垛機到初始位置?", AreaCode + CraneNo), "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
+            if (MessageBox.Show(string.Format("是否要召回{0}堆垛机到初始位置?", AreaCode + CraneNo), "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
             {
                 Context.ProcessDispatcher.WriteToService(ServerName, ItemName, 4);
                 Context.ProcessDispatcher.WriteToService(ServerName, "WriteFinished", 1);
-                Logger.Info(string.Format("{0}堆垛機下發召回命令", AreaCode + CraneNo));
+                Logger.Info(string.Format("{0}堆垛机下發召回命令", AreaCode + CraneNo));
             }
         }
 
@@ -512,7 +512,7 @@ namespace App.View
             string ServerName = PrefixName + CraneNo;
 
             Context.ProcessDispatcher.WriteToService(ServerName, "Reset", 1);
-            Logger.Info(string.Format("{0}堆垛機解警", AreaCode + CraneNo));
+            Logger.Info(string.Format("{0}堆垛机解警", AreaCode + CraneNo));
 
         }
 

@@ -40,6 +40,7 @@
             this.Column5 = new DataGridViewAutoFilter.DataGridViewAutoFilterTextBoxColumn();
             this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column6 = new DataGridViewAutoFilter.DataGridViewAutoFilterTextBoxColumn();
+            this.Column7 = new DataGridViewAutoFilter.DataGridViewAutoFilterTextBoxColumn();
             this.Column11 = new DataGridViewAutoFilter.DataGridViewAutoFilterTextBoxColumn();
             this.bsMain = new System.Windows.Forms.BindingSource(this.components);
             this.txtPalletBarcode = new System.Windows.Forms.TextBox();
@@ -76,6 +77,7 @@
             this.Column5,
             this.Column3,
             this.Column6,
+            this.Column7,
             this.Column11});
             this.dgvMain.DataSource = this.bsMain;
             dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
@@ -116,7 +118,7 @@
             // 
             this.Column1.DataPropertyName = "ProductCode";
             this.Column1.FilteringEnabled = false;
-            this.Column1.HeaderText = "模具编号";
+            this.Column1.HeaderText = "产品编号";
             this.Column1.Name = "Column1";
             this.Column1.ReadOnly = true;
             this.Column1.Resizable = System.Windows.Forms.DataGridViewTriState.True;
@@ -134,7 +136,7 @@
             // 
             this.Column5.DataPropertyName = "ModelNo";
             this.Column5.FilteringEnabled = false;
-            this.Column5.HeaderText = "父模具编号";
+            this.Column5.HeaderText = "型号";
             this.Column5.Name = "Column5";
             this.Column5.ReadOnly = true;
             this.Column5.Resizable = System.Windows.Forms.DataGridViewTriState.True;
@@ -157,6 +159,16 @@
             this.Column6.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             this.Column6.Width = 60;
             // 
+            // Column7
+            // 
+            this.Column7.DataPropertyName = "Weight";
+            this.Column7.FilteringEnabled = false;
+            this.Column7.HeaderText = "重量";
+            this.Column7.Name = "Column7";
+            this.Column7.ReadOnly = true;
+            this.Column7.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.Column7.Width = 80;
+            // 
             // Column11
             // 
             this.Column11.DataPropertyName = "InDate";
@@ -170,7 +182,7 @@
             // txtPalletBarcode
             // 
             this.txtPalletBarcode.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.txtPalletBarcode.Location = new System.Drawing.Point(334, 9);
+            this.txtPalletBarcode.Location = new System.Drawing.Point(104, 9);
             this.txtPalletBarcode.Name = "txtPalletBarcode";
             this.txtPalletBarcode.ReadOnly = true;
             this.txtPalletBarcode.Size = new System.Drawing.Size(133, 26);
@@ -180,7 +192,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label3.Location = new System.Drawing.Point(250, 12);
+            this.label3.Location = new System.Drawing.Point(20, 12);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(79, 20);
             this.label3.TabIndex = 12;
@@ -189,7 +201,7 @@
             // txtCellCode
             // 
             this.txtCellCode.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.txtCellCode.Location = new System.Drawing.Point(102, 12);
+            this.txtCellCode.Location = new System.Drawing.Point(336, 9);
             this.txtCellCode.Name = "txtCellCode";
             this.txtCellCode.ReadOnly = true;
             this.txtCellCode.Size = new System.Drawing.Size(133, 26);
@@ -199,7 +211,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label1.Location = new System.Drawing.Point(18, 15);
+            this.label1.Location = new System.Drawing.Point(252, 12);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(79, 20);
             this.label1.TabIndex = 14;
@@ -243,6 +255,7 @@
         private DataGridViewAutoFilter.DataGridViewAutoFilterTextBoxColumn Column5;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
         private DataGridViewAutoFilter.DataGridViewAutoFilterTextBoxColumn Column6;
+        private DataGridViewAutoFilter.DataGridViewAutoFilterTextBoxColumn Column7;
         private DataGridViewAutoFilter.DataGridViewAutoFilterTextBoxColumn Column11;
     }
 }
