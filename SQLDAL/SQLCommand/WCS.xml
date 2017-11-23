@@ -21,6 +21,53 @@
          
     </CommandString>
   </Command>
+  <Command ID="SelectCraneTask">
+    <CommandString>
+      SELECT WCS_TASK.*, CMD_BillType.BillTypeName,Sys_TableState.StateDesc,
+      (case when WCS_TASK.TaskType='11' or (WCS_TASK.TaskType='14' and WCS_TASK.State in('5','6'))
+      then S1.InStationAddress when WCS_TASK.TaskType in('12','13') or (WCS_TASK.TaskType='14' and
+      WCS_TASK.State in('0','1','2','3','4','7','9'))  then WCS_TASK.CellCode else '' end) FromStation,
+      (case when WCS_TASK.TaskType='11' or (WCS_TASK.TaskType='14' and WCS_TASK.State in('5','6','7','9'))
+      then WCS_TASK.CellCode when WCS_TASK.TaskType in('12') or (WCS_TASK.TaskType='14'
+      and WCS_TASK.State in('0','1','2','3','4')) then S1.OutStationAddress when WCS_TASK.TaskType='13'
+      then WCS_TASK.ToCellCode else '' end) ToStation, C1.InDate
+      FROM WCS_TASK
+      left join CMD_Cell C1 on WCS_TASK.CellCode=C1.CellCode
+      left join CMD_Shelf S1 On C1.ShelfCode=S1.ShelfCode
+      left join CMD_BillType On CMD_BillType.BillTypeCode=WCS_TASK.BillTypeCode
+      LEFT JOIN  Sys_TableState on Sys_TableState.TableName='WCS_TASK' and Sys_TableState.FieldName='State' and WCS_TASK.State=Sys_TableState.State
+      Where {0}
+      ORDER BY WCS_TASK.TaskID , WCS_TASK.TaskNo
+
+    </CommandString>
+  </Command>
+  <Command ID="SelectElevatorTask">
+    <CommandString>
+      SELECT TASK.*,C1.CellRow,c1.CellColumn,C1.Depth,
+      case when task.TaskType='11' then Aisle.InStationNo+substring(task.CellCode,7,3)+'1' else C1.CellAddress end as FromStation,
+      case when task.TaskType='11' then C1.CellAddress else Aisle.OutStationNo+substring(task.CellCode,7,3)+'1' end as ToStation
+      FROM WCS_TASK TASK
+      left join CMD_Cell C1 on TASK.CellCode=C1.CellCode
+      left join CMD_Shelf S1 On C1.ShelfCode=S1.ShelfCode
+      left join CMD_Aisle Aisle on s1.AisleNo=Aisle.AisleNo
+      Where {0}
+      ORDER BY WCS_TASK.TaskID , WCS_TASK.TaskNo
+    </CommandString>
+  </Command>
+  <Command ID="UpdateTaskByFilter">
+    <CommandString>
+      update WCS_Task Set {0} where {1}
+    </CommandString>
+  </Command>
+  
+  <Command ID="UpdateCellEmpty">
+    <CommandString>
+      Update CMD_Cell set IsLock='0',PalletBarCode='',BillNo='',InDate=null,SectionID=0,Qty=0,BatchNo='' where CellCode=@CellCode
+    </CommandString>
+  </Command>
+  
+  
+  
   <Command ID="SelectTaskDetail">
     <CommandString>
       SELECT T.*, P.ProductName,P.ModelNo,P.ProductNo,P.Spec,P.Description,P.Memo

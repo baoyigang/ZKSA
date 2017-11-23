@@ -1,0 +1,91 @@
+﻿<?xml version='1.0' ?>
+<Config>
+  <OPCServer ConnectionString="OPC.SimaticNET">
+    <OPCGroup GroupName="PLCGroup" GroupString="S7:[PLCMConvey]" UpdateRate="350">
+      <OPCItem ItemName="1_TaskNo" ClientHandler="1" OPCItemName="DB16,CHAR16,40" ItemType="WRITE" />
+      <OPCItem ItemName="1_Destination" ClientHandler="2" OPCItemName="DB16,INT6,1" ItemType="WRITE" />
+      <!--<OPCItem ItemName="1_Request" ClientHandler="3" OPCItemName="DB16,INT74,1"  ItemType="READ" IsActive="false"/>-->
+      <OPCItem ItemName="1_Request" ClientHandler="3" OPCItemName="DB16,INT74,1"  ItemType="READ" IsActive="true"/>
+
+      <OPCItem ItemName="12_TaskNo" ClientHandler="11" OPCItemName="DB16,CHAR92,40" ItemType="WRITE"/>
+      <OPCItem ItemName="12_Destination" ClientHandler="12" OPCItemName="DB16,INT82,1" ItemType="WRITE"/>
+      <OPCItem ItemName="12_Request" ClientHandler="13" OPCItemName="DB16,INT150,1"  ItemType="READ" IsActive="true"/>
+      <!--<OPCItem ItemName="12_Request" ClientHandler="13" OPCItemName="DB16,INT150,1"  ItemType="READ" IsActive="false"/>-->
+
+      <OPCItem ItemName="13_TaskNo" ClientHandler="21" OPCItemName="DB16,CHAR168,40" ItemType="WRITE"/>
+      <OPCItem ItemName="13_Destination" ClientHandler="22" OPCItemName="DB16,INT158,1" ItemType="WRITE"/>
+      <OPCItem ItemName="13_Request" ClientHandler="23" OPCItemName="DB16,INT226,1"  ItemType="READ" IsActive="true"/>
+      <!--<OPCItem ItemName="13_Request" ClientHandler="23" OPCItemName="DB16,INT226,1"  ItemType="READ" IsActive="false"/>-->
+
+      <OPCItem ItemName="16_TaskNo" ClientHandler="31" OPCItemName="DB16,CHAR244,40" ItemType="WRITE"/>
+      <OPCItem ItemName="16_Destination" ClientHandler="32" OPCItemName="DB16,INT234,1" ItemType="WRITE"/>
+      <OPCItem ItemName="16_Request" ClientHandler="33" OPCItemName="DB16,INT302,1"  ItemType="WRITE"/>
+
+      <OPCItem ItemName="17_TaskNo" ClientHandler="41" OPCItemName="DB16,CHAR320,40" ItemType="WRITE"/>
+      <OPCItem ItemName="17_Destination" ClientHandler="42" OPCItemName="DB16,INT310,1" ItemType="WRITE"/>
+      <OPCItem ItemName="17_Request" ClientHandler="43" OPCItemName="DB16,INT378,1"  ItemType="WRITE"/>
+
+      <OPCItem ItemName="24_TaskNo" ClientHandler="51" OPCItemName="DB16,CHAR396,40" ItemType="WRITE"/>
+      <OPCItem ItemName="24_Destination" ClientHandler="52" OPCItemName="DB16,INT386,1" ItemType="WRITE"/>
+      <OPCItem ItemName="24_Request" ClientHandler="53" OPCItemName="DB16,INT454,1"  ItemType="READ" IsActive="true"/>
+      <!--<OPCItem ItemName="24_Request" ClientHandler="53" OPCItemName="DB16,INT454,1"  ItemType="READ" IsActive="false"/>-->
+
+      <OPCItem ItemName="25_TaskNo" ClientHandler="61" OPCItemName="DB16,CHAR472,40" ItemType="WRITE"/>
+      <OPCItem ItemName="25_Destination" ClientHandler="62" OPCItemName="DB16,INT462,1" ItemType="WRITE"/>
+      <OPCItem ItemName="25_Request" ClientHandler="63" OPCItemName="DB16,INT530,1"  ItemType="READ" IsActive="true"/>
+      <!--<OPCItem ItemName="25_Request" ClientHandler="63" OPCItemName="DB16,INT530,1"  ItemType="READ" IsActive="false"/>-->
+
+      <OPCItem ItemName="28_TaskNo" ClientHandler="71" OPCItemName="DB16,CHAR548,40" ItemType="WRITE"/>
+      <OPCItem ItemName="28_Destination" ClientHandler="72" OPCItemName="DB16,INT538,1" ItemType="WRITE"/>
+      <OPCItem ItemName="28_Request" ClientHandler="73" OPCItemName="DB16,INT606,1"  ItemType="WRITE"/>
+
+      <OPCItem ItemName="29_TaskNo" ClientHandler="81" OPCItemName="DB16,CHAR624,40" ItemType="WRITE"/>
+      <OPCItem ItemName="29_Destination" ClientHandler="82" OPCItemName="DB16,INT614,1" ItemType="WRITE"/>
+      <OPCItem ItemName="29_Request" ClientHandler="83" OPCItemName="DB16,INT682,1"  ItemType="WRITE"/>
+
+      <OPCItem ItemName="36_TaskNo" ClientHandler="91" OPCItemName="DB16,CHAR700,40" ItemType="WRITE"/>
+      <OPCItem ItemName="36_Destination" ClientHandler="92" OPCItemName="DB16,INT690,1" ItemType="WRITE"/>
+      <OPCItem ItemName="36_Request" ClientHandler="93" OPCItemName="DB16,INT758,1"  ItemType="READ" IsActive="true"/>
+      <!--<OPCItem ItemName="36_Request" ClientHandler="93" OPCItemName="DB16,INT758,1"  ItemType="READ" IsActive="false"/>-->
+
+      <OPCItem ItemName="37_TaskNo" ClientHandler="101" OPCItemName="DB16,CHAR776,40" ItemType="WRITE"/>
+      <OPCItem ItemName="37_Destination" ClientHandler="102" OPCItemName="DB16,INT766,1" ItemType="WRITE"/>
+      <OPCItem ItemName="37_Request" ClientHandler="103" OPCItemName="DB16,INT834,1"  ItemType="READ" IsActive="true"/>
+      <!--<OPCItem ItemName="37_Request" ClientHandler="103" OPCItemName="DB16,INT834,1"  ItemType="READ" IsActive="false"/>-->
+
+      <OPCItem ItemName="40_TaskNo" ClientHandler="111" OPCItemName="DB16,CHAR852,40" ItemType="WRITE"/>
+      <OPCItem ItemName="40_Destination" ClientHandler="112" OPCItemName="DB16,INT842,1" ItemType="WRITE"/>
+      <OPCItem ItemName="40_Request" ClientHandler="113" OPCItemName="DB16,INT910,1"  ItemType="WRITE"/>
+
+      <OPCItem ItemName="41_TaskNo" ClientHandler="121" OPCItemName="DB16,CHAR928,40" ItemType="WRITE"/>
+      <OPCItem ItemName="41_Destination" ClientHandler="122" OPCItemName="DB16,INT918,1" ItemType="WRITE"/>
+      <OPCItem ItemName="41_Request" ClientHandler="123" OPCItemName="DB16,INT986,1" ItemType="WRITE"/>
+
+      <OPCItem ItemName="47_TaskNo" ClientHandler="131" OPCItemName="DB16,CHAR1004,40" ItemType="WRITE"/>
+      <OPCItem ItemName="47_Destination" ClientHandler="132" OPCItemName="DB16,INT994,1" ItemType="WRITE"/>
+      <OPCItem ItemName="47_Request" ClientHandler="133" OPCItemName="DB16,INT1062,1"  ItemType="READ" IsActive="true"/>
+      <!--<OPCItem ItemName="47_Request" ClientHandler="133" OPCItemName="DB16,INT1062,1"  ItemType="READ" IsActive="false"/>-->
+
+      <OPCItem ItemName="48_TaskNo" ClientHandler="141" OPCItemName="DB16,CHAR1080,40" ItemType="WRITE"/>
+      <OPCItem ItemName="48_Destination" ClientHandler="142" OPCItemName="DB16,INT1070,1" ItemType="WRITE"/>
+      <OPCItem ItemName="48_Request" ClientHandler="143" OPCItemName="DB16,INT1138,1"  ItemType="READ" IsActive="true"/>
+      <!--<OPCItem ItemName="48_Request" ClientHandler="143" OPCItemName="DB16,INT1138,1"  ItemType="READ" IsActive="false"/>-->
+
+      <OPCItem ItemName="49_TaskNo" ClientHandler="151" OPCItemName="DB16,CHAR1156,40" ItemType="WRITE"/>
+      <OPCItem ItemName="49_Destination" ClientHandler="152" OPCItemName="DB16,INT1146,1" ItemType="WRITE"/>
+      <OPCItem ItemName="49_Request" ClientHandler="153" OPCItemName="DB16,INT1214,1"  ItemType="READ" IsActive="true"/>
+      <!--<OPCItem ItemName="49_Request" ClientHandler="153" OPCItemName="DB16,INT1214,1"  ItemType="READ" IsActive="false"/>-->
+      
+      <OPCItem ItemName="57_TaskNo" ClientHandler="161" OPCItemName="DB16,CHAR1232,40" ItemType="WRITE"/>
+      <OPCItem ItemName="57_Destination" ClientHandler="162" OPCItemName="DB16,INT1222,1" ItemType="WRITE"/>
+      <OPCItem ItemName="57_Request" ClientHandler="163" OPCItemName="DB16,INT1290,1"  ItemType="READ" IsActive="true"/>
+      <!--<OPCItem ItemName="57_Request" ClientHandler="163" OPCItemName="DB16,INT1290,1"  ItemType="READ" IsActive="false"/>-->
+
+      <OPCItem ItemName="104_TaskNo" ClientHandler="171" OPCItemName="DB16,CHAR1308,20" ItemType="WRITE"/>
+      <OPCItem ItemName="104_Destination" ClientHandler="172" OPCItemName="DB16,INT1298,1" ItemType="WRITE"/>
+      <OPCItem ItemName="104_Request" ClientHandler="173" OPCItemName="DB16,INT1366,1"  ItemType="READ" IsActive="true"/>
+      <!--<OPCItem ItemName="104_Request" ClientHandler="173" OPCItemName="DB16,INT1366,1"  ItemType="READ" IsActive="false"/>-->
+
+    </OPCGroup>
+  </OPCServer>
+</Config>

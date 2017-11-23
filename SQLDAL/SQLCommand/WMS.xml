@@ -54,7 +54,11 @@
       Sp_InStockCancelTask
     </CommandString>
   </Command>
-  
+  <Command ID="SPGetInStockProductQty">
+    <CommandString>
+      SP_GetInStockProductQty
+    </CommandString>
+  </Command>
   
   <!--出库单-->
  

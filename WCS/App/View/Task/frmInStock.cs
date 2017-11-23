@@ -18,7 +18,6 @@ namespace App.View.Task
         public frmInStock()
         {
             InitializeComponent();
-            this.dgvMain.DataError += delegate(object sender, DataGridViewDataErrorEventArgs e) { }; 
         }
 
         private void toolStripButton_Close_Click(object sender, EventArgs e)
@@ -92,36 +91,36 @@ namespace App.View.Task
 
         private void dgvMain_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            //if (e.Button == MouseButtons.Right)
-            //{
-            //    if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
-            //    {
-            //        //若行已是选中状态就不再进行设置
-            //        if (dgvMain.Rows[e.RowIndex].Selected == false)
-            //        {
-            //            dgvMain.ClearSelection();
-            //            dgvMain.Rows[e.RowIndex].Selected = true;
-            //        }
-            //        //只选中一行时设置活动单元格
-            //        if (dgvMain.SelectedRows.Count == 1)
-            //        {
-            //            dgvMain.CurrentCell = dgvMain.Rows[e.RowIndex].Cells[e.ColumnIndex];
-            //        }                    
-            //        //弹出操作菜单
-            //        contextMenuStrip1.Show(MousePosition.X, MousePosition.Y);
-            //    }
-            //}
+            if (e.Button == MouseButtons.Right)
+            {
+                if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
+                {
+                    //若行已是选中状态就不再进行设置
+                    if (dgvMain.Rows[e.RowIndex].Selected == false)
+                    {
+                        dgvMain.ClearSelection();
+                        dgvMain.Rows[e.RowIndex].Selected = true;
+                    }
+                    //只选中一行时设置活动单元格
+                    if (dgvMain.SelectedRows.Count == 1)
+                    {
+                        dgvMain.CurrentCell = dgvMain.Rows[e.RowIndex].Cells[e.ColumnIndex];
+                    }                    
+                    //弹出操作菜单
+                    contextMenuStrip1.Show(MousePosition.X, MousePosition.Y);
+                }
+            }
         }
         private void toolStripMenuItem2_Click(object sender, EventArgs e)
         {
             if (this.dgvMain.CurrentCell != null)
             {
                 BLL.BLLBase bll = new BLL.BLLBase();
-                string TaskNo = this.dgvMain.Rows[this.dgvMain.CurrentCell.RowIndex].Cells["colTaskNo"].Value.ToString();
+                string TaskNo = this.dgvMain.Rows[this.dgvMain.CurrentCell.RowIndex].Cells[0].Value.ToString();
                 DataParameter[] param = new DataParameter[] { new DataParameter("@TaskNo", TaskNo), new DataParameter("@State", 0) };
                 bll.ExecNonQueryTran("WCS.Sp_UpdateTaskState", param);
-                MCP.Logger.Info("frmInStock中任何号：" + TaskNo + "手动更新为0" );
                 BindData();
+                MCP.Logger.Info("任务号:" + TaskNo + "手动更新为:0");
             }     
         }
 
@@ -137,6 +136,14 @@ namespace App.View.Task
 
         private void toolStripMenuItem5_Click(object sender, EventArgs e)
         {
+            DataRow dr = ((DataRowView)dgvMain.Rows[this.dgvMain.CurrentCell.RowIndex].DataBoundItem).Row;
+            string State = dr["State"].ToString();
+            if (State != "0" || State != "8")
+            {
+                string TaskNo = dr["TaskNo"].ToString();
+                MCP.Logger.Info("任务号:" + TaskNo + "正在执行中请在监控界面变更状态为取消!");
+                return;
+            }
             UpdatedgvMainState("9");
         }
         private void UpdatedgvMainState(string State)
@@ -144,9 +151,8 @@ namespace App.View.Task
             if (this.dgvMain.CurrentCell != null)
             {
                 BLL.BLLBase bll = new BLL.BLLBase();
-                string TaskNo = this.dgvMain.Rows[this.dgvMain.CurrentCell.RowIndex].Cells["colTaskNo"].Value.ToString();
+                string TaskNo = this.dgvMain.Rows[this.dgvMain.CurrentCell.RowIndex].Cells[0].Value.ToString();
                 DataParameter[] param = new DataParameter[] { new DataParameter("@TaskNo", TaskNo), new DataParameter("@State", State) };
-                MCP.Logger.Info("frmInStock中任何号：" + TaskNo + "手动更新为" + State);
                 bll.ExecNonQueryTran("WCS.Sp_UpdateTaskState", param);
                 ////堆垛机完成执行
                 //if (State == "7")
@@ -155,6 +161,7 @@ namespace App.View.Task
                 //    bll.ExecNonQueryTran("WCS.Sp_TaskProcess", param);
                 //}
                 BindData();
+                MCP.Logger.Info("任务号:" + TaskNo + "手动更新为:" + State);
             }
         }
 
@@ -171,13 +178,6 @@ namespace App.View.Task
         private void frmInStock_Activated(object sender, EventArgs e)
         {
             this.BindData();
-        }
-
-        private void dgvMain_RowEnter(object sender, DataGridViewCellEventArgs e)
-        {
-            string TaskNo = this.dgvMain.Rows[e.RowIndex].Cells[1].Value.ToString();
-            DataTable dt = bll.FillDataTable("WCS.SelectTaskDetail", new DataParameter[] { new DataParameter("{0}", string.Format("T.TaskNo='{0}'",TaskNo)) });
-            bsDetail.DataSource = dt;
         }
     }
 }

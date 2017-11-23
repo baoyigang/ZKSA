@@ -122,7 +122,7 @@
             this.lblMessage.Name = "lblMessage";
             this.lblMessage.Size = new System.Drawing.Size(219, 20);
             this.lblMessage.TabIndex = 11;
-            this.lblMessage.Text = "盘点货物已到达，请人工扫码核对";
+            this.lblMessage.Text = "盘点货物已到达,请人工扫码核对";
             // 
             // groupBox2
             // 
@@ -180,7 +180,7 @@
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(373, 20);
             this.label15.TabIndex = 15;
-            this.label15.Text = "条码扫描完成之后，请点击确定按钮，执行烟包托盘入库！";
+            this.label15.Text = "条码扫描完成之后,请点击确定按钮,执行烟包托盘入库！";
             // 
             // btnOK
             // 
@@ -210,7 +210,7 @@
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(79, 20);
             this.label16.TabIndex = 16;
-            this.label16.Text = "扫描条码：";
+            this.label16.Text = "扫描条码:";
             // 
             // txtCellCode
             // 
@@ -229,7 +229,7 @@
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(79, 20);
             this.label3.TabIndex = 32;
-            this.label3.Text = "盘点货位：";
+            this.label3.Text = "盘点货位:";
             // 
             // colBarCode
             // 

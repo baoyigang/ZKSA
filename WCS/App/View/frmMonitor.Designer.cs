@@ -502,7 +502,7 @@
             this.label25.Name = "label25";
             this.label25.Size = new System.Drawing.Size(65, 20);
             this.label25.TabIndex = 11;
-            this.label25.Text = "工位狀態";
+            this.label25.Text = "工位状态";
             // 
             // txtFork01
             // 
@@ -721,7 +721,7 @@
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(65, 20);
             this.label7.TabIndex = 11;
-            this.label7.Text = "工位狀態";
+            this.label7.Text = "工位状态";
             // 
             // txtFork02
             // 
@@ -940,7 +940,7 @@
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(65, 20);
             this.label16.TabIndex = 11;
-            this.label16.Text = "工位狀態";
+            this.label16.Text = "工位状态";
             // 
             // txtFork03
             // 
@@ -1159,7 +1159,7 @@
             this.label34.Name = "label34";
             this.label34.Size = new System.Drawing.Size(65, 20);
             this.label34.TabIndex = 11;
-            this.label34.Text = "工位狀態";
+            this.label34.Text = "工位状态";
             // 
             // txtFork04
             // 
@@ -1378,7 +1378,7 @@
             this.label43.Name = "label43";
             this.label43.Size = new System.Drawing.Size(65, 20);
             this.label43.TabIndex = 11;
-            this.label43.Text = "工位狀態";
+            this.label43.Text = "工位状态";
             // 
             // txtFork05
             // 
@@ -1597,7 +1597,7 @@
             this.label52.Name = "label52";
             this.label52.Size = new System.Drawing.Size(65, 20);
             this.label52.TabIndex = 11;
-            this.label52.Text = "工位狀態";
+            this.label52.Text = "工位状态";
             // 
             // txtFork06
             // 
@@ -1816,7 +1816,7 @@
             this.label61.Name = "label61";
             this.label61.Size = new System.Drawing.Size(65, 20);
             this.label61.TabIndex = 11;
-            this.label61.Text = "工位狀態";
+            this.label61.Text = "工位状态";
             // 
             // txtFork07
             // 
@@ -2035,7 +2035,7 @@
             this.label70.Name = "label70";
             this.label70.Size = new System.Drawing.Size(65, 20);
             this.label70.TabIndex = 11;
-            this.label70.Text = "工位狀態";
+            this.label70.Text = "工位状态";
             // 
             // txtFork08
             // 
@@ -2254,7 +2254,7 @@
             this.label79.Name = "label79";
             this.label79.Size = new System.Drawing.Size(65, 20);
             this.label79.TabIndex = 11;
-            this.label79.Text = "工位狀態";
+            this.label79.Text = "工位状态";
             // 
             // txtFork09
             // 
@@ -2430,7 +2430,7 @@
             this.label111.Name = "label111";
             this.label111.Size = new System.Drawing.Size(73, 20);
             this.label111.TabIndex = 26;
-            this.label111.Text = "工位2狀態";
+            this.label111.Text = "工位2状态";
             // 
             // txtMFork012
             // 
@@ -2536,7 +2536,7 @@
             this.label88.Name = "label88";
             this.label88.Size = new System.Drawing.Size(73, 20);
             this.label88.TabIndex = 11;
-            this.label88.Text = "工位1狀態";
+            this.label88.Text = "工位1状态";
             // 
             // txtMFork011
             // 
@@ -2712,7 +2712,7 @@
             this.label92.Name = "label92";
             this.label92.Size = new System.Drawing.Size(73, 20);
             this.label92.TabIndex = 26;
-            this.label92.Text = "工位2狀態";
+            this.label92.Text = "工位2状态";
             // 
             // txtMFork022
             // 
@@ -2818,7 +2818,7 @@
             this.label98.Name = "label98";
             this.label98.Size = new System.Drawing.Size(73, 20);
             this.label98.TabIndex = 11;
-            this.label98.Text = "工位1狀態";
+            this.label98.Text = "工位1状态";
             // 
             // txtMFork021
             // 
@@ -2994,7 +2994,7 @@
             this.label103.Name = "label103";
             this.label103.Size = new System.Drawing.Size(73, 20);
             this.label103.TabIndex = 26;
-            this.label103.Text = "工位2狀態";
+            this.label103.Text = "工位2状态";
             // 
             // txtMFork032
             // 
@@ -3100,7 +3100,7 @@
             this.label112.Name = "label112";
             this.label112.Size = new System.Drawing.Size(73, 20);
             this.label112.TabIndex = 11;
-            this.label112.Text = "工位1狀態";
+            this.label112.Text = "工位1状态";
             // 
             // txtMFork031
             // 

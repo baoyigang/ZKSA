@@ -316,7 +316,7 @@
   <!---->
   <Command ID="SelectFieldValue">
     <CommandString>
-      select {1}  from {0} where {2}
+      select {1}  from {0} where {2} 
     </CommandString>
   </Command>
  <!--前后笔资料-->

@@ -106,6 +106,14 @@ namespace App.View.Task
 
         private void toolStripMenuItem5_Click(object sender, EventArgs e)
         {
+            DataRow dr = ((DataRowView)dgvMain.Rows[this.dgvMain.CurrentCell.RowIndex].DataBoundItem).Row;
+            string State = dr["State"].ToString();
+            if (State != "0" || State != "8")
+            {
+                string TaskNo = dr["TaskNo"].ToString();
+                MCP.Logger.Info("任务号:" + TaskNo + "正在执行中请在监控界面变更状态为取消!");
+                return;
+            }
             UpdatedgvMainState("9");
         }
         private void UpdatedgvMainState(string State)
@@ -117,6 +125,7 @@ namespace App.View.Task
                 bll.ExecNonQueryTran("WCS.Sp_UpdateTaskState", param);
 
                 BindData();
+                MCP.Logger.Info("任务号:" + TaskNo + "手动更新为:" + State);
             }
         }
 

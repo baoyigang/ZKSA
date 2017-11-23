@@ -89,18 +89,60 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BLL\BLLBase.cs" />
-    <Compile Include="BLL\Server.cs" />
-    <Compile Include="Common\frmSelect.cs">
+    <Compile Include="Account\frmChangePWD.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Common\frmSelect.Designer.cs">
-      <DependentUpon>frmSelect.cs</DependentUpon>
+    <Compile Include="Account\frmChangePWD.designer.cs">
+      <DependentUpon>frmChangePWD.cs</DependentUpon>
     </Compile>
+    <Compile Include="Account\frmGroupInfo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Account\frmGroupInfo.designer.cs">
+      <DependentUpon>frmGroupInfo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Account\frmGroupList.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Account\frmGroupList.designer.cs">
+      <DependentUpon>frmGroupList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Account\frmGroupManage.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Account\frmGroupManage.Designer.cs">
+      <DependentUpon>frmGroupManage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Account\frmGroupUser.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Account\frmGroupUser.Designer.cs">
+      <DependentUpon>frmGroupUser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Account\frmLogin.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Account\frmLogin.Designer.cs">
+      <DependentUpon>frmLogin.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Account\frmUserInfo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Account\frmUserInfo.Designer.cs">
+      <DependentUpon>frmUserInfo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Account\frmUserList.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Account\frmUserList.designer.cs">
+      <DependentUpon>frmUserList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BLL\BLLBase.cs" />
+    <Compile Include="BLL\Server.cs" />
     <Compile Include="Crane.cs" />
-    <Compile Include="Dispatching\Process\CarProcess.cs" />
+    <Compile Include="Dispatching\Process\AGVProcess.cs" />
+    <Compile Include="Dispatching\Process\ElevatorProcess.cs" />
     <Compile Include="Dispatching\Process\CraneProcess.cs" />
-    <Compile Include="Dispatching\TCPMessageParse.cs" />
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -127,17 +169,47 @@
     <Compile Include="View\CheckScan.designer.cs">
       <DependentUpon>CheckScan.cs</DependentUpon>
     </Compile>
+    <Compile Include="View\Dispatcher\frmTaskQuery.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Dispatcher\frmTaskQuery.designer.cs">
+      <DependentUpon>frmTaskQuery.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\Dispatcher\frmWMSTaskQuery.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Dispatcher\frmWMSTaskQuery.designer.cs">
+      <DependentUpon>frmWMSTaskQuery.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\frmMonitor1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\frmMonitor1.designer.cs">
+      <DependentUpon>frmMonitor1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\frmMonitor2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\frmMonitor2.Designer.cs">
+      <DependentUpon>frmMonitor2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\Param\frmCraneHandle.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Param\frmCraneHandle.designer.cs">
+      <DependentUpon>frmCraneHandle.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\TaskCarNo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\TaskCarNo.Designer.cs">
+      <DependentUpon>TaskCarNo.cs</DependentUpon>
+    </Compile>
     <Compile Include="View\Dispatcher\frmCellDialog.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="View\Dispatcher\frmCellDialog.designer.cs">
       <DependentUpon>frmCellDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="View\Dispatcher\frmCellInfo.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="View\Dispatcher\frmCellInfo.designer.cs">
-      <DependentUpon>frmCellInfo.cs</DependentUpon>
     </Compile>
     <Compile Include="View\Dispatcher\frmCellOpDialog.cs">
       <SubType>Form</SubType>
@@ -148,38 +220,8 @@
     <Compile Include="View\Dispatcher\frmCellQuery.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="View\Dispatcher\frmCellQuery.designer.cs">
+    <Compile Include="View\Dispatcher\frmCellQuery.Designer.cs">
       <DependentUpon>frmCellQuery.cs</DependentUpon>
-    </Compile>
-    <Compile Include="View\Dispatcher\frmInTask.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="View\Dispatcher\frmInTask.designer.cs">
-      <DependentUpon>frmInTask.cs</DependentUpon>
-    </Compile>
-    <Compile Include="View\Dispatcher\frmMoveCount.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="View\Dispatcher\frmMoveCount.Designer.cs">
-      <DependentUpon>frmMoveCount.cs</DependentUpon>
-    </Compile>
-    <Compile Include="View\Dispatcher\frmScan.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="View\Dispatcher\frmScan.designer.cs">
-      <DependentUpon>frmScan.cs</DependentUpon>
-    </Compile>
-    <Compile Include="View\Task\frmBillUpERP.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="View\Task\frmBillUpERP.Designer.cs">
-      <DependentUpon>frmBillUpERP.cs</DependentUpon>
-    </Compile>
-    <Compile Include="View\TaskCarNo.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="View\TaskCarNo.Designer.cs">
-      <DependentUpon>TaskCarNo.cs</DependentUpon>
     </Compile>
     <Compile Include="View\Filter.cs" />
     <Compile Include="View\frmMonitor.cs">
@@ -273,8 +315,35 @@
     <Compile Include="View\Task\frmPalletInTask.Designer.cs">
       <DependentUpon>frmPalletInTask.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Common\frmSelect.resx">
-      <DependentUpon>frmSelect.cs</DependentUpon>
+    <Compile Include="View\frmReassignCell.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\frmReassignCell.designer.cs">
+      <DependentUpon>frmReassignCell.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="Account\frmChangePWD.resx">
+      <DependentUpon>frmChangePWD.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Account\frmGroupInfo.resx">
+      <DependentUpon>frmGroupInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Account\frmGroupList.resx">
+      <DependentUpon>frmGroupList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Account\frmGroupManage.resx">
+      <DependentUpon>frmGroupManage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Account\frmGroupUser.resx">
+      <DependentUpon>frmGroupUser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Account\frmLogin.resx">
+      <DependentUpon>frmLogin.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Account\frmUserInfo.resx">
+      <DependentUpon>frmUserInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Account\frmUserList.resx">
+      <DependentUpon>frmUserList.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
@@ -290,32 +359,32 @@
     <EmbeddedResource Include="View\CheckScan.resx">
       <DependentUpon>CheckScan.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="View\Dispatcher\frmTaskQuery.resx">
+      <DependentUpon>frmTaskQuery.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\Dispatcher\frmWMSTaskQuery.resx">
+      <DependentUpon>frmWMSTaskQuery.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\frmMonitor1.resx">
+      <DependentUpon>frmMonitor1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\frmMonitor2.resx">
+      <DependentUpon>frmMonitor2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\Param\frmCraneHandle.resx">
+      <DependentUpon>frmCraneHandle.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\TaskCarNo.resx">
+      <DependentUpon>TaskCarNo.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="View\Dispatcher\frmCellDialog.resx">
       <DependentUpon>frmCellDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="View\Dispatcher\frmCellInfo.resx">
-      <DependentUpon>frmCellInfo.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="View\Dispatcher\frmCellOpDialog.resx">
       <DependentUpon>frmCellOpDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="View\Dispatcher\frmCellQuery.resx">
       <DependentUpon>frmCellQuery.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="View\Dispatcher\frmInTask.resx">
-      <DependentUpon>frmInTask.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="View\Dispatcher\frmMoveCount.resx">
-      <DependentUpon>frmMoveCount.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="View\Dispatcher\frmScan.resx">
-      <DependentUpon>frmScan.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="View\Task\frmBillUpERP.resx">
-      <DependentUpon>frmBillUpERP.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="View\TaskCarNo.resx">
-      <DependentUpon>TaskCarNo.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="View\frmMonitor.resx">
       <DependentUpon>frmMonitor.cs</DependentUpon>
@@ -362,6 +431,9 @@
     <EmbeddedResource Include="View\Task\frmPalletInTask.resx">
       <DependentUpon>frmPalletInTask.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="View\frmReassignCell.resx">
+      <DependentUpon>frmReassignCell.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
@@ -378,13 +450,17 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App.ico" />
-    <Content Include="CarPLC1.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
-    </Content>
     <Content Include="Config.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Convey.xml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="MConvey.xml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Crane.xml">
       <SubType>Designer</SubType>
@@ -392,7 +468,8 @@
     </Content>
     <None Include="Resources\Shelf.png" />
     <None Include="Resources\Crane11.png" />
-    <Content Include="CranePLC1.xml">
+    <None Include="Resources\Crane2.png" />
+    <Content Include="Elevator.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
@@ -401,26 +478,46 @@
     <None Include="Resources\report.png" />
     <None Include="Resources\close.png" />
     <None Include="Resources\calculator.png" />
+    <None Include="Resources\1234.png" />
+    <None Include="Resources\123.png" />
+    <None Include="Resources\12.png" />
+    <None Include="Resources\111.png" />
+    <None Include="Resources\1111.png" />
+    <None Include="Resources\551fb5a24da28a97739ca06c843ac6ff.png" />
     <None Include="Resources\Barcode_32.png" />
     <Content Include="ERP.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
-    <None Include="Resources\Crane21.png" />
+    <Content Include="MiniLoad01.xml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Monitor.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </Content>
+    <None Include="Resources\cancel.png" />
+    <None Include="Resources\Add.png" />
+    <None Include="Resources\del.png" />
     <Content Include="Resources\down.png" />
     <None Include="Resources\monitor.png" />
+    <None Include="Resources\edit.png" />
     <Content Include="Resources\next.png" />
     <None Include="Resources\process.png" />
     <None Include="Resources\process_accept.png" />
     <None Include="Resources\process_remove.png" />
+    <None Include="Resources\refresh32.png" />
     <None Include="Resources\refresh24.png" />
     <Content Include="Resources\remove.png" />
-    <None Include="Resources\Shelf2.png" />
-    <None Include="Resources\Shelf3.png" />
-    <None Include="Resources\Shelf4.png" />
-    <None Include="Resources\Shelf5.png" />
-    <None Include="Resources\Shelf51.png" />
+    <None Include="Resources\S1.jpg" />
+    <None Include="Resources\S1.png" />
     <Content Include="Resources\up.png" />
+    <None Include="Resources\yl.png" />
+    <None Include="Resources\YLML.png" />
+    <None Include="Resources\YLUL.png" />
+    <None Include="Resources\user.png" />
+    <None Include="Resources\user_remove.png" />
     <Content Include="ViewConfig.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>

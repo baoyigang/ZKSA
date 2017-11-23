@@ -33,7 +33,6 @@ namespace App.View
         {
             if (this.DesignMode)
                 return;
-            
 
             if (!Program.mainForm.IsActiveTab)
                 Program.mainForm.SetActiveTab(this.Handle.ToString(), true);

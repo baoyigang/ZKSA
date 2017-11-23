@@ -32,6 +32,7 @@
         }
 
         var url = "../../Handler/BaseHandler.ashx";
+        var OtherUrl = "../../Handler/OtherHandler.ashx";
         var SessionUrl = '<% =ResolveUrl("~/Login.aspx")%>';
         var FormID = "InStock";
         var BaseWhere = encodeURIComponent("BillID like 'IS%'");
@@ -180,6 +181,15 @@
             if (!$("#fm").form('validate')) {
                 return false;
             }
+            //判断剩余多少货位
+            var PalletCount =parseInt(GetInStockProductQty());
+            var ProductQty = parseInt($('#txtPalletQty').textbox('getValue'));
+            if (PalletCount < ProductQty) {
+                $.messager.alert('错误', "剩余最大货位数量为：" + PalletCount + " ,请修改入库托盘数量.", 'error');
+                $('#txtPalletQty').next('span').find('input').focus(); 
+                return false;
+            }
+
             var query = createParam();
             var test = $('#txtPageState').val();
             var data;
@@ -213,6 +223,9 @@
 
             }
         }
+        
+
+
         //删除管理员
         function Delete() {
             if (SessionTimeOut(SessionUrl)) {
@@ -432,7 +445,26 @@
                 }, 'json');
             }
         }
-
+        function GetInStockProductQty() {
+            var data = { Action: 'GetInStockProductQty', ProductCode: $('#txtProductCode').textbox('getValue'), SectionID: $('#ddlSectionID').combobox('getValue'), BatchNo: $('#txtBatchNo').textbox('getValue'), ProductQty: $('#txtPalletQty').textbox('getValue') };
+            var Value = "";
+            $.ajax({
+                type: "post",
+                url: OtherUrl,
+                data: data,
+                // contentType: "application/json; charset=utf-8",
+                dataType: "text",
+                async: false,
+                success: function (data) {
+                    Value = data;
+                },
+                error: function (msg) {
+                    alert(msg);
+                    Value = "";
+                }
+            });
+            return Value;
+        }
 
 
         function BindSelectUrl(objName) {

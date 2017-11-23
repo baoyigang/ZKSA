@@ -18,7 +18,6 @@ namespace App.View.Task
         public frmInventor()
         {
             InitializeComponent();
-            this.dgvMain.DataError += delegate(object sender, DataGridViewDataErrorEventArgs e) { }; 
         }
 
         private void toolStripButton_Close_Click(object sender, EventArgs e)
@@ -30,23 +29,10 @@ namespace App.View.Task
         {
             BindData();
             
-        }
-
-        private void toolStripButton_Request_Click(object sender, EventArgs e)
-        {
-            frmInStockTask f = new frmInStockTask();
-            if (f.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                //string TaskNo = this.dgvMain.SelectedRows[0].Cells["colTaskNo"].Value.ToString();
-                //bll.ExecNonQuery("WCS.UpdateTaskStateByTaskNo", new DataParameter[] { new DataParameter("@State", 1), new DataParameter("@TaskNo", TaskNo) });
-                this.BindData();
-            }
-        }
+        }        
 
         private void toolStripButton_Cancel_Click(object sender, EventArgs e)
         {
-            if (this.dgvMain.CurrentRow == null)
-                return;
             if (this.dgvMain.CurrentRow.Index >= 0)
             {
                 if (this.dgvMain.SelectedRows[0].Cells["colState"].Value.ToString() == "等待")
@@ -54,10 +40,8 @@ namespace App.View.Task
                     if (DialogResult.Yes == MessageBox.Show("您确定要取消此任务吗？", "询问", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
                     {
                         string TaskNo = this.dgvMain.SelectedRows[0].Cells["colTaskNo"].Value.ToString();
-                        //bll.ExecNonQuery("WCS.UpdateTaskStateByTaskNo", new DataParameter[] { new DataParameter("@State", 9), new DataParameter("@TaskNo", TaskNo) });
                         DataParameter[] param = new DataParameter[] { new DataParameter("@TaskNo", TaskNo) };
                         bll.ExecNonQueryTran("WCS.Sp_TaskCancelProcess", param);
-                        
                         this.BindData();
                     }
                 }
@@ -69,78 +53,40 @@ namespace App.View.Task
             }
         }
 
-        private void toolStripButton_EmptyIn_Click(object sender, EventArgs e)
-        {
-            frmPalletInTask f = new frmPalletInTask();
-            if (f.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                this.BindData();
-            }
-        }
         private void BindData()
         {
-            DataTable dt = bll.FillDataTable("WCS.SelectTask", new DataParameter[] { new DataParameter("{0}", "WCS_TASK.State in('0','1','2','3','4','5','6') and WCS_TASK.TaskType='14'") });
+            DataTable dt = bll.FillDataTable("WCS.SelectTask", new DataParameter[] { new DataParameter("{0}", "WCS_TASK.State in('0','1','2','3','4','5','6') and WCS_TASK.TaskType='14' And WCS_TASK.AreaCode='" + BLL.Server.GetAreaCode() + "'") });
             bsMain.DataSource = dt;
         }
 
-        private void frmInStock_Load(object sender, EventArgs e)
+        private void frmMoveStock_Load(object sender, EventArgs e)
         {
             //this.BindData();
             for (int i = 0; i < this.dgvMain.Columns.Count - 1; i++)
                 ((DataGridViewAutoFilterTextBoxColumn)this.dgvMain.Columns[i]).FilteringEnabled = true;
+            this.txtBarCode.Focus();
         }
-
         private void dgvMain_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            //if (e.Button == MouseButtons.Right)
-            //{
-            //    if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
-            //    {
-            //        //若行已是选中状态就不再进行设置
-            //        if (dgvMain.Rows[e.RowIndex].Selected == false)
-            //        {
-            //            dgvMain.ClearSelection();
-            //            dgvMain.Rows[e.RowIndex].Selected = true;
-            //        }
-            //        //只选中一行时设置活动单元格
-            //        if (dgvMain.SelectedRows.Count == 1)
-            //        {
-            //            dgvMain.CurrentCell = dgvMain.Rows[e.RowIndex].Cells[e.ColumnIndex];
-            //        }                    
-            //        //弹出操作菜单
-            //        contextMenuStrip1.Show(MousePosition.X, MousePosition.Y);
-            //    }
-            //}
-        }
-        
-        private void UpdatedgvMainState(string State)
-        {
-            if (this.dgvMain.CurrentCell != null)
+            if (e.Button == MouseButtons.Right)
             {
-                BLL.BLLBase bll = new BLL.BLLBase();
-                string TaskNo = this.dgvMain.Rows[this.dgvMain.CurrentCell.RowIndex].Cells["colTaskNo"].Value.ToString();
-                DataParameter[] param = new DataParameter[] { new DataParameter("@TaskNo", TaskNo), new DataParameter("@State", State) };
-                bll.ExecNonQueryTran("WCS.Sp_UpdateTaskState", param);
-                MCP.Logger.Info("frmInventor中任何号：" + TaskNo + "手动更新为" + State);
-                 
-                BindData();
+                if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
+                {
+                    //若行已是选中状态就不再进行设置
+                    if (dgvMain.Rows[e.RowIndex].Selected == false)
+                    {
+                        dgvMain.ClearSelection();
+                        dgvMain.Rows[e.RowIndex].Selected = true;
+                    }
+                    //只选中一行时设置活动单元格
+                    if (dgvMain.SelectedRows.Count == 1)
+                    {
+                        dgvMain.CurrentCell = dgvMain.Rows[e.RowIndex].Cells[e.ColumnIndex];
+                    }
+                    //弹出操作菜单
+                    contextMenuStrip1.Show(MousePosition.X, MousePosition.Y);
+                }
             }
-        }
-
-      
-
-        private void toolStripMenuItem6_Click(object sender, EventArgs e)
-        {
-            UpdatedgvMainState("6");
-        }
-        private void toolStripMenuItem7_Click(object sender, EventArgs e)
-        {
-            UpdatedgvMainState("7");
-        }
-
-        private void toolStripMenuItem9_Click(object sender, EventArgs e)
-        {
-            UpdatedgvMainState("9");
         }
         private void toolStripMenuItem2_Click(object sender, EventArgs e)
         {
@@ -154,27 +100,115 @@ namespace App.View.Task
 
         private void toolStripMenuItem4_Click(object sender, EventArgs e)
         {
+            UpdatedgvMainState("5");
+        }
+
+        private void toolStripMenuItem5_Click(object sender, EventArgs e)
+        {
+            DataRow dr = ((DataRowView)dgvMain.Rows[this.dgvMain.CurrentCell.RowIndex].DataBoundItem).Row;
+            string State = dr["State"].ToString();
+            if (State != "0" || State != "8")
+            {
+                string TaskNo = dr["TaskNo"].ToString();
+                MCP.Logger.Info("任务号:" + TaskNo + "正在执行中请在监控界面变更状态为取消!");
+                return;
+            }
+            UpdatedgvMainState("9");
+        }
+        private void UpdatedgvMainState(string State)
+        {
+            if (this.dgvMain.CurrentCell != null)
+            {
+                string TaskNo = this.dgvMain.Rows[this.dgvMain.CurrentCell.RowIndex].Cells[0].Value.ToString();
+                DataParameter[] param = new DataParameter[] { new DataParameter("@TaskNo", TaskNo), new DataParameter("@State", State) };
+                bll.ExecNonQueryTran("WCS.Sp_UpdateTaskState", param);
+
+                BindData();
+                MCP.Logger.Info("任务号:" + TaskNo + "手动更新为:" + State);
+            }
+        }
+
+        private void toolStripMenuItem6_Click(object sender, EventArgs e)
+        {
             UpdatedgvMainState("4");
         }
 
-       
+        private void toolStripMenuItem7_Click(object sender, EventArgs e)
+        {
+            UpdatedgvMainState("6");
+        }
 
+        private void toolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            UpdatedgvMainState("7");
+        }
 
-
-        private void frmInStock_Activated(object sender, EventArgs e)
+        private void frmInventor_Activated(object sender, EventArgs e)
         {
             this.BindData();
+            this.txtBarCode.Focus();
         }
 
-        private void dgvMain_RowEnter(object sender, DataGridViewCellEventArgs e)
+
+
+
+
+        private void txtBarCode_TextChanged(object sender, EventArgs e)
         {
-            string TaskNo = this.dgvMain.Rows[e.RowIndex].Cells[1].Value.ToString();
-            DataTable dt = bll.FillDataTable("WCS.SelectTaskDetail", new DataParameter[] { new DataParameter("{0}", string.Format("T.TaskNo='{0}'",TaskNo)) });
-            bsDetail.DataSource = dt;
+            if (this.txtBarCode.Text != "")
+            {
+
+                string BillID = bll.GetFieldValue("WCS_TASK", "BillID", string.Format("State=0 and CheckBarcode='' and CellCode='' and  TaskType='14' and AreaCode='{0}'  and Barcode='{1}'", BLL.Server.GetAreaCode(), this.txtBarCode.Text));
+                if (BillID.Trim().Length > 0)
+                {
+                    bll.ExecNonQuery("WCS.UpdateCacheInventorBarCode", new DataParameter[] { new DataParameter("@AreaCode", BLL.Server.GetAreaCode()), new DataParameter("@BarCode", this.txtBarCode.Text) });
+                    DataTable dt = bll.FillDataTable("WCS.SelectUpErpCheck", new DataParameter[] { new DataParameter("@BillID", BillID) });
+                    if (dt.Rows.Count > 0)
+                    {
+                        string xml = Util.ConvertObj.ConvertDataTableToXmlOperation(dt, "BatchCheckStock");
+                        Context.ProcessDispatcher.WriteToService("ERP", "ACK", xml);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("扫描的熔次卷号不在缓存中,请确认", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                this.txtBarCode.Text = "";
+                this.txtBarCode.Focus();
+                this.BindData();
+            }
         }
 
-        
+        private void toolStripButton_OK_Click(object sender, EventArgs e)
+        {
+            DataTable dtCache = bll.FillDataTable("WCS.SelectCacheInventor", new DataParameter[] { new DataParameter("@AreaCode", BLL.Server.GetAreaCode()) });
+            if (dtCache.Rows.Count > 0)
+            {
 
-       
+                if (DialogResult.Yes == MessageBox.Show("缓存中还有未扫描的熔次卷号,是否确认盘点完成？", "询问", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+                {
+
+                    DataParameter[] param = new DataParameter[] { new DataParameter("@AreaCode", BLL.Server.GetAreaCode()) };
+                    bll.ExecNonQuery("WCS.UpdateCacheInventorFinished", param);
+
+                   string Cmd = "WCS.SelectUpErpCheck";
+
+                   DataTable dtBill = dtCache.DefaultView.ToTable(true, "BillID");
+
+                   for (int i = 0; i < dtBill.Rows.Count; i++)
+                   {
+                       DataTable dt = bll.FillDataTable(Cmd, new DataParameter[] { new DataParameter("@BillID", dtBill.Rows[i][0].ToString()) });
+                       if (dt.Rows.Count > 0)
+                       {
+                           string xml = Util.ConvertObj.ConvertDataTableToXmlOperation(dt, "BatchCheckStock");
+                           Context.ProcessDispatcher.WriteToService("ERP", "ACK", xml);
+                       }
+                   }
+
+                    this.BindData();
+                }
+            }
+
+        }        
     }
 }

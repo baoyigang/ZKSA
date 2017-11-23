@@ -1,0 +1,40 @@
+﻿<?xml version='1.0' ?>
+<Config>
+  <OPCServer ConnectionString="OPC.SimaticNET">
+    <!--<OPCGroup GroupName="PLCGroup" GroupString="S7:[@LOCALSERVER]" UpdateRate="350">-->
+    <OPCGroup GroupName="PLCGroup" GroupString="S7:[PLC0301]" UpdateRate="350">
+      <!--握手信号-->
+      <OPCItem ItemName="ReadHandShake01" ClientHandler="1" OPCItemName="DB541,INT0,1"  ItemType="READ" IsActive="false"/>
+      <OPCItem ItemName="CarStatus01" ClientHandler="2" OPCItemName="DB541,INT2,15"  ItemType="READ" IsActive="false"/>
+      <OPCItem ItemName="CarAlarm01" ClientHandler="3" OPCItemName="DB541,INT38,1"  ItemType="READ" IsActive="true"/>
+      <OPCItem ItemName="TaskFinished01" ClientHandler="4" OPCItemName="DB541,CHAR40,30" ItemType="READ" IsActive="true"/>
+      <OPCItem ItemName="CarTask01" ClientHandler="5" OPCItemName="DB541,CHAR70,30"  ItemType="READ" IsActive="false"/>
+
+      <OPCItem ItemName="ReadHandShake02" ClientHandler="6" OPCItemName="DB541,INT100,1"  ItemType="READ" IsActive="false"/>
+      <OPCItem ItemName="CarStatus02" ClientHandler="7" OPCItemName="DB541,INT102,15"  ItemType="READ" IsActive="false"/>
+      <OPCItem ItemName="CarAlarm02" ClientHandler="8" OPCItemName="DB541,INT138,1"  ItemType="READ" IsActive="true"/>
+      <OPCItem ItemName="TaskFinished02" ClientHandler="9" OPCItemName="DB541,CHAR140,30" ItemType="READ" IsActive="true"/>
+      <OPCItem ItemName="CarTask02" ClientHandler="10" OPCItemName="DB541,CHAR170,30"  ItemType="READ" IsActive="false"/>
+      <!--提升机状态-->
+      <OPCItem ItemName="ElevatorStatus" ClientHandler="11" OPCItemName="DB550,INT0,3"  ItemType="READ" IsActive="false"/>
+      <OPCItem ItemName="ElevatorAlarm" ClientHandler="12" OPCItemName="DB550,INT6,1"  ItemType="READ" IsActive="true"/>
+      <!--提升机输送-->
+      <OPCItem ItemName="InLocation01" ClientHandler="13" OPCItemName="DB550,CHAR100,20" ItemType="READ" IsActive="true"/>
+      <OPCItem ItemName="InLocation02" ClientHandler="14" OPCItemName="DB550,CHAR120,20" ItemType="READ" IsActive="true"/>
+      <OPCItem ItemName="OutLocation02" ClientHandler="16" OPCItemName="DB550,CHAR160,20" ItemType="READ" IsActive="true"/>
+
+      <!--握手信号-->
+      <OPCItem ItemName="HandShake" ClientHandler="17" OPCItemName="DB540,INT0,1"  ItemType="WRITE"/>
+      <!--起始地址、目标地址、任务类型，小车编号-->
+      <OPCItem ItemName="TaskAddress" ClientHandler="18" OPCItemName="DB540,INT4,10"  ItemType="WRITE"/>
+      <!--召回-->
+      <OPCItem ItemName="Command" ClientHandler="19" OPCItemName="DB540,INT2,1"  ItemType="WRITE"/>
+       
+      <!--任务号-->
+      <OPCItem ItemName="TaskNo" ClientHandler="21" OPCItemName="DB540,CHAR102,30"  ItemType="WRITE"/>
+      <!--任务标识-->
+      <OPCItem ItemName="WriteFinished" ClientHandler="22" OPCItemName="DB540,INT100,1"  ItemType="WRITE"/>
+      <OPCItem ItemName="OutLocation01" ClientHandler="23" OPCItemName="DB550,CHAR140,20" ItemType="WRITE"/>
+    </OPCGroup>
+  </OPCServer>
+</Config>
