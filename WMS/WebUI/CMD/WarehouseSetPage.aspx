@@ -73,7 +73,7 @@
                 return false;
             }
             if (row) {
-             var data = { Action: 'FillDataTable', Comd: 'cmd.SelectWarehouse', Where: "WareHouseCode='" + row.WarehouseCode + "'" };
+             var data = { Action: 'FillDataTable', Comd: 'cmd.SelectWarehouse',Json: "[{\"{0}\": \"WareHouseCode='" + row.WarehouseCode + "'\"}]"};
                 $.post(url, data, function (result) {
                     var Product = result.rows[0];
                      $('#AddWin').dialog('open').dialog('setTitle', '仓库设置--编辑');

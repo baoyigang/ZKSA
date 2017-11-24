@@ -126,7 +126,7 @@
             }
 
             if (row) {
-                var data = { Action: 'FillDataTable', Comd: 'WMS.SelectBillMaster', Where: "BillID='" + row.BillID + "'" };
+                var data = { Action: 'FillDataTable', Comd: 'WMS.SelectBillMaster', Json: "[{\"{0}\": \"BillID='" + row.BillID + "'\"}]"  };
                 $.post(url, data, function (result) {
                     blnChange = false;
                     var Product = result.rows[0];

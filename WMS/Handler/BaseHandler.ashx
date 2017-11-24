@@ -85,6 +85,9 @@ public class BaseHandler : IHttpHandler, IRequiresSessionState
             case "CancelTask":
                 strJson = CancelTask(context);
                 break;
+
+            case "ExecNonQuery":
+                break;
         }
         context.Response.Clear();
         context.Response.ContentEncoding = System.Text.Encoding.UTF8;
@@ -382,12 +385,12 @@ public class BaseHandler : IHttpHandler, IRequiresSessionState
     private string FillDataTable(HttpContext context)//执行查询
     {
         string Comd = context.Request["Comd"].ToString();
-        string Where = context.Server.UrlDecode(context.Request["Where"].ToString());
-        //分页属性
-
+        string json = context.Server.UrlDecode(context.Request["Json"].ToString());
+        DataTable dtParas = Util.JsonHelper.Json2Dtb(json);
+        DataParameter[] paras = Common.CreateParas(dtParas);
         BLL.BLLBase bll = new BLL.BLLBase();
 
-        DataTable dt = bll.FillDataTable(Comd, new DataParameter[] { new DataParameter("{0}", Where), new DataParameter("{1}", "1") });
+        DataTable dt = bll.FillDataTable(Comd, paras);
 
 
         return JsonHelper.Dtb2Json(dt, 1);

@@ -128,7 +128,7 @@
                 return false;
             }
             if (row) {
-                var data = { Action: 'FillDataTable', Comd: 'WMS.SelectBillMaster', Where: "BillID='" + row.BillID + "'" };
+                var data = { Action: 'FillDataTable', Comd: 'WMS.SelectBillMaster', Json: "[{\"{0}\": \"BillID='" + row.BillID + "'\"}]" };
                 $.post(url, data, function (result) {
                     var Product = result.rows[0];
                     $('#AddWin').dialog('open').dialog('setTitle', '入库单--编辑');
@@ -148,7 +148,7 @@
         //绑定下拉控件
         function BindDropDownList() {
             var Product = $("#txtProductCode").textbox('getValue');
-            var data = { Action: 'FillDataTable', Comd: 'cmd.SelectProductDetail', Where: encodeURIComponent("ProductCode='" + Product + "'") };
+            var data = { Action: 'FillDataTable', Comd: 'cmd.SelectProductDetail', Json: "[{\"{0}\": \"ProductCode='" + Product + "'\",\"{1}\":\"1\"}]" };
             BindComboList(data, 'ddlSectionID', 'RowID', 'SectionName');
         }
         

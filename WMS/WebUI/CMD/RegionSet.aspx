@@ -82,7 +82,7 @@
             }
             BindDropDownList();
             if (row) {
-                var data = { Action: 'FillDataTable', Comd: 'cmd.SelectRegionEdit', Where: "RegionCode='" + row.RegionCode + "'" };
+                var data = { Action: 'FillDataTable', Comd: 'cmd.SelectRegionEdit', Json: "[{\"{0}\": \"RegionCode='" + row.RegionCode + "'\",\"{1}\":\"1\"}]" };
                 $.post(url, data, function (result) {
                     var Product = result.rows[0];
                     $('#AddWin').dialog('open').dialog('setTitle', '库区设置--编辑');
@@ -96,7 +96,7 @@
         }
         //绑定下拉控件
         function BindDropDownList() {
-            var data = { Action: 'FillDataTable', Comd: 'cmd.SelectAreaEdit', Where: "1=1" };
+            var data = { Action: 'FillDataTable', Comd: 'cmd.SelectAreaEdit', Json: "[{\"{0}\": \"1=1\",\"{1}\":\"1\"}]" };
             BindComboList(data, 'SelectAreaName', 'AreaCode', 'AreaName');
         }
 

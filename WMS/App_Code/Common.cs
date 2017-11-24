@@ -49,4 +49,19 @@ public class Common
             paras.Add(AddPara);
         }
     }
+
+    public static DataParameter[] CreateParas(System.Data.DataTable dt)
+    {
+        DataParameter[] Paras = new DataParameter[dt.Columns.Count];
+        for (int K = 0; K < dt.Columns.Count; K++)
+        {
+            if (dt.Columns[K].ColumnName.ToLower().IndexOf("date") > 0 && dt.Rows[0][K].ToString() == "")
+                Paras[K] = new DataParameter("@" + dt.Columns[K].ColumnName, null);
+            else if (dt.Columns[K].ColumnName.IndexOf("{") >= 0)
+                Paras[K] = new DataParameter(dt.Columns[K].ColumnName, dt.Rows[0][K]);
+            else
+                Paras[K] = new DataParameter("@" + dt.Columns[K].ColumnName, dt.Rows[0][K]);
+        }
+        return Paras;
+    }
 }

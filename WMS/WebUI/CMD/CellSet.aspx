@@ -77,7 +77,7 @@
 
 
             $('#Form1').form('clear');
-            var data = { Action: 'FillDataTable', Comd: 'cmd.SelectAreaEdit', Where: "1=1" };
+            var data = { Action: 'FillDataTable', Comd: 'cmd.SelectAreaEdit', Json: "[{\"{0}\": \"1=1\",\"{1}\":\"1\"}]" };
             BindComboList(data, 'ddlAreaName', 'AreaCode', 'AreaName');
         
 
@@ -148,7 +148,7 @@
             BindCellDrop();
             if (row) {
                 $('#Form1').form('clear');
-                    var data = { Action: 'FillDataTable', Comd: 'CMD.SelectCellEdit', Where: "c.CellCode='" + row.CellCode + "'" };
+                var data = { Action: 'FillDataTable', Comd: 'CMD.SelectCellEdit', Json: "[{\"{0}\": \"c.CellCode='" + row.CellCode + "'\",\"{1}\":\"1\"}]" };
 
                     if (row.PalletBarCode != '') {
                         $("#ddlAreaName").combobox({ disabled: true });
@@ -157,7 +157,7 @@
                     $.post(url, data, function (result) {
                         var Product = result.rows[0];
                         $('#AddCell').dialog('open').dialog('setTitle', '库位--编辑');
-                        var eadata = { Action: 'FillDataTable', Comd: 'cmd.SelectRegionEdit', Where: "a.AreaCode='" + Product.AreaCode + "'" };
+                        var eadata = { Action: 'FillDataTable', Comd: 'cmd.SelectRegionEdit', Json: "[{\"{0}\": \"a.AreaCode='" + Product.AreaCode + "'\",\"{1}\":\"1\"}]" };
                         BindComboList(eadata, 'ddlRegionName', 'RegionCode', 'RegionName');
                         $('#Form1').form('load', Product);
                     }, 'json');
@@ -210,13 +210,13 @@
             }
             $("#SelectAreaName").combobox({
                     onSelect: function (record) {
-                    var edata = { Action: 'FillDataTable', Comd: 'cmd.SelectRegionEdit', Where: "a.AreaCode='" + $('#SelectAreaName').combobox('getValue') + "'" };
+                        var edata = { Action: 'FillDataTable', Comd: 'cmd.SelectRegionEdit', Json: "[{\"{0}\": \"a.AreaCode='" + $('#SelectAreaName').combobox('getValue') + "'\",\"{1}\":\"1\"}]" };
                     BindComboList(edata,'SelectRegionName','RegionCode','RegionName')
                     }
             });
 //            $('#SelectRegionName').combobox('setValue', '');
             aeAreaCode = checkedItems[0].AreaCode;
-            var aedata = { Action: 'FillDataTable', Comd: 'cmd.SelectRegionEdit', Where: "a.AreaCode='" + aeAreaCode + "'" };
+            var aedata = { Action: 'FillDataTable', Comd: 'cmd.SelectRegionEdit', Json: "[{\"{0}\": \"a.AreaCode='" + aeAreaCode + "'\",\"{1}\":\"1\"}]" };
             BindComboList(aedata, 'SelectRegionName', 'RegionCode', 'RegionName')
             $('#fm').form('load', checkedItems[0]);
             $('#txtPageState').val("Edit");
@@ -225,14 +225,14 @@
         }
         //绑定下拉控件
         function BindDropDownList() {
-           var data = { Action: 'FillDataTable', Comd: 'cmd.SelectAreaEdit', Where: "1=1" };
+            var data = { Action: 'FillDataTable', Comd: 'cmd.SelectAreaEdit', Json: "[{\"{0}\": \"1=1\",\"{1}\":\"1\"}]" };
             BindComboList(data, 'SelectAreaName', 'AreaCode', 'AreaName');
         }
         function BindCellDrop() {
-            var data = { Action: 'FillDataTable', Comd: 'cmd.SelectAreaEdit', Where: "1=1" };
+            var data = { Action: 'FillDataTable', Comd: 'cmd.SelectAreaEdit', Json: "[{\"{0}\": \"1=1\",\"{1}\":\"1\"}]" };
             BindComboList(data, 'ddlAreaName', 'AreaCode', 'AreaName');
 
-            var edata = { Action: 'FillDataTable', Comd: 'cmd.SelectRowID', Where: "ProductCode='" + $('#dg').datagrid('getSelected').ProductCode + "'" };
+            var edata = { Action: 'FillDataTable', Comd: 'cmd.SelectRowID', Json: "[{\"{0}\": \"ProductCode='" + $('#dg').datagrid('getSelected').ProductCode + "'\"}]" };
 //            BindComboList(edata, 'ddlEditRowID', 'RowID', 'SectionName','0');
             $.ajax({
                 type: "post",
@@ -279,7 +279,7 @@
             }
             if (blnUsed)
                 return false;
-            var data = { Action: 'Edit', Comd: 'Cmd.UpdateCellEdit', json: js + "\"{0}\":'" + updateCode.join("','") + "'" + "}]" };
+            var data = { Action: 'Edit', Comd: 'Cmd.UpdateCellEdit', json: js + "\"{0}\":'" + updateCode.join("','") + "'}]" };
                 $.post(url, data, function (result) {
                     if (result.status == 1) {
                         ReloadGrid('dg');
@@ -355,7 +355,7 @@
           //  CheckSelectRow('dg', rowIndex, rowData);
         }
         function BindProduct() {
-            var edata = { Action: 'FillDataTable', Comd: 'cmd.SelectRowID', Where: "ProductCode='" + $('#txtEditProductCode').textbox('getValue') +"'" };
+            var edata = { Action: 'FillDataTable', Comd: 'cmd.SelectRowID', Json: "[{\"{0}\": \"ProductCode='" + $('#txtEditProductCode').textbox('getValue') + "'\"}]" };
             $.ajax({
                 type: "post",
                 url: BaseUrl,
@@ -448,7 +448,7 @@
             $("#ddlAreaName").combobox({
                 onSelect: function (record) {
                     var val = $('#ddlAreaName').combobox('getValue');
-                    var eadata = { Action: 'FillDataTable', Comd: 'cmd.SelectRegionEdit', Where: "a.AreaCode='" + val + "'" };
+                    var eadata = { Action: 'FillDataTable', Comd: 'cmd.SelectRegionEdit', Json: "[{\"{0}\": \"a.AreaCode='" + val + "'\",\"{1}\":\"1\"}]" };
                     BindComboList(eadata, 'ddlRegionName', 'RegionCode', 'RegionName');
                 }
             });

@@ -23,19 +23,7 @@
         var SessionUrl = '<% =ResolveUrl("~/Login.aspx")%>';
         var FormID = "Product";
         var OldStandardNoValue;
-//        var product;
-//        var baodata = { Action: 'FillDataTable', Comd: 'cmd.SelectAreaEdit', Where: "1=1" };
-//        $.ajax({
-//            type: "post",
-//            url: url,
-//            data: baodata,
-//            //contentType: "application/json; charset=utf-8",
-//            dataType: "json",
-//            async: false,
-//            success: function (json) {
-//                product = json.rows;
-//            }
-//        })
+
         function getQueryParams(objname, queryParams) {
             if (objname == "dg") {
                 var Where = "1=1 ";
@@ -90,7 +78,8 @@
 //            $('#txtStandardNo').textbox('enable', true);
 //            $('#btnProductNo').removeAttr('disabled');
             $('#AddWin').dialog('open').dialog('setTitle', '产品资料--新增');
-//            SetAutoCodeNewID('txtProductCode', 'cmd_Product', 'ProductCode', '1=1');
+            //            SetAutoCodeNewID('txtProductCode', 'cmd_Product', 'ProductCode', '1=1');
+            $('#dgSubAdd').datagrid('loadData', { total: 0, rows: [] }); //下载本地数据。
             $('#txtPageState').val("Add");
             $("#txtProductCode").textbox('readonly', false);        
             SetInitValue('<%=Session["G_user"] %>');
@@ -125,7 +114,7 @@
 
             BindDropDownList();
             if (row) {
-                var data = { Action: 'FillDataTable', Comd: 'cmd.SelectProduct', Where: "product.ProductCode='" + row.ProductCode + "'" };
+                var data = { Action: 'FillDataTable', Comd: 'cmd.SelectProduct', Json: "[{\"{0}\": \"product.ProductCode='" + row.ProductCode + "'\",\"{1}\": \"1\"}]" };
                 $.post(url, data, function (result) {
                     var Product = result.rows[0];
                     OldStandardNoValue=Product.StandardNo;
@@ -134,7 +123,7 @@
                 }, 'json');
                 $('#dgSubAdd').datagrid({
                     url: '../../Handler/BaseHandler.ashx?Action=FillDataTable&Comd=CMD.SelectProductDetail',
-                    queryParams: { Where: encodeURIComponent("ProductCode='" + row.ProductCode + "'") }
+                    queryParams: { Json: "[{\"{0}\": \"ProductCode='" + row.ProductCode + "'\"}]" }
                 });
             }
             $('#txtPageState').val("Edit");
@@ -160,10 +149,10 @@
         }
         //绑定下拉控件
         function BindDropDownList() {
-            var data = { Action: 'FillDataTable', Comd: 'cmd.SelectProductCategory', Where: '1=1' };
+            var data = { Action: 'FillDataTable', Comd: 'cmd.SelectProductCategory', Json: "[{\"{0}\": \"1=1\",\"{1}\": \"1\"}]" };
             BindComboList(data, 'ddlCategoryCode', 'CategoryCode', 'CategoryName');
 
-         var cdata = { Action: 'FillDataTable', Comd: 'cmd.SelectAreaEdit', Where: "1=1" };
+            var cdata = { Action: 'FillDataTable', Comd: 'cmd.SelectAreaEdit', Json: "[{\"{0}\": \"1=1\",\"{1}\": \"1\"}]" };
 //            BindComboList(cdata, 'bao', 'AreaCode', 'AreaName');
 
 //            $("#ddlDetailAreaCode").combobox({
@@ -359,7 +348,7 @@
         $(function () {
             var areaPro;
             var regionPro;
-            var baodata = { Action: 'FillDataTable', Comd: 'cmd.SelectAreaEdit', Where: "1=1" };
+            var baodata = { Action: 'FillDataTable', Comd: 'cmd.SelectAreaEdit', Json: "[{\"{0}\": \"1=1\",\"{1}\": \"1\"}]" };
             $.ajax({
                 type: "post",
                 url: url,
@@ -428,7 +417,7 @@
                                 var edArea = $('#dgSubAdd').datagrid('getEditor', { index: indexSelect, field: 'AreaName' });
                                 var edReg = $('#dgSubAdd').datagrid('getEditor', { index: indexSelect, field: 'RegionName' });
                                 var val = edArea.target.combobox('getValue');
-                                var eadata = { Action: 'FillDataTable', Comd: 'cmd.SelectRegionEdit', Where: "a.AreaCode='" + val + "'" };
+                                var eadata = { Action: 'FillDataTable', Comd: 'cmd.SelectRegionEdit', Json: "[{\"{0}\": \"a.AreaCode='" + val + "'\",\"{1}\":\"1\"}]" };
                                 $.ajax({
                                     type: "post",
                                     url: url,

@@ -77,7 +77,7 @@
             }
             BindDropDownList();
             if (row) {
-                var data = { Action: 'FillDataTable', Comd: 'Security.SelectUser', Where: "UserID='" + row.UserID + "'" };
+                var data = { Action: 'FillDataTable', Comd: 'Security.SelectUser', Json :"[{\"{0}\": \"UserID='" + row.UserID + "'\"}]"};
                 $.post(url, data, function (result) {
                     var Product = result.rows[0];
                     $('#AddWin').dialog('open').dialog('setTitle', '编辑');

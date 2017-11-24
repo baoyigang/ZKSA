@@ -75,7 +75,7 @@
             }
             BindDropDownList();
             if (row) {
-                var data = { Action: 'FillDataTable', Comd: 'Security.SelectGroup', Where: "GroupID='" + row.GroupID + "'" };
+                var data = { Action: 'FillDataTable', Comd: 'Security.SelectGroup', Json :"[{\"{0}\": \"GroupID='" + row.GroupID + "'\"}]" };
                 $.post(url, data, function (result) {
                     var Product = result.rows[0];
                     $('#AddWin').dialog('open').dialog('setTitle', '编辑');

@@ -76,7 +76,7 @@
             }
             BindDropDownList();
             if (row) {
-                var data = { Action: 'FillDataTable', Comd: 'cmd.SelectProductCategory', Where: "CategoryCode='" + row.CategoryCode + "'" };
+                var data = { Action: 'FillDataTable', Comd: 'cmd.SelectProductCategory', Json: "[{\"{0}\": \"CategoryCode='" + row.CategoryCode + "'\",\"{1}\": \"1\"}]" };
                 $.post(url, data, function (result) {
                     var Product = result.rows[0];
                     $('#AddWin').dialog('open').dialog('setTitle', '产品类别--编辑');
