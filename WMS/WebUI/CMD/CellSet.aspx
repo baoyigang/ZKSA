@@ -189,7 +189,7 @@
             var blnUsed = false;
             $.each(checkedItems, function (index, item) {
                 if (item.PalletBarCode != "") {
-                    alert("无法修改有货货位的库区");
+                    alert("不是空货位，无法修改有货货位的库区");
                     blnUsed = true;
                     return false;
                 }
@@ -258,7 +258,7 @@
             });  
                    
         }
-        //保存信息
+        //修改库区 保存信息
         function Save() {
             if (SessionTimeOut(SessionUrl)) {
                 return false;
@@ -279,7 +279,7 @@
             }
             if (blnUsed)
                 return false;
-            var data = { Action: 'Edit', Comd: 'Cmd.UpdateCellEdit', json: js + "\"{0}\":\"'" + updateCode.join("','") + "'\"" + "}]" };
+            var data = { Action: 'Edit', Comd: 'Cmd.UpdateCellEdit', json:[{AreaCode:$("#SelectAreaName").combobox("getValue"),RegionCode:$("#SelectRegionName").combobox("getValue"),"{0}":'" + updateCode.join("','") + "'}]};
                 $.post(url, data, function (result) {
                     if (result.status == 1) {
                         ReloadGrid('dg');
@@ -290,7 +290,7 @@
                     }
                 }, 'json');
             }
-            //保存信息
+            //货位 保存信息
             function SaveCell() {
                 if (SessionTimeOut(SessionUrl)) {
                     return false;
@@ -516,7 +516,7 @@
         </table>
    </div>
       <%-- 弹出操作框--%>
-    <div id="AddWin" class="easyui-dialog" style="width: 600px; height: auto; padding: 5px 5px"
+    <div id="AddWin" class="easyui-dialog" style="width: 400px; height: auto; padding: 5px 5px"
         data-options="closed:true,buttons:'#AddWinBtn',modal:true"> 
         <form id="fm" method="post">
               <table id="Table1" class="maintable"  width="100%" align="center">			
@@ -525,28 +525,19 @@
                      <td align="center" class="musttitle"style="width:90px">
                             区域名称
                     </td>
-                    <td width="210px"> 
+                    <td width="300px"> 
                         &nbsp;<input id="SelectAreaName" name="AreaCode" class="easyui-combobox" data-options="required:false,editable:false" maxlength="50" style="width:180px"/>
                     </td>
+                    
+                </tr>
+                <tr>
                     <td align="center" class="musttitle"style="width:90px"  >
                            库区名称
                     </td>
-                    <td width="210px"> 
+                    <td width="300px"> 
                         &nbsp;<input id="SelectRegionName" name="RegionCode" class="easyui-combobox" data-options="required:false,editable:false,valueField:'RegionCode',textField:'RegionName'" maxlength="50" style="width:180px"/>
                     </td>
                 </tr>
-                <tr style=" height:80px">
-                    <td align="center"  class="smalltitle" style="width:120px;height:80px;">
-                        备注
-                    </td>
-                    <td colspan="3" style="height:80px;">
-                       &nbsp;<input 
-                            id="txtMemo" name="Memo" class="easyui-textbox" 
-                            data-options="multiline:true" style="width:478px; height:72px"/>
-
-                    </td>
-                </tr>
-
                
                 	
 		</table>
