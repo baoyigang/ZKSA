@@ -268,7 +268,7 @@
             }
             var checkedItems = $('#dg').datagrid('getChecked');
             var query = createParam();
-            var js = "[{\"AreaCode\":\"" + $("#SelectAreaName").combobox("getValue") + "\"," + "\"RegionCode\":\"" + $("#SelectRegionName").combobox("getValue") + "\",";
+            var js = "[{AreaCode:" + $("#SelectAreaName").combobox("getValue") + "," + "RegionCode:" + $("#SelectRegionName").combobox("getValue") + ",";
             var updateCode = [];
             var blnUsed = false;
             $.each(checkedItems, function (index, item) {
@@ -279,7 +279,7 @@
             }
             if (blnUsed)
                 return false;
-            var data = { Action: 'Edit', Comd: 'Cmd.UpdateCellEdit', json:[{AreaCode:$("#SelectAreaName").combobox("getValue"),RegionCode:$("#SelectRegionName").combobox("getValue"),"{0}":'" + updateCode.join("','") + "'}]};
+            var data = { Action: 'Edit', Comd: 'Cmd.UpdateCellEdit', json: js + "\"{0}\":'" + updateCode.join("','") + "'" + "}]" };
                 $.post(url, data, function (result) {
                     if (result.status == 1) {
                         ReloadGrid('dg');
