@@ -47,10 +47,10 @@
                 Where += " and SUBSTRING(c.cellcode,1,3) like '%" + Pai + "%'";
             }
             if (Lie != "") {
-                Where += " and Convert(int,SUBSTRING(c.cellcode,4,3)) = " + Lie + "";
+                Where += " and c.CellColumn = " + Lie + "";
             }
             if (Ceng != "") {
-                Where += " and Convert(int,SUBSTRING(c.cellcode,7,3)) = " + Ceng + "";
+                Where += " and  c.CellRow = " + Ceng + "";
             }
             if (cellValue) {
                 Where += " and PalletBarCode =''";
@@ -182,20 +182,43 @@
                 $.messager.alert("提示", "请选择要修改的行！", "info");
                 return false;
             }
+            var checkedItems = $('#dg').datagrid('getChecked');
+            var RegionCode = checkedItems[0].RegionCode;
+            var blnUsed = false;
+            var updateCode = [];
+            var blnUsed = false;
+            $.each(checkedItems, function (index, item) {
+                if (item.PalletBarCode != "") {
+                    alert("无法修改有货货位的库区");
+                    blnUsed = true;
+                    return false;
+                }
+
+                if (item.RegionCode != RegionCode) {
+                    alert("请修改相同库区库位");
+                    blnUsed = true;
+                    return false;
+                }
+            });
+            if (blnUsed) {
+                return false;
+            }
             BindDropDownList();
              if (checkedItems) {
                 $('#AddWin').dialog('open').dialog('setTitle', '库位设置--编辑');
 
             }
-
             $("#SelectAreaName").combobox({
                     onSelect: function (record) {
                     var edata = { Action: 'FillDataTable', Comd: 'cmd.SelectRegionEdit', Where: "a.AreaCode='" + $('#SelectAreaName').combobox('getValue') + "'" };
                     BindComboList(edata,'SelectRegionName','RegionCode','RegionName')
                     }
-                });
-
-            $('#SelectRegionName').combobox('setValue', '');
+            });
+//            $('#SelectRegionName').combobox('setValue', '');
+            aeAreaCode = checkedItems[0].AreaCode;
+            var aedata = { Action: 'FillDataTable', Comd: 'cmd.SelectRegionEdit', Where: "a.AreaCode='" + aeAreaCode + "'" };
+            BindComboList(aedata, 'SelectRegionName', 'RegionCode', 'RegionName')
+            $('#fm').form('load', checkedItems[0]);
             $('#txtPageState').val("Edit");
             $("#txtID").textbox("readonly", true);
             SetInitColor();
@@ -244,18 +267,12 @@
                 return false;
             }
             var checkedItems = $('#dg').datagrid('getChecked');
-            var RegionCode = checkedItems[0].RegionCode;
             var query = createParam();
-            var js = "[{\"AreaCode\":\"" + $("#SelectAreaName").combobox("getValue") + "\"," + "\"RegionCode\":\"" + $("#SelectRegionName").combobox("getValue") + "\"," + "\"ActiveCode\":\"" + $("#SelectActive").combobox("getValue") + "\"," + "\"LockCode\":\"" + $("#SelectLock").combobox("getValue") + "\",";
+            var js = "[{\"AreaCode\":\"" + $("#SelectAreaName").combobox("getValue") + "\"," + "\"RegionCode\":\"" + $("#SelectRegionName").combobox("getValue") + "\",";
             var updateCode = [];
             var blnUsed = false;
             $.each(checkedItems, function (index, item) {
                 updateCode.push(item.CellCode);
-                if (item.RegionCode != RegionCode) {
-                    blnUsed = true;
-                    alert("请修改相同库区库位");
-                    return false;
-                }
             });
             if (HasExists('CMD_Cell', "CellCode in ('" + updateCode.join("','") +"') and PalletBarCode!=''", '所选货位中存在非空货位，请重新修改！')) {
                 return false;
@@ -491,7 +508,7 @@
                 <td style="width:*" align="right">
                      <a href="javascript:void(0)" onclick="Add() " class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true">新增库位</a>  
                      <a href="javascript:void(0)" onclick="EditCell() " class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true">修改库位</a>  
-                     <a href="javascript:void(0)" onclick="Edit() " class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true">批量修改</a>
+                     <a href="javascript:void(0)" onclick="Edit() " class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true">修改库区</a>
                      <a href="javascript:void(0)" onclick="Delete() " class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true">删除库位</a>    
                      <a href="javascript:void(0)" onclick="Exit()" class="easyui-linkbutton" data-options="iconCls:'icon-no',plain:true">离开</a>
                 </td>
@@ -517,23 +534,6 @@
                     <td width="210px"> 
                         &nbsp;<input id="SelectRegionName" name="RegionCode" class="easyui-combobox" data-options="required:false,editable:false,valueField:'RegionCode',textField:'RegionName'" maxlength="50" style="width:180px"/>
                     </td>
-                </tr>
-                <tr>
-                <td align="center" class="musttitle"style="width:90px">
-                            锁定
-                    </td>
-                    <td width="210px"> 
-                        &nbsp;<input id="SelectLock" name="IsLock" class="easyui-combobox" data-options="required:true,editable:false,valueField:'LockCode',textField:'LockText',data:LockValue,onLoadSuccess: function(json) {
-                  var val = $(this).combobox('getData'); for (var item in val[0]) { if (item == 'LockText') { $(this).combobox('select', val[0]['LockCode']);   } } }" maxlength="50" style="width:180px"/>
-                    </td>
-                    <td align="center" class="musttitle"style="width:90px"  >
-                           异常
-                    </td>
-                    <td width="210px"> 
-                        &nbsp;<input id="SelectActive" name="IsActive" class="easyui-combobox" data-options="required:true,editable:false,valueField:'ActiveCode',textField:'ActiveText',data:ActiveValue,onLoadSuccess: function(json) {
-            var val = $(this).combobox('getData'); for (var item in val[0]) { if (item == 'ActiveText') { $(this).combobox('select', val[0]['ActiveCode']);   } } }" maxlength="50" style="width:180px"/>
-                    </td>
-                
                 </tr>
                 <tr style=" height:80px">
                     <td align="center"  class="smalltitle" style="width:120px;height:80px;">

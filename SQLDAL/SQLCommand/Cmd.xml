@@ -193,7 +193,7 @@
 
   <Command ID="UpdateCellEdit">
     <CommandString>
-      update CMD_Cell set AreaCode=@AreaCode,RegionCode=@RegionCode,IsActive=@ActiveCode,IsLock=@LockCode  where CellCode in ({0})
+      update CMD_Cell set AreaCode=@AreaCode,RegionCode=@RegionCode  where CellCode in ({0})
     </CommandString> 
   </Command>
   <Command ID="SelectCellEdit">
