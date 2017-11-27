@@ -277,7 +277,7 @@
 <Command ID="SelectSystemModules">
   <CommandString>
     select distinct(ModuleCode) ,MenuTitle from sys_ModuleList  m left join sys_Menu n  on m.ModuleCode=n.MenuCode
-    where n.SystemName=@SystemName order by ModuleCode
+    where n.SystemName=@SystemName and n.IsHide=0 order by ModuleCode
   </CommandString>
 </Command>
   
@@ -293,7 +293,7 @@
       from sys_ModuleList
       where ModuleCode in
       (select MenuCode from sys_Menu where SystemName=@SystemName)
-      order by SubModuleCode
+      order by SubModuleCode,OperatorCode
     </CommandString>
   </Command>
   <Command ID="SelectGroupOperation">
