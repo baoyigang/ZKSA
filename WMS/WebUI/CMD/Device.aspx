@@ -23,7 +23,7 @@
         var SessionUrl = '<% =ResolveUrl("~/Login.aspx")%>';
         var FormID = "Device";
         var StateValue = [{ StateCode: '1', StateText: '启用' }, { StateCode: '0', StateText: '禁用'}];
-        var DeviceValue = [{ DeviceCode: '01', DeviceText: '堆垛机' }, { DeviceCode: '02', DeviceText: '穿梭车' }, { DeviceCode: '03', DeviceText: '提升机'}];
+        var DeviceValue = [{ DeviceCode: '1', DeviceText: '堆垛机' }, { DeviceCode: '2', DeviceText: '穿梭车' }, { DeviceCode: '3', DeviceText: '提升机'}];
         function getQueryParams(objname, queryParams) {
             var Where = "1=1 ";
             var WareHouseCode = $("#txtWareHouseCode").textbox("getValue");
@@ -121,11 +121,11 @@
                     }
                 },
                   {
-                      field: 'DeviceType', title: '设备类型', width: 100, align: 'center', formatter: function (value) {
-                          if (value == '01') {
+                      field: 'Flag', title: '设备类型', width: 100, align: 'center', formatter: function (value) {
+                          if (value == '1') {
                               return '堆垛机';
                           }
-                          else if (value == '02') {
+                          else if (value == '2') {
                               return '穿梭车';
                           }
                           else {
@@ -228,13 +228,12 @@
                             &nbsp;<input id="txtID" name="DeviceNo" 
                                 class="easyui-textbox" data-options="required:true,editable:false" maxlength="2" style="width:180px"/>
                                 <input name="PageState" id="txtPageState" type="hidden" />
-                                <input name="Flag" id="txtFlag" type="hidden" value="1"   />
                     </td>
                     <td align="center" class="musttitle"style="width:90px"  >
                            设备类型
                     </td>
                     <td width="210px"> 
-                        &nbsp;<input id="txtDeviceType" name="DeviceType" class="easyui-combobox" data-options="required:true,editable:false,valueField:'DeviceCode',textField:'DeviceText',data:DeviceValue" maxlength="120" style="width:180px"/>
+                        &nbsp;<input id="txtFlag" name="Flag" class="easyui-combobox" data-options="required:true,editable:false,valueField:'DeviceCode',textField:'DeviceText',data:DeviceValue" maxlength="120" style="width:180px"/>
                     </td>
                 </tr>
                 <tr>
