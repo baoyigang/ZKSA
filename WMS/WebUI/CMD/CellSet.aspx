@@ -143,16 +143,16 @@
                 return false;
             }
             $("#txtEditCellCode").textbox('readonly', true);
-            $("#ddlAreaName").combobox({ disabled: false });
-            $("#ddlRegionName").combobox({ disabled: false });
+            $("#ddlAreaName").combobox({ readonly: false });
+            $("#ddlRegionName").combobox({ readonly: false });
             BindCellDrop();
             if (row) {
                 $('#Form1').form('clear');
                 var data = { Action: 'FillDataTable', Comd: 'CMD.SelectCellEdit', Json: "[{\"{0}\": \"c.CellCode='" + row.CellCode + "'\",\"{1}\":\"1\"}]" };
 
                     if (row.PalletBarCode != '') {
-                        $("#ddlAreaName").combobox({ disabled: true });
-                        $("#ddlRegionName").combobox({ disabled: true });
+                        $("#ddlAreaName").combobox({ readonly: true });
+                        $("#ddlRegionName").combobox({ readonly: true });
                     }
                     $.post(url, data, function (result) {
                         var Product = result.rows[0];
@@ -495,9 +495,9 @@
                     &nbsp;&nbsp;
                     <input id="txtPai" class="easyui-textbox" style="width: 50px" />
                     排
-                    <input id="txtLie" class="easyui-textbox" style="width: 50px" />
+                    <input id="txtLie" class="easyui-numberbox" style="width: 50px" />
                     列
-                    <input id="txtCeng" class="easyui-textbox" style="width: 50px" />
+                    <input id="txtCeng" class="easyui-numberbox" style="width: 50px" />
                     层
                     &nbsp;&nbsp;
                     <input id="comboCell" type="checkbox" style="width:20px;position: relative;top:2px"/>
@@ -643,7 +643,7 @@
                                 入库日期
                         </td>
                         <td > 
-                            &nbsp;<input  id="txtEditIndate" name="Indate" class="easyui-datebox" data-options="editable:false" style="width:160px"/>
+                            &nbsp;<input  id="txtEditIndate" name="InDate" class="easyui-datebox" data-options="editable:false" style="width:160px"/>
                                 <input type="hidden" id="txtEditPalletCode" name="PalletCode" />  
                         </td>
                      </tr>   
