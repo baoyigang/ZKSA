@@ -1,13 +1,11 @@
 ﻿<?xml version='1.0' ?>
 <Config>
   <OPCServer ConnectionString="OPC.SimaticNET">
-    <OPCGroup GroupName="PLCGroup" GroupString="S7:[MiniLoad01]" UpdateRate="350">
+    <OPCGroup GroupName="PLCGroup" GroupString="S7:[PlcMiniLoad]" UpdateRate="350">
       <!--握手信号-->
       <OPCItem ItemName="ReadHandShake" ClientHandler="1" OPCItemName="DB541,X0.0,1"  ItemType="READ" IsActive="false"/>
       <OPCItem ItemName="CraneTaskFinished1" ClientHandler="2" OPCItemName="DB541,INT40,1" ItemType="READ" IsActive="true"/>
       <OPCItem ItemName="CraneTaskFinished2" ClientHandler="3" OPCItemName="DB541,INT52,1" ItemType="READ" IsActive="true"/>
-      <!--<OPCItem ItemName="CraneTaskFinished1" ClientHandler="2" OPCItemName="DB541,INT40,1" ItemType="READ" IsActive="false"/>
-      <OPCItem ItemName="CraneTaskFinished2" ClientHandler="3" OPCItemName="DB541,INT52,1" ItemType="READ" IsActive="false"/>-->
 
       <OPCItem ItemName="CraneMode" ClientHandler="5" OPCItemName="DB541,INT4,1"  ItemType="READ" IsActive="false"/>
       <!--堆垛机状态-->
@@ -29,13 +27,9 @@
       <!--堆垛机负载-->
       <OPCItem ItemName="CraneLoad2" ClientHandler="19" OPCItemName="DB541,INT10,1"  ItemType="READ" IsActive="false"/>
       
-      
-      
       <!--堆垛机位置-->
       <OPCItem ItemName="CraneStation" ClientHandler="22" OPCItemName="DB541,INT12,2"  ItemType="READ" IsActive="false"/>
-
       <OPCItem ItemName="CraneAlarmCode" ClientHandler="23" OPCItemName="DB541,INT60,1"  ItemType="READ" IsActive="true"/>
-      <!--<OPCItem ItemName="CraneAlarmCode" ClientHandler="23" OPCItemName="DB541,INT60,1"  ItemType="READ" IsActive="false"/>-->
 
       <!--握手信号-->
       <OPCItem ItemName="HandShake" ClientHandler="24" OPCItemName="DB540,INT0,1"  ItemType="WRITE"/>

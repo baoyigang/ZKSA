@@ -136,29 +136,7 @@ namespace App.View.Task
                 DataParameter[] param = new DataParameter[] { new DataParameter("@TaskNo", TaskNo), new DataParameter("@State", State) };
                 bll.ExecNonQueryTran("WCS.Sp_UpdateTaskState", param);
 
-                //堆垛机完成执行
-                //if (State == "7")
-                //{
-                //    if (CellCode != "")
-                //    {
-                //        DataParameter[] param = new DataParameter[] { new DataParameter("@TaskNo", TaskNo) };
-                //        bll.ExecNonQueryTran("WCS.Sp_TaskProcess", param);
-                //    }
-                //    else
-                //    {
-                //        DataTable dtXml = bll.FillDataTable("WCS.Sp_TaskProcessNoShelf", new DataParameter[] { new DataParameter("@TaskNo", TaskNo) });
-                //        if (dtXml.Rows.Count > 0)
-                //        {
-                //            string BillNo = dtXml.Rows[0][0].ToString();
-                //            if (BillNo.Trim().Length > 0)
-                //            {
-                //                string xml = Util.ConvertObj.ConvertDataTableToXmlOperation(dtXml, "BatchOutStock");
-                //                Context.ProcessDispatcher.WriteToService("ERP", "ACK", xml);
-                //                MCP.Logger.Info("单号" + dtXml.Rows[0][0].ToString() + "已完成,开始上报ERP系统");
-                //            }
-                //        }
-                //    }
-                //}
+              
                 BindData();
                 MCP.Logger.Info("任务号:" + TaskNo + "手动更新为:" + State);
             }

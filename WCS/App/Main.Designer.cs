@@ -361,7 +361,6 @@
             this.toolStripButton1.Name = "toolStripButton1";
             this.toolStripButton1.Size = new System.Drawing.Size(36, 49);
             this.toolStripButton1.Text = "toolStripButton1";
-            this.toolStripButton1.Visible = false;
             this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click_2);
             // 
             // pnlBottom
@@ -692,28 +691,28 @@
             // ToolStripMenuItem_UserList
             // 
             this.ToolStripMenuItem_UserList.Name = "ToolStripMenuItem_UserList";
-            this.ToolStripMenuItem_UserList.Size = new System.Drawing.Size(152, 22);
+            this.ToolStripMenuItem_UserList.Size = new System.Drawing.Size(136, 22);
             this.ToolStripMenuItem_UserList.Text = "用户管理";
             this.ToolStripMenuItem_UserList.Click += new System.EventHandler(this.ToolStripMenuItem_UserList_Click);
             // 
             // ToolStripMenuItem_GroupList
             // 
             this.ToolStripMenuItem_GroupList.Name = "ToolStripMenuItem_GroupList";
-            this.ToolStripMenuItem_GroupList.Size = new System.Drawing.Size(152, 22);
+            this.ToolStripMenuItem_GroupList.Size = new System.Drawing.Size(136, 22);
             this.ToolStripMenuItem_GroupList.Text = "用户组管理";
             this.ToolStripMenuItem_GroupList.Click += new System.EventHandler(this.ToolStripMenuItem_GroupList_Click);
             // 
             // ToolStripMenuItem_SystemSetUp
             // 
             this.ToolStripMenuItem_SystemSetUp.Name = "ToolStripMenuItem_SystemSetUp";
-            this.ToolStripMenuItem_SystemSetUp.Size = new System.Drawing.Size(152, 22);
+            this.ToolStripMenuItem_SystemSetUp.Size = new System.Drawing.Size(136, 22);
             this.ToolStripMenuItem_SystemSetUp.Text = "权限设定";
             this.ToolStripMenuItem_SystemSetUp.Click += new System.EventHandler(this.ToolStripMenuItem_SystemSetUp_Click);
             // 
             // ToolStripMenuItem_ChangPWD
             // 
             this.ToolStripMenuItem_ChangPWD.Name = "ToolStripMenuItem_ChangPWD";
-            this.ToolStripMenuItem_ChangPWD.Size = new System.Drawing.Size(152, 22);
+            this.ToolStripMenuItem_ChangPWD.Size = new System.Drawing.Size(136, 22);
             this.ToolStripMenuItem_ChangPWD.Text = "密码修改";
             this.ToolStripMenuItem_ChangPWD.Click += new System.EventHandler(this.ToolStripMenuItem_ChangPWD_Click);
             // 

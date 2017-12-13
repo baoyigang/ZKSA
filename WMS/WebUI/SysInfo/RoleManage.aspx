@@ -54,6 +54,13 @@
         }
 
         function Save() {
+            if (SessionTimeOut(SessionUrl)) {
+                return false;
+            }
+            if (!GetPermisionByFormID("Power", 2)) {
+                alert("您没有设置权限！");
+                return false;
+            }
             var nodes = $('#tt').tree('getChecked');
             var MenuCode = [];
             if (nodes) {
@@ -78,7 +85,12 @@
         var unRMReturnValue = new Array();
         function ManageUser() {
 
+           
             if (SessionTimeOut(SessionUrl)) {
+                return false;
+            }
+            if (!GetPermisionByFormID("Power", 1)) {
+                alert("您没有管理用户权限！");
                 return false;
             }
             RMReturnValue = [];

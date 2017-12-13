@@ -55,15 +55,15 @@ namespace App.Dispatching.Process
                     }
                 }
                
-                tmWorkTimer.Interval = 2000;
-                tmWorkTimer.Elapsed += new ElapsedEventHandler(tmWorker);
-                dtDeviceAlarm = bll.FillDataTable("WCS.SelectDeviceAlarm", new DataParameter[] { new DataParameter("{0}", "Flag=1") });
+                //tmWorkTimer.Interval = 2000;
+                //tmWorkTimer.Elapsed += new ElapsedEventHandler(tmWorker);
+                //dtDeviceAlarm = bll.FillDataTable("WCS.SelectDeviceAlarm", new DataParameter[] { new DataParameter("{0}", "Flag=1") });
 
                 base.Initialize(context);
             }
             catch (Exception ex)
             {
-                Logger.Error("MiniLoadProcess堆垛机初始化出錯,原因:" + ex.Message);
+                Logger.Error("CraneProcess堆垛机初始化出錯,原因:" + ex.Message);
             }
         }
         protected override void StateChanged(StateItem stateItem, IProcessDispatcher dispatcher)
@@ -422,7 +422,7 @@ namespace App.Dispatching.Process
                     ToColumn = int.Parse(Taskdrs[i]["AisleNo"].ToString());
 
                     //判断前一个任务的所在的巷道
-                    DataTable dtSendCrane = bll.FillDataTable("WCS.SelectCraneTask", new DataParameter[] { new DataParameter("{0}", ""), new DataParameter("{1}", "") });
+                    DataTable dtSendCrane = bll.FillDataTable("WCS.SelectCraneTask", new DataParameter[] { new DataParameter("{0}", "WCS_TASK.State='12'") });
                     if (dtSendCrane.Rows.Count > 0)
                         ToColumn = int.Parse(dtSendCrane.Rows[0]["AisleNo"].ToString());
                     toRow = dtSendCrane.Rows.Count + 1;

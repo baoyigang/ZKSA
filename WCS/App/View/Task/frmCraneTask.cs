@@ -448,8 +448,8 @@ namespace App.View.Task
 
         private void button4_Click(object sender, EventArgs e)
         {
-            Context.ProcessDispatcher.WriteToService(txtServerName.Text, "1_Destination", 1);
-            Context.ProcessDispatcher.WriteToService(txtServerName.Text, "1_Request", 2);
+            Context.ProcessDispatcher.WriteToService(txtServerName.Text, this.txtItemName.Text, this.textBox3.Text);
+             
         }
 
         private void button5_Click(object sender, EventArgs e)

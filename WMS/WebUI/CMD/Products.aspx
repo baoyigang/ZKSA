@@ -68,7 +68,7 @@
             if (SessionTimeOut(SessionUrl)) {
                 return false;
             }
-            if (!GetPermisionByFormID("Product", 0)) {
+            if (!GetPermisionByFormID("Product", 1)) {
                 alert("您没有新增权限！");
                 return false;
             }
@@ -78,7 +78,7 @@
 //            $('#txtStandardNo').textbox('enable', true);
 //            $('#btnProductNo').removeAttr('disabled');
             $('#AddWin').dialog('open').dialog('setTitle', '产品资料--新增');
-            //            SetAutoCodeNewID('txtProductCode', 'cmd_Product', 'ProductCode', '1=1');
+            SetAutoCodeNewID('txtProductCode', 'cmd_Product', 'ProductCode', '1=1');
             $('#dgSubAdd').datagrid('loadData', { total: 0, rows: [] }); //下载本地数据。
             $('#txtPageState').val("Add");
             $("#txtProductCode").textbox('readonly', false);        
@@ -92,7 +92,7 @@
             if (SessionTimeOut(SessionUrl)) {
                 return false;
             }
-            if (!GetPermisionByFormID("Product", 1)) {
+            if (!GetPermisionByFormID("Product", 2)) {
                 alert("您没有修改权限！");
                 return false;
             }   
@@ -134,6 +134,10 @@
             if (SessionTimeOut(SessionUrl)) {
                 return false;
             }
+            if (!GetPermisionByFormID("Product", 2)) {
+                alert("您没有修改权限！");
+                return false;
+            }  
             var row = $('#dg').datagrid('getSelected');
             if (row==null || row.length == 0) {
                 $.messager.alert("提示", "请选择要修改的行！", "info");
@@ -152,12 +156,12 @@
             var data = { Action: 'FillDataTable', Comd: 'cmd.SelectProductCategory', Json: "[{\"{0}\": \"1=1\",\"{1}\": \"1\"}]" };
             BindComboList(data, 'ddlCategoryCode', 'CategoryCode', 'CategoryName');
 
-            var cdata = { Action: 'FillDataTable', Comd: 'cmd.SelectAreaEdit', Json: "[{\"{0}\": \"1=1\",\"{1}\": \"1\"}]" };
+            var cdata = { Action: 'FillDataTable', Comd: 'cmd.SelectArea', Json: "[{\"{0}\": \"1=1\",\"{1}\": \"1\"}]" };
 //            BindComboList(cdata, 'bao', 'AreaCode', 'AreaName');
 
 //            $("#ddlDetailAreaCode").combobox({
 //                onSelect: function (record) {
-//                    var edata = { Action: 'FillDataTable', Comd: 'cmd.SelectRegionEdit', Where: "a.AreaCode='" + $('#ddlDetailAreaCode').combobox('getValue') + "'" };
+//                    var edata = { Action: 'FillDataTable', Comd: 'cmd.SelectRegion', Where: "a.AreaCode='" + $('#ddlDetailAreaCode').combobox('getValue') + "'" };
 //                    BindComboList(edata, 'ddlDetailRegionCode', 'RegionCode', 'RegionName')
 
 //                }
@@ -257,7 +261,7 @@
             if (SessionTimeOut(SessionUrl)) {
                 return false;
             }
-            if (!GetPermisionByFormID("Product", 2)) {
+            if (!GetPermisionByFormID("Product", 3)) {
                 alert("您没有删除权限！");
                 return false;
             }
@@ -327,7 +331,7 @@
             var selectdata = data;
             if (selectdata) {
                 $('#dgSub').datagrid({
-                    url: '../../Handler/BaseHandler.ashx?Action=PageDate&Comd=WMS.SelectProductDetailView',
+                    url: '../../Handler/BaseHandler.ashx?Action=PageDate&Comd=CMD.SelectProductDetail',
                     queryParams: { Where: encodeURIComponent("ProductCode='" + selectdata.ProductCode + "'") }
                 });
             }
@@ -348,7 +352,7 @@
         $(function () {
             var areaPro;
             var regionPro;
-            var baodata = { Action: 'FillDataTable', Comd: 'cmd.SelectAreaEdit', Json: "[{\"{0}\": \"1=1\",\"{1}\": \"1\"}]" };
+            var baodata = { Action: 'FillDataTable', Comd: 'cmd.SelectArea', Json: "[{\"{0}\": \"1=1\",\"{1}\": \"1\"}]" };
             $.ajax({
                 type: "post",
                 url: url,
@@ -417,7 +421,7 @@
                                 var edArea = $('#dgSubAdd').datagrid('getEditor', { index: indexSelect, field: 'AreaName' });
                                 var edReg = $('#dgSubAdd').datagrid('getEditor', { index: indexSelect, field: 'RegionName' });
                                 var val = edArea.target.combobox('getValue');
-                                var eadata = { Action: 'FillDataTable', Comd: 'cmd.SelectRegionEdit', Json: "[{\"{0}\": \"a.AreaCode='" + val + "'\",\"{1}\":\"1\"}]" };
+                                var eadata = { Action: 'FillDataTable', Comd: 'cmd.SelectRegion', Json: "[{\"{0}\": \"a.AreaCode='" + val + "'\",\"{1}\":\"1\"}]" };
                                 $.ajax({
                                     type: "post",
                                     url: url,
@@ -487,10 +491,10 @@
 		            <tr>
 		                <th data-options="field:'RowID',width:100">序号</th>
                         <th data-options="field:'SectionName',width:100">产品阶段</th>
-                        <th data-options="field:'RegionCode',width:100">库区编号</th>
-                        <th data-options="field:'RegionName',width:100">库区名称</th>
                         <th data-options="field:'GrowDay',width:100">成长天数</th>
                         <th data-options="field:'PreQty',width:100">每盆数量</th>
+                        <th data-options="field:'RegionCode',width:100">库区编号</th>
+                        <th data-options="field:'RegionName',width:100">库区名称</th>
 		            </tr>
                 </thead>
             </table>

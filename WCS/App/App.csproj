@@ -52,9 +52,11 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Lib\MCP.Service.Siemens.dll</HintPath>
     </Reference>
-    <Reference Include="MCP.Service.TCP">
+    <Reference Include="MCP.Service.TCP, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Lib\MCP.Service.TCP.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="OPC, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Lib\OPC.dll</HintPath>
@@ -62,25 +64,25 @@
     <Reference Include="OpcRcw.Comn, Version=1.10.2.0, Culture=neutral, PublicKeyToken=9a40e993cbface53, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <EmbedInteropTypes>True</EmbedInteropTypes>
-      <HintPath>..\..\..\Lib\OpcRcw.Comn.dll</HintPath>
+      <HintPath>..\..\..\Standard_Wcf\Standard_Dll\Libraries\OpcRcw.Comn.dll</HintPath>
     </Reference>
     <Reference Include="OpcRcw.Da, Version=3.0.3.0, Culture=neutral, PublicKeyToken=9a40e993cbface53, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <EmbedInteropTypes>True</EmbedInteropTypes>
-      <HintPath>..\..\..\Lib\OpcRcw.Da.dll</HintPath>
+      <HintPath>..\..\..\Standard_Wcf\Standard_Dll\Libraries\OpcRcw.Da.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="TCP">
+    <Reference Include="TCP, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Lib\TCP.dll</HintPath>
     </Reference>
     <Reference Include="Util, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -143,6 +145,8 @@
     <Compile Include="Dispatching\Process\AGVProcess.cs" />
     <Compile Include="Dispatching\Process\ElevatorProcess.cs" />
     <Compile Include="Dispatching\Process\CraneProcess.cs" />
+    <Compile Include="Dispatching\Process\GetSendAGVMessage.cs" />
+    <Compile Include="Dispatching\TCPMessageParse.cs" />
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -266,12 +270,6 @@
     </Compile>
     <Compile Include="View\SelectDialog.designer.cs">
       <DependentUpon>SelectDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="View\Task\frmInventor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="View\Task\frmInventor.Designer.cs">
-      <DependentUpon>frmInventor.cs</DependentUpon>
     </Compile>
     <Compile Include="View\Task\frmCraneTask.cs">
       <SubType>Form</SubType>
@@ -407,9 +405,6 @@
     <EmbeddedResource Include="View\SelectDialog.resx">
       <DependentUpon>SelectDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="View\Task\frmInventor.resx">
-      <DependentUpon>frmInventor.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="View\Task\frmCraneTask.resx">
       <DependentUpon>frmCraneTask.cs</DependentUpon>
     </EmbeddedResource>
@@ -449,22 +444,13 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="AGV.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="App.ico" />
     <Content Include="Config.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Convey.xml">
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="MConvey.xml">
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Crane.xml">
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="Resources\Shelf.png" />
     <None Include="Resources\Crane11.png" />
@@ -485,10 +471,6 @@
     <None Include="Resources\1111.png" />
     <None Include="Resources\551fb5a24da28a97739ca06c843ac6ff.png" />
     <None Include="Resources\Barcode_32.png" />
-    <Content Include="ERP.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
-    </Content>
     <Content Include="MiniLoad01.xml">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

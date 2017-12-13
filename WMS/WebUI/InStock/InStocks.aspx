@@ -111,7 +111,7 @@
             if (SessionTimeOut(SessionUrl)) {
                 return false;
             }
-            if (!GetPermisionByFormID("InStock", 1)) {
+            if (!GetPermisionByFormID("InStock", 2)) {
                 alert("您没有修改权限！");
                 return false;
             }
@@ -182,7 +182,8 @@
                 return false;
             }
             //判断剩余多少货位
-            var PalletCount =parseInt(GetInStockProductQty());
+            var SubCell = GetTableValue("WMS.SPGetInStockProductQty", "[{ProductCode:'" + $('#txtProductCode').textbox('getValue') + "', SectionID:" + $('#ddlSectionID').combobox('getValue') + ", BatchNo:'" + $('#txtBatchNo').textbox('getValue') + "', ProductQty: " + $('#txtPalletQty').textbox('getValue') + "}]");
+            var PalletCount = parseInt(SubCell[0]["Column1"]);
             var ProductQty = parseInt($('#txtPalletQty').textbox('getValue'));
             if (PalletCount < ProductQty) {
                 $.messager.alert('错误', "剩余最大货位数量为：" + PalletCount + " ,请修改入库托盘数量.", 'error');
@@ -231,7 +232,7 @@
             if (SessionTimeOut(SessionUrl)) {
                 return false;
             }
-            if (!GetPermisionByFormID("InStock", 2)) {
+            if (!GetPermisionByFormID("InStock", 3)) {
                 alert("您没有删除权限！");
                 return false;
             }
@@ -406,8 +407,8 @@
             if (SessionTimeOut(SessionUrl)) {
                 return false;
             }
-            if (!GetPermisionByFormID("InStock", 2)) {
-                alert("您没有删除权限！");
+            if (!GetPermisionByFormID("InStock", 8)) {
+                alert("您没有取消作业权限！");
                 return false;
             }
             var checkedItems = $('#dg').datagrid('getChecked');
@@ -445,27 +446,6 @@
                 }, 'json');
             }
         }
-        function GetInStockProductQty() {
-            var data = { Action: 'GetInStockProductQty', ProductCode: $('#txtProductCode').textbox('getValue'), SectionID: $('#ddlSectionID').combobox('getValue'), BatchNo: $('#txtBatchNo').textbox('getValue'), ProductQty: $('#txtPalletQty').textbox('getValue') };
-            var Value = "";
-            $.ajax({
-                type: "post",
-                url: OtherUrl,
-                data: data,
-                // contentType: "application/json; charset=utf-8",
-                dataType: "text",
-                async: false,
-                success: function (data) {
-                    Value = data;
-                },
-                error: function (msg) {
-                    alert(msg);
-                    Value = "";
-                }
-            });
-            return Value;
-        }
-
 
         function BindSelectUrl(objName) {
 

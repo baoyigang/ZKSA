@@ -15,6 +15,8 @@ namespace App.Dispatching.Process
         protected override void StateChanged(StateItem stateItem, IProcessDispatcher dispatcher)
         {
             throw new NotImplementedException();
+
+            
         }
     }
 }

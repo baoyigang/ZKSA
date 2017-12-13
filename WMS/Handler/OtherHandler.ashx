@@ -46,9 +46,6 @@ public class OtherHandler : IHttpHandler, IRequiresSessionState
             case "CancelTaskWork":
                 strJson = CancelTaskWork(context);
                 break;
-            case "GetInStockProductQty":
-                strJson = GetInStockProductQty(context);
-                break;
         }
         context.Response.Clear();
         context.Response.ContentEncoding = System.Text.Encoding.UTF8;
@@ -234,20 +231,7 @@ public class OtherHandler : IHttpHandler, IRequiresSessionState
         return strJson;
     }
 
-    private string GetInStockProductQty(HttpContext context)
-    {
-        string strNewID = "0";
-        string ProductCode = context.Request["ProductCode"].ToString();
-        string SectionID = context.Request["SectionID"].ToString();
-        string BatchNo = context.Request["BatchNo"].ToString();
-        string ProductQty =context.Request["ProductQty"].ToString();
-        BLL.BLLBase bll = new BLL.BLLBase();
-        DataTable dt = bll.FillDataTable("WMS.SPGetInStockProductQty", new DataParameter[] { new DataParameter("@ProductCode", ProductCode), new DataParameter("@SectionID", SectionID), new DataParameter("@BatchNo", BatchNo), new DataParameter("@ProductQty", ProductQty) });
-        if (dt.Rows.Count > 0)
-            strNewID = dt.Rows[0][0].ToString();
-        return strNewID;
-      
-    }   
+    
     
     private string Clear(HttpContext context)
     {

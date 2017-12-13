@@ -82,6 +82,28 @@ var GetFieldValue = function (Table, FieldName, Filter) {
     });
     return Value;
 };
+
+//获取Table表,传入查询语句，条件
+var GetTableValue = function (comd, json) {
+    var data = { Action: 'FillDataTable', Comd: comd, Json: json };
+    var Value;
+    $.ajax({
+        type: "post",
+        url: BaseUrl,
+        data: data,
+        // contentType: "application/json; charset=utf-8",
+        dataType: "text",
+        async: false,
+        success: function (data) {
+            Value = JSON.parse(data).rows;
+        },
+        error: function (msg) {
+            alert(msg);
+            Value = "";
+        }
+    });
+    return Value;
+};
  
 //根据日期，获取新编号
 //ctrlName:单号控件名称， PreName:单号前缀，Filter：过滤条件，TableName：表名，ctrl_dateteime：日期控件

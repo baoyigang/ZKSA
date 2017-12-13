@@ -44,14 +44,14 @@ namespace App
 
                 //View.frmMonitor f = new View.frmMonitor();
                 //ShowForm(f);
-                MainData.OnTask += new TaskEventHandler(Data_OnTask);
-                this.BindData();
-                for (int i = 0; i < this.dgvMain.Columns.Count - 1; i++)
-                    ((DataGridViewAutoFilterTextBoxColumn)this.dgvMain.Columns[i]).FilteringEnabled = true;
+                //MainData.OnTask += new TaskEventHandler(Data_OnTask);
+                //this.BindData();
+                //for (int i = 0; i < this.dgvMain.Columns.Count - 1; i++)
+                //    ((DataGridViewAutoFilterTextBoxColumn)this.dgvMain.Columns[i]).FilteringEnabled = true;
 
-                tmWorkTimer.Interval = 3000;
-                tmWorkTimer.Elapsed += new System.Timers.ElapsedEventHandler(tmWorker);
-                tmWorkTimer.Start();
+                //tmWorkTimer.Interval = 3000;
+                //tmWorkTimer.Elapsed += new System.Timers.ElapsedEventHandler(tmWorker);
+                //tmWorkTimer.Start();
             }
             catch (Exception ee)
             {
@@ -321,14 +321,14 @@ namespace App
 
         private void toolStripButton_Inventor_Click(object sender, EventArgs e)
         {
-            App.View.Task.frmInventor f = new View.Task.frmInventor();
-            ShowForm(f);
+            //App.View.Task.frmInventor f = new View.Task.frmInventor();
+            //ShowForm(f);
         }
 
         private void InventortoolStripMenuItem_Click(object sender, EventArgs e)
         {
-            App.View.Task.frmInventor f = new View.Task.frmInventor();
-            ShowForm(f);
+            //App.View.Task.frmInventor f = new View.Task.frmInventor();
+            //ShowForm(f);
         }
 
         private void toolStripButton_CellMonitor_Click(object sender, EventArgs e)

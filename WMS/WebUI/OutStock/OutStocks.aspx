@@ -108,7 +108,7 @@
             if (SessionTimeOut(SessionUrl)) {
                 return false;
             }
-            if (!GetPermisionByFormID("OutStock", 1)) {
+            if (!GetPermisionByFormID("OutStock", 2)) {
                 alert("您没有修改权限！");
                 return false;
             }
@@ -205,7 +205,7 @@
             if (SessionTimeOut(SessionUrl)) {
                 return false;
             }
-            if (!GetPermisionByFormID("OutStock", 2)) {
+            if (!GetPermisionByFormID("OutStock", 3)) {
                 alert("您没有删除权限！");
                 return false;
             }
@@ -380,8 +380,8 @@
             if (SessionTimeOut(SessionUrl)) {
                 return false;
             }
-            if (!GetPermisionByFormID("InStock", 2)) {
-                alert("您没有删除权限！");
+            if (!GetPermisionByFormID("InStock", 8)) {
+                alert("您没有取消作业权限！");
                 return false;
             }
             var checkedItems = $('#dg').datagrid('getChecked');

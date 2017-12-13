@@ -43,7 +43,7 @@
             if (SessionTimeOut(SessionUrl)) {
                 return false;
             }
-            if (!GetPermisionByFormID("UserGroup", 0)) {
+            if (!GetPermisionByFormID("UserGroup", 1)) {
                 alert("您没有新增权限！");
                 return false;
             }
@@ -60,7 +60,7 @@
             if (SessionTimeOut(SessionUrl)) {
                 return false;
             }
-            if (!GetPermisionByFormID("UserGroup", 1)) {
+            if (!GetPermisionByFormID("UserGroup", 2)) {
                 alert("您没有修改权限！");
                 return false;
             }
@@ -142,7 +142,7 @@
             if (SessionTimeOut(SessionUrl)) {
                 return false;
             }
-            if (!GetPermisionByFormID("UserGroup",2)) {
+            if (!GetPermisionByFormID("UserGroup",3)) {
                 alert("您没有删除权限！");
                 return false;
             }
