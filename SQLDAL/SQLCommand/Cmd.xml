@@ -95,6 +95,15 @@
       order by {1}
     </CommandString>
   </Command>
+  <Command ID="SelectCell2">
+    <CommandString>
+      select c.*,P.SectionName,S.ShelfValue from CMD_Cell c
+      left join CMD_ProductDetail P on P.ProductCode=c.PalletBarCode and P.RowID=c.SectionID
+      LEFT JOIN CMD_Shelf S ON c.ShelfCode=S.ShelfCode
+      where {0}
+      order by {1}
+    </CommandString>
+  </Command>
   <Command ID="InsertCmdCell">
     <CommandString>
       if not exists(select * from Cmd_Cell where @CellCode='')

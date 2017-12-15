@@ -47,14 +47,16 @@ var HasExists = function (Table, Filter, MsgInfo) {
         success: function (data) {
             if (data == "1") {
                 if (MsgInfo != "")
-                    alert(MsgInfo);
+                    $.messager.alert("提示", MsgInfo, "info");
+                    //alert(MsgInfo);
                 has = true;
             }
             else
                 has = false;
         },
         error: function (msg) {
-            alert(msg);
+            $.messager.alert("错误", msg, "error");
+            //alert(msg);
             has = true;
         }
     });
