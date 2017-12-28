@@ -51,10 +51,9 @@
             this.pnlTab = new System.Windows.Forms.Panel();
             this.tabForm = new System.Windows.Forms.TabControl();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this.toolStripButton_Scan = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton_CellMonitor = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton_TaskQuery = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton_InStockTask = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton_OutStockTask = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton_StartCrane = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton_Login = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton_Close = new System.Windows.Forms.ToolStripButton();
@@ -82,14 +81,11 @@
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.taskToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ToolStripMenuItemWMSTask = new System.Windows.Forms.ToolStripMenuItem();
-            this.ToolStripMenuItemWCSTask = new System.Windows.Forms.ToolStripMenuItem();
+            this.ToolStripMenuItemInStock = new System.Windows.Forms.ToolStripMenuItem();
+            this.ToolStripMenuItemOutStock = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItemCell = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ToolStripMenuItemCrane = new System.Windows.Forms.ToolStripMenuItem();
-            this.ToolStripMenuItemUL = new System.Windows.Forms.ToolStripMenuItem();
-            this.ToolStripMenuItemML = new System.Windows.Forms.ToolStripMenuItem();
-            this.ToolStripMenuItemDeviceHandle = new System.Windows.Forms.ToolStripMenuItem();
+            this.ToolStripMenuItemMonitor = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItem_UserList = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItem_GroupList = new System.Windows.Forms.ToolStripMenuItem();
@@ -118,7 +114,8 @@
             this.ToolStripMenuItemRConvey,
             this.ToolStripMenuItemStateChange});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(161, 114);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(161, 136);
+            this.contextMenuStrip1.VisibleChanged += new System.EventHandler(this.contextMenuStrip1_VisibleChanged);
             // 
             // ToolStripMenuItemDelCraneTask
             // 
@@ -146,7 +143,6 @@
             this.ToolStripMenuItemRConvey.Name = "ToolStripMenuItemRConvey";
             this.ToolStripMenuItemRConvey.Size = new System.Drawing.Size(160, 22);
             this.ToolStripMenuItemRConvey.Text = "重下输送线任务";
-            this.ToolStripMenuItemRConvey.Click += new System.EventHandler(this.ToolStripMenuItemRConvey_Click);
             // 
             // ToolStripMenuItemStateChange
             // 
@@ -262,10 +258,9 @@
             this.toolStrip1.AutoSize = false;
             this.toolStrip1.ImageScalingSize = new System.Drawing.Size(32, 32);
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripButton_Scan,
             this.toolStripButton_CellMonitor,
-            this.toolStripButton_TaskQuery,
             this.toolStripButton_InStockTask,
+            this.toolStripButton_OutStockTask,
             this.toolStripButton_StartCrane,
             this.toolStripButton_Login,
             this.toolStripButton_Close,
@@ -275,17 +270,6 @@
             this.toolStrip1.Size = new System.Drawing.Size(1284, 52);
             this.toolStrip1.TabIndex = 13;
             this.toolStrip1.Text = "toolStrip1";
-            // 
-            // toolStripButton_Scan
-            // 
-            this.toolStripButton_Scan.AutoSize = false;
-            this.toolStripButton_Scan.Image = global::App.Properties.Resources.Barcode_32;
-            this.toolStripButton_Scan.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton_Scan.Name = "toolStripButton_Scan";
-            this.toolStripButton_Scan.Size = new System.Drawing.Size(60, 50);
-            this.toolStripButton_Scan.Text = "扫码入库";
-            this.toolStripButton_Scan.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.toolStripButton_Scan.Click += new System.EventHandler(this.tsb_Test_Click);
             // 
             // toolStripButton_CellMonitor
             // 
@@ -298,27 +282,27 @@
             this.toolStripButton_CellMonitor.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.toolStripButton_CellMonitor.Click += new System.EventHandler(this.toolStripButton_CellMonitor_Click);
             // 
-            // toolStripButton_TaskQuery
-            // 
-            this.toolStripButton_TaskQuery.AutoSize = false;
-            this.toolStripButton_TaskQuery.Image = global::App.Properties.Resources.zoom;
-            this.toolStripButton_TaskQuery.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton_TaskQuery.Name = "toolStripButton_TaskQuery";
-            this.toolStripButton_TaskQuery.Size = new System.Drawing.Size(60, 50);
-            this.toolStripButton_TaskQuery.Text = "入库任务";
-            this.toolStripButton_TaskQuery.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.toolStripButton_TaskQuery.Click += new System.EventHandler(this.toolStripButton_TaskQuery_Click);
-            // 
             // toolStripButton_InStockTask
             // 
             this.toolStripButton_InStockTask.AutoSize = false;
-            this.toolStripButton_InStockTask.Image = global::App.Properties.Resources.zoom;
+            this.toolStripButton_InStockTask.Image = global::App.Properties.Resources.down;
             this.toolStripButton_InStockTask.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton_InStockTask.Name = "toolStripButton_InStockTask";
             this.toolStripButton_InStockTask.Size = new System.Drawing.Size(60, 50);
-            this.toolStripButton_InStockTask.Text = "出库任务";
+            this.toolStripButton_InStockTask.Text = "入库任务";
             this.toolStripButton_InStockTask.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.toolStripButton_InStockTask.Click += new System.EventHandler(this.toolStripButton_InStockTask_Click);
+            // 
+            // toolStripButton_OutStockTask
+            // 
+            this.toolStripButton_OutStockTask.AutoSize = false;
+            this.toolStripButton_OutStockTask.Image = global::App.Properties.Resources.up;
+            this.toolStripButton_OutStockTask.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton_OutStockTask.Name = "toolStripButton_OutStockTask";
+            this.toolStripButton_OutStockTask.Size = new System.Drawing.Size(60, 50);
+            this.toolStripButton_OutStockTask.Text = "出库任务";
+            this.toolStripButton_OutStockTask.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.toolStripButton_OutStockTask.Click += new System.EventHandler(this.toolStripButton_OutStockTask_Click);
             // 
             // toolStripButton_StartCrane
             // 
@@ -361,7 +345,7 @@
             this.toolStripButton1.Name = "toolStripButton1";
             this.toolStripButton1.Size = new System.Drawing.Size(36, 49);
             this.toolStripButton1.Text = "toolStripButton1";
-            this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click_2);
+            this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
             // 
             // pnlBottom
             // 
@@ -608,74 +592,48 @@
             // taskToolStripMenuItem
             // 
             this.taskToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ToolStripMenuItemWMSTask,
-            this.ToolStripMenuItemWCSTask,
+            this.ToolStripMenuItemInStock,
+            this.ToolStripMenuItemOutStock,
             this.ToolStripMenuItemCell});
             this.taskToolStripMenuItem.Name = "taskToolStripMenuItem";
             this.taskToolStripMenuItem.Size = new System.Drawing.Size(68, 21);
             this.taskToolStripMenuItem.Text = "任务操作";
             // 
-            // ToolStripMenuItemWMSTask
+            // ToolStripMenuItemInStock
             // 
-            this.ToolStripMenuItemWMSTask.Name = "ToolStripMenuItemWMSTask";
-            this.ToolStripMenuItemWMSTask.Size = new System.Drawing.Size(155, 22);
-            this.ToolStripMenuItemWMSTask.Text = "WMS任务查询";
-            this.ToolStripMenuItemWMSTask.Click += new System.EventHandler(this.toolStripButton_InStockTask_Click);
+            this.ToolStripMenuItemInStock.Name = "ToolStripMenuItemInStock";
+            this.ToolStripMenuItemInStock.Size = new System.Drawing.Size(152, 22);
+            this.ToolStripMenuItemInStock.Text = "入库任务";
+            this.ToolStripMenuItemInStock.Click += new System.EventHandler(this.toolStripButton_InStockTask_Click);
             // 
-            // ToolStripMenuItemWCSTask
+            // ToolStripMenuItemOutStock
             // 
-            this.ToolStripMenuItemWCSTask.Name = "ToolStripMenuItemWCSTask";
-            this.ToolStripMenuItemWCSTask.Size = new System.Drawing.Size(155, 22);
-            this.ToolStripMenuItemWCSTask.Text = "WCS任务查询";
-            this.ToolStripMenuItemWCSTask.Click += new System.EventHandler(this.toolStripButton_TaskQuery_Click);
+            this.ToolStripMenuItemOutStock.Name = "ToolStripMenuItemOutStock";
+            this.ToolStripMenuItemOutStock.Size = new System.Drawing.Size(152, 22);
+            this.ToolStripMenuItemOutStock.Text = "出库任务";
+            this.ToolStripMenuItemOutStock.Click += new System.EventHandler(this.toolStripButton_OutStockTask_Click);
             // 
             // ToolStripMenuItemCell
             // 
             this.ToolStripMenuItemCell.Name = "ToolStripMenuItemCell";
-            this.ToolStripMenuItemCell.Size = new System.Drawing.Size(155, 22);
+            this.ToolStripMenuItemCell.Size = new System.Drawing.Size(152, 22);
             this.ToolStripMenuItemCell.Text = "貨位查询";
             this.ToolStripMenuItemCell.Click += new System.EventHandler(this.toolStripButton_CellMonitor_Click);
             // 
             // ToolStripMenuItem
             // 
             this.ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ToolStripMenuItemCrane,
-            this.ToolStripMenuItemUL,
-            this.ToolStripMenuItemML,
-            this.ToolStripMenuItemDeviceHandle});
+            this.ToolStripMenuItemMonitor});
             this.ToolStripMenuItem.Name = "ToolStripMenuItem";
             this.ToolStripMenuItem.Size = new System.Drawing.Size(68, 21);
             this.ToolStripMenuItem.Text = "调度监控";
             // 
-            // ToolStripMenuItemCrane
+            // ToolStripMenuItemMonitor
             // 
-            this.ToolStripMenuItemCrane.Name = "ToolStripMenuItemCrane";
-            this.ToolStripMenuItemCrane.Size = new System.Drawing.Size(136, 22);
-            this.ToolStripMenuItemCrane.Text = "堆垛机监控";
-            this.ToolStripMenuItemCrane.Click += new System.EventHandler(this.ToolStripMenuItemCrane_Click);
-            // 
-            // ToolStripMenuItemUL
-            // 
-            this.ToolStripMenuItemUL.Name = "ToolStripMenuItemUL";
-            this.ToolStripMenuItemUL.Size = new System.Drawing.Size(136, 22);
-            this.ToolStripMenuItemUL.Text = "UL监控";
-            this.ToolStripMenuItemUL.Visible = false;
-            this.ToolStripMenuItemUL.Click += new System.EventHandler(this.ToolStripMenuItemUL_Click);
-            // 
-            // ToolStripMenuItemML
-            // 
-            this.ToolStripMenuItemML.Name = "ToolStripMenuItemML";
-            this.ToolStripMenuItemML.Size = new System.Drawing.Size(136, 22);
-            this.ToolStripMenuItemML.Text = "ML监控";
-            this.ToolStripMenuItemML.Visible = false;
-            this.ToolStripMenuItemML.Click += new System.EventHandler(this.ToolStripMenuItemML_Click);
-            // 
-            // ToolStripMenuItemDeviceHandle
-            // 
-            this.ToolStripMenuItemDeviceHandle.Name = "ToolStripMenuItemDeviceHandle";
-            this.ToolStripMenuItemDeviceHandle.Size = new System.Drawing.Size(136, 22);
-            this.ToolStripMenuItemDeviceHandle.Text = "堆垛机管理";
-            this.ToolStripMenuItemDeviceHandle.Click += new System.EventHandler(this.ToolStripMenuItemDeviceHandle_Click);
+            this.ToolStripMenuItemMonitor.Name = "ToolStripMenuItemMonitor";
+            this.ToolStripMenuItemMonitor.Size = new System.Drawing.Size(124, 22);
+            this.ToolStripMenuItemMonitor.Text = "监控界面";
+            this.ToolStripMenuItemMonitor.Click += new System.EventHandler(this.ToolStripMenuItemMonitor_Click);
             // 
             // ToolStripMenuItem2
             // 
@@ -756,10 +714,10 @@
 
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem taskToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemWMSTask;
+        private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemInStock;
         private System.Windows.Forms.Panel pnlBottom;
         private System.Windows.Forms.ToolStrip toolStrip1;
-        private System.Windows.Forms.ToolStripButton toolStripButton_InStockTask;
+        private System.Windows.Forms.ToolStripButton toolStripButton_OutStockTask;
         private System.Windows.Forms.ToolStripButton toolStripButton_Close;
         private System.Windows.Forms.Panel pnlTab;
         private System.Windows.Forms.TabControl tabForm;
@@ -787,14 +745,11 @@
         private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.ColumnHeader columnHeader2;
         private System.Windows.Forms.ColumnHeader columnHeader3;
-        private System.Windows.Forms.ToolStripButton toolStripButton_TaskQuery;
-        private System.Windows.Forms.ToolStripButton toolStripButton_Scan;
+        private System.Windows.Forms.ToolStripButton toolStripButton_InStockTask;
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemRConvey;
-        private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemWCSTask;
+        private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemOutStock;
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemCell;
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemUL;
-        private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemDeviceHandle;
         private DataGridViewAutoFilter.DataGridViewAutoFilterTextBoxColumn Column5;
         private DataGridViewAutoFilter.DataGridViewAutoFilterTextBoxColumn Column1;
         private DataGridViewAutoFilter.DataGridViewAutoFilterTextBoxColumn Column11;
@@ -808,8 +763,7 @@
         private DataGridViewAutoFilter.DataGridViewAutoFilterTextBoxColumn colConveytoStation;
         private DataGridViewAutoFilter.DataGridViewAutoFilterTextBoxColumn colCraneFromStation;
         private DataGridViewAutoFilter.DataGridViewAutoFilterTextBoxColumn colCranetoStation;
-        private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemML;
-        private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemCrane;
+        private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemMonitor;
         private System.Windows.Forms.ToolStripButton toolStripButton_Login;
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItem2;
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItem_UserList;

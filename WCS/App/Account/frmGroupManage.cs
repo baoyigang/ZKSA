@@ -28,7 +28,7 @@ namespace App.Account
         {
 
             colbtn.Name = "Detail";
-            colbtn.DefaultCellStyle.NullValue = "刪除用戶";
+            colbtn.DefaultCellStyle.NullValue = "删除用户";
             InitSmartTree();
            
         }
@@ -53,7 +53,7 @@ namespace App.Account
         {
              GroupID = this.dgvMain.Rows[e.RowIndex].Cells["colID"].Value.ToString();
              GroupName = this.dgvMain.Rows[e.RowIndex].Cells["colGroupName"].Value.ToString();
-             this.lblGroupName.Text = "用戶組 " + this.dgvMain.Rows[e.RowIndex].Cells["colGroupName"].Value.ToString() + " 權限設置";
+             this.lblGroupName.Text = "用户组 " + this.dgvMain.Rows[e.RowIndex].Cells["colGroupName"].Value.ToString() + " 权限设定";
              if (GroupName.ToLower() == "admin")
                  this.btnSave.Enabled = false;
              else
@@ -76,7 +76,7 @@ namespace App.Account
                 }
                 else
                 {
-                    Logger.Info("用戶組不能刪除管理員賬號!");
+                    Logger.Info("用户组不能删除管理员账号!");
                 }
             }
         }

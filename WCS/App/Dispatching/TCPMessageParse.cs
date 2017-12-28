@@ -58,14 +58,14 @@ namespace App.Dispatching
                 Array.Reverse(msg, 8, 2);  // message type
                 Array.Reverse(msg, 10, 2); // num par
 
-                // read num par to get size of telegram
+                // read num par to get size of telegramz
                 int telegramSize = BitConverter.ToUInt16(msg, 10);
 
                 // get message part and type of data array
                 byte[] messageData = msg.Skip(HEADER_SIZE + 4).Take(telegramSize).ToArray();
-                ushort messageType = BitConverter.ToUInt16(msg, HEADER_SIZE);
+                string messageType = BitConverter.ToChar(msg, HEADER_SIZE).ToString();
 
-                Dictionary<string, int> dictionary = new Dictionary<string, int>();
+                Dictionary<string, UInt16> dictionary = new Dictionary<string, UInt16>();
 
                 string Comd = messageType.ToString();
                 Array.Reverse(messageData, 0, 2); //index
@@ -74,11 +74,11 @@ namespace App.Dispatching
                 Array.Reverse(messageData, 12, 2); //目标站台
                 Array.Reverse(messageData, 14, 2); //IKEY
 
-                dictionary.Add("AGVIndex", BitConverter.ToInt16(messageData, 0));
-                dictionary.Add("AGVPhase", BitConverter.ToInt16(messageData, 4));
+                dictionary.Add("AGVIndex", BitConverter.ToUInt16(messageData, 0));
+                dictionary.Add("AGVPhase", BitConverter.ToUInt16(messageData, 4));
                 dictionary.Add("AGVDeviceNo", messageData[8]);
-                dictionary.Add("AGVToStation", BitConverter.ToInt16(messageData, 12));
-                dictionary.Add("AGVTaskID", BitConverter.ToInt16(messageData, 14));
+                dictionary.Add("AGVStation", BitConverter.ToUInt16(messageData, 12));
+                dictionary.Add("AGVTaskID", BitConverter.ToUInt16(messageData, 14));
 
                 result = new Message(true, messageData.ToString(), Comd, dictionary);
             }

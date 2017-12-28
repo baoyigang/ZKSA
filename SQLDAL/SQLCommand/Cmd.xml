@@ -83,14 +83,23 @@
     </CommandString>
   </Command>
 
+  <!--货架信息-->
+  <Command ID="SelectShelf">
+    <CommandString>
+      SELECT * FROM CMD_Shelf where {0} ORDER BY ShelfCode,AreaCode
+    </CommandString>
+  </Command>
+  
   <!--货位信息-->
   <Command ID="SelectCell">
     <CommandString>
-      select c.*,CMD_Area.AreaName,CMD_Region.RegionName,CMD_ProductDetail.SectionName,CMD_Product.ProductName   from CMD_Cell  c
+      select c.*,CMD_Area.AreaName,CMD_Region.RegionName,CMD_ProductDetail.SectionName,CMD_Product.ProductName
+      from CMD_Cell  c
       left join CMD_Region on CMD_Region.RegionCode=c.RegionCode
       LEFT join CMD_Area on CMD_Region.AreaCode=cmd_area.AreaCode
       left join CMD_ProductDetail on CMD_ProductDetail.ProductCode=c.PalletBarCode and CMD_ProductDetail.RowID=c.SectionID
       left join CMD_Product on CMD_Product.ProductCode=CMD_ProductDetail.ProductCode
+      left join cmd_Shelf on c.shelfCode=cmd_Shelf.shelfCode
       where {0}
       order by {1}
     </CommandString>

@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using System.Data;
 
 namespace App
 {
     static class Program
     {
         public static Main mainForm;
+        public static DataTable dtUserPermission;
+        public static string CurrentUser = "";
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
