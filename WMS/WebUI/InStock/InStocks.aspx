@@ -41,7 +41,7 @@
             var Where = "1=1 ";
             if (objname == "dg") {
                 var BillID = $("#txtQueryBillID").textbox("getValue");
-                var BillDate = $("#txtQueryBillDate").textbox("getValue");
+                var BillDate = $("#txtQueryBillDate").datebox("getValue");
                 var Product = $("#txtQueryProduct").textbox("getValue");
                 var BatchNo = $("#txtQueryBatchNo").textbox("getValue");
 

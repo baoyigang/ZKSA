@@ -265,7 +265,7 @@
             // 
             this.Column2.HeaderText = "选取";
             this.Column2.Name = "Column2";
-            this.Column2.Width = 50;
+            this.Column2.Width = 40;
             // 
             // colTaskNo
             // 
@@ -319,10 +319,10 @@
             // 
             this.Column6.DataPropertyName = "AisleNo";
             this.Column6.FilteringEnabled = false;
-            this.Column6.HeaderText = "巷道编号";
+            this.Column6.HeaderText = "巷道";
             this.Column6.Name = "Column6";
             this.Column6.ReadOnly = true;
-            this.Column6.Width = 80;
+            this.Column6.Width = 55;
             // 
             // Column3
             // 

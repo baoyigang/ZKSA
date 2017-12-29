@@ -21,11 +21,21 @@
         });
         function Query() {
             var where = "1=1 ";
-            var CategoryCode = $("#txtQueryCategory").combobox("getValue");
+            var StartDate = $("#txtQueryStartDate").datebox("getValue");
+            var EndDate = $("#txtQueryEndDate").datebox("getValue");
+
             var Product = $("#txtQueryProduct").textbox("getValue");
             var BatchNo = $("#txtQueryBatchNo").textbox("getValue");
-            if (CategoryCode != "") {
-                where += " and product.CategoryCode = '" + CategoryCode + "'";
+            var Section = $("#txtQuerySection").textbox("getValue");
+
+            if (StartDate != "" && EndDate=="") {
+                where += " and CONVERT(nvarchar(10), WCS_TASK.TaskDate,120)>= '" + StartDate + "'";
+            }
+            if (StartDate == "" && EndDate != "") {
+                where += " and CONVERT(nvarchar(10), WCS_TASK.TaskDate,120)<= '" + EndDate + "'";
+            }
+            if (StartDate != "" && EndDate != "") {
+                where += " and CONVERT(nvarchar(10), WCS_TASK.TaskDate,120) between '" + StartDate + "' and '" + EndDate + "'";
             }
             if (Product != "") {
                 where += " and (product.ProductName like '%" + Product + "%' or product.ProductCode like '%" + Product + "%')";
@@ -33,32 +43,29 @@
             if (BatchNo != "") {
                 where += " and BatchNo like '%" + BatchNo + "%'";
             }
-            where = encodeURIComponent(where);
-            var value = $('input:radio[name="QueryFlag"]:checked').val();
-            var Comd = "SelectProductDetailQuery";
-            if (value == "1") { //统计表
-                Comd = "SelectProductTotalQuery";
-
+            if (BatchNo != "") {
+                where += " and SenctionName like '%" + Section + "%'";
             }
+            var value = $('input:radio[name="QueryFlag"]:checked').val();
+            if (value == "0") { //入库
+                where += " and WCS_TASK.TaskType='11'";
+            } else if (value == "1") { //出库
+                where += " and WCS_TASK.TaskType='12'";
+            }
+            where = encodeURIComponent(where);
+            
             $('#dg').datagrid({
-                url: '../../Handler/BaseHandler.ashx?Action=PageDate&Comd=WMS.' + Comd,
+                url: '../../Handler/BaseHandler.ashx?Action=PageDate&Comd=WMS.SelectTask',
                 queryParams: { Where: where }
             });
-            if (value == "1") {
-                $('#dg').datagrid('hideColumn', 'CellCode');
-                $('#dg').datagrid('hideColumn', 'InDate');
-
-            }
-            else {
-                $('#dg').datagrid('showColumn', 'CellCode');
-                $('#dg').datagrid('showColumn', 'InDate');
-            }
         }
         function Refresh() {
-            $("#txtQueryCategory").combobox("setValue", "");
+            $("#txtQueryStartDate").datebox("setValue", "");
+            $("#txtQueryEndDate").datebox("setValue", "");
             $("#txtQueryProduct").textbox("setValue", "");
             $("#txtQueryBatchNo").textbox("setValue", "");
-            document.getElementById("QueryFlag0").checked = true;
+            $("#txtQuerySection").textbox("setValue", "");
+            document.getElementById("QueryFlag2").checked = true;
         }
        
         
@@ -69,15 +76,22 @@
             pagination:true,pageSize:PageSize, pageList:[15, 20, 30, 50],method:'post',striped:true,fitcolumns:true,toolbar:'#tb'">  
         <thead data-options="frozen:true">
 			<tr>
-                <th data-options="field:'CategoryName',width:90">产品类别</th>
-                <th data-options="field:'ProductCode',width:90">产品编号</th>
-                <th data-options="field:'ProductName',width:150">产品名称</th>
-                <th data-options="field:'BatchNo',width:120">批次</th>
-                <th data-options="field:'SectionName',width:100">阶段</th>
-                <th data-options="field:'PalletQty',width:80">托盘数</th>
-                <th data-options="field:'Qty',width:80">产品数量</th>
-                <th data-options="field:'CellCode',width:120">货位</th>
-                <th data-options="field:'InDate',width:150">入库时间</th>
+                <th data-options="field:'TaskNo',width:90">任务号</th>
+                <th data-options="field:'BillTypeName',width:90">任务类型</th>
+                <th data-options="field:'StateDesc',width:80">状态</th>
+                <th data-options="field:'CellCode',width:100">货位编号</th>
+                <th data-options="field:'AisleNo',width:70">巷道</th>
+                <th data-options="field:'ProductCode',width:100">产品编号</th>
+                <th data-options="field:'ProductName',width:120">产品名称</th>
+                <th data-options="field:'BatchNo',width:80">批次</th>
+                <th data-options="field:'SectionName',width:60">阶段</th>
+                <th data-options="field:'ShelfValue',width:50">排</th>
+                <th data-options="field:'CellColumn',width:50">列</th>
+                <th data-options="field:'CellRow',width:50">层</th>
+                <th data-options="field:'TaskDate',width:120">作业时间</th>
+                <th data-options="field:'Tasker',width:80">作业人员</th>
+                <th data-options="field:'StartDate',width:120">开始时间</th>
+                <th data-options="field:'FinishDate',width:150">结束时间</th>
             </tr>
         </thead>
         

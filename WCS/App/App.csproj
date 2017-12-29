@@ -173,29 +173,11 @@
     <Compile Include="View\CheckScan.designer.cs">
       <DependentUpon>CheckScan.cs</DependentUpon>
     </Compile>
-    <Compile Include="View\frmMonitor1.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="View\frmMonitor1.designer.cs">
-      <DependentUpon>frmMonitor1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="View\frmMonitor2.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="View\frmMonitor2.Designer.cs">
-      <DependentUpon>frmMonitor2.cs</DependentUpon>
-    </Compile>
     <Compile Include="View\Param\frmCraneHandle.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="View\Param\frmCraneHandle.designer.cs">
       <DependentUpon>frmCraneHandle.cs</DependentUpon>
-    </Compile>
-    <Compile Include="View\TaskCarNo.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="View\TaskCarNo.Designer.cs">
-      <DependentUpon>TaskCarNo.cs</DependentUpon>
     </Compile>
     <Compile Include="View\Dispatcher\frmCellDialog.cs">
       <SubType>Form</SubType>
@@ -239,12 +221,6 @@
     </Compile>
     <Compile Include="View\frmReassignOption.Designer.cs">
       <DependentUpon>frmReassignOption.cs</DependentUpon>
-    </Compile>
-    <Compile Include="View\frmTaskOption.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="View\frmTaskOption.Designer.cs">
-      <DependentUpon>frmTaskOption.cs</DependentUpon>
     </Compile>
     <Compile Include="View\Param\Parameter.cs" />
     <Compile Include="View\Param\ParameterForm.cs">
@@ -327,17 +303,8 @@
     <EmbeddedResource Include="View\CheckScan.resx">
       <DependentUpon>CheckScan.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="View\frmMonitor1.resx">
-      <DependentUpon>frmMonitor1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="View\frmMonitor2.resx">
-      <DependentUpon>frmMonitor2.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="View\Param\frmCraneHandle.resx">
       <DependentUpon>frmCraneHandle.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="View\TaskCarNo.resx">
-      <DependentUpon>TaskCarNo.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="View\Dispatcher\frmCellDialog.resx">
       <DependentUpon>frmCellDialog.cs</DependentUpon>
@@ -359,9 +326,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="View\frmReassignOption.resx">
       <DependentUpon>frmReassignOption.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="View\frmTaskOption.resx">
-      <DependentUpon>frmTaskOption.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="View\Param\ParameterForm.resx">
       <DependentUpon>ParameterForm.cs</DependentUpon>
