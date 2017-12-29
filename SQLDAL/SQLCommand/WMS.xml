@@ -193,20 +193,38 @@
       left join  Sys_TableState TableState on TableState.TableName='WCS_TASK' and TableState.FieldName='State' and Task.State=TableState.State
       where {0}
     </CommandString>
-   
-    
-    
-    <!--出库明细查询-->
-    <Command ID="SelectOutStockQuery">
-      <CommandString>
-        select task.PalletCode,CellCode,task.FinishDate,Detail.ProductCode,Detail.Barcode,detail.Quantity,Product.CategoryName,Product.ProductNo,
-        product.ProductName,product.Spec,product.Unit,product.ValidPeriod,product.Description,product.Memo as M,product.PartNo,main.SourceBillNo,detail.BillID,convert(nvarchar,task.FinishDate,120) as SFinishDate
-        from WCS_TASK Task
-        left join WCS_TaskProductDetail Detail on Task.TaskNo=Detail.TaskNo
-        left join VCMD_Product Product  on Detail.ProductCode=Product.ProductCode
-        left join WMS_BillMaster Main on Detail.BillID=main.BillID
-        where task.TaskType='12' and task.State=7 and {0}
-      </CommandString>
-     </Command>
   </Command>
+
+
+  <!--出库明细查询-->
+  <Command ID="SelectOutStockQuery">
+    <CommandString>
+      select task.PalletCode,CellCode,task.FinishDate,Detail.ProductCode,Detail.Barcode,detail.Quantity,Product.CategoryName,Product.ProductNo,
+      product.ProductName,product.Spec,product.Unit,product.ValidPeriod,product.Description,product.Memo as M,product.PartNo,main.SourceBillNo,detail.BillID,convert(nvarchar,task.FinishDate,120) as SFinishDate
+      from WCS_TASK Task
+      left join WCS_TaskProductDetail Detail on Task.TaskNo=Detail.TaskNo
+      left join VCMD_Product Product  on Detail.ProductCode=Product.ProductCode
+      left join WMS_BillMaster Main on Detail.BillID=main.BillID
+      where task.TaskType='12' and task.State=7 and {0}
+    </CommandString>
+  </Command>
+
+  <Command ID="SelectTask">
+    <CommandString>
+      SELECT WCS_TASK.*,c1.CellName,CMD_BillType.BillTypeName,product.ProductName,SectionName,Region.RegionName,Sys_TableState.StateDesc,c1.CellRow,c1.CellColumn,S1.ShelfValue
+      FROM WCS_TASK
+      left join CMD_Cell C1 on WCS_TASK.CellCode=C1.CellCode
+      left join CMD_Shelf S1 On C1.ShelfCode=S1.ShelfCode
+      left join CMD_BillType On CMD_BillType.BillTypeCode=WCS_TASK.BillTypeCode
+      LEFT JOIN Sys_TableState on Sys_TableState.TableName='WCS_TASK' and Sys_TableState.FieldName='State' and WCS_TASK.State=Sys_TableState.State
+      left join CMD_ProductDetail detail on wcs_task.PalletCode=detail.ProductCode and wcs_task.SectionID=detail.RowID
+      left join CMD_Product product on detail.ProductCode=product.ProductCode
+      left join CMD_Region Region on wcs_task.RegionCode=region.RegionCode
+      where {0}
+      ORDER BY   WCS_TASK.TaskNo desc
+
+    </CommandString>
+  </Command>
+
+
 </SqlCommand>

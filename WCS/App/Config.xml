@@ -9,22 +9,22 @@
     <Attribute Name="ShowCellEdit" Value="0" />
   </Attributes>
   <Services>
-    <!--<Service Name="ElevatorService" Type="MCP.Service.Siemens.dll, MCP.Service.Siemens.OPCService" ConfigFile="Elevator.xml" />-->
+    <Service Name="AGVService" Type="MCP.Service.TCP.dll, MCP.Service.TCP.TCPClient" ConfigFile="AGV.xml" />
+    <Service Name="ElevatorService" Type="MCP.Service.Siemens.dll, MCP.Service.Siemens.OPCService" ConfigFile="Elevator.xml" />
     <Service Name="CraneService" Type="MCP.Service.Siemens.dll, MCP.Service.Siemens.OPCService" ConfigFile="MiniLoad01.xml" />
   </Services>
   <Processes>
-    <!--Process-->
-
-    <!--<Process Name="ElevatorProcess" Type="App.exe, App.Dispatching.Process.ElevatorProcess">
+    <Process Name="AGVProcess" Type="App.exe, App.Dispatching.Process.AGVProcess">
+      <Item ServiceName="AGVService" ItemName="m" />
+      <Item ServiceName="AGVService" ItemName="s" />
+    </Process>
+    <Process Name="ElevatorProcess" Type="App.exe, App.Dispatching.Process.ElevatorProcess">
       <Item ServiceName="ElevatorService" ItemName="TaskFinished01" />
       <Item ServiceName="ElevatorService" ItemName="TaskFinished02" />
       <Item ServiceName="ElevatorService" ItemName="CarAlarm01" />
       <Item ServiceName="ElevatorService" ItemName="CarAlarm02" />
       <Item ServiceName="ElevatorService" ItemName="ElevatorAlarm" />
-    </Process>-->
-    
-     
-
+    </Process>
     <Process Name="CraneProcess" Type="App.exe, App.Dispatching.Process.CraneProcess">
       <Item ServiceName="CraneService" ItemName="CraneTaskFinished1" />
       <Item ServiceName="CraneService" ItemName="CraneTaskFinished2" />

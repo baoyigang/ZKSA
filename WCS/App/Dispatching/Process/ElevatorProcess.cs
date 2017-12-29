@@ -9,33 +9,8 @@ namespace App.Dispatching.Process
 {
     public class ElevatorProcess : AbstractProcess
     {
-
-        //private class rCrnStatus
-        //{
-
-        //    public int Action { get; set; }
-        //    public int io_flag { get; set; }
-        //    public string ServiceName { get; set; }
-        //    public string DeviceNo { get; set; }
-        //    public string InStationNo { get; set; }
-        //    public string OutStationNo { get; set; }
-
-        //    public rCrnStatus()
-        //    {
-        //        Action = 0;
-        //        io_flag = 0;
-        //        ServiceName = "";
-        //        DeviceNo = "";
-        //        InStationNo = "";
-        //        OutStationNo = "";
-        //    }
-        //}
-
-        // 记录堆垛机当前状态及任务相关信息
         BLL.BLLBase bll = new BLL.BLLBase();
-        //private Dictionary<string, rCrnStatus> dCrnStatus = new Dictionary<string, rCrnStatus>();
-        private Timer tmWorkTimer = new Timer();
-        //private string WarehouseCode = "";
+        private Timer tmWorkTimer;
         private bool blRun = false;
         private DataTable dtDeviceAlarm;
       
@@ -43,24 +18,8 @@ namespace App.Dispatching.Process
         {
             try
             {
-                //DataTable dt = bll.FillDataTable("CMD.SelectDevice", new DataParameter[] { new DataParameter("{0}", "Flag=2") });
-                //for (int i = 1; i <= dt.Rows.Count; i++)
-                //{
-                //    string DeviceNo = dt.Rows[i - 1]["DeviceNo2"].ToString();
-                //    if (!dCrnStatus.ContainsKey(DeviceNo))
-                //    {
-                //        rCrnStatus crnsta = new rCrnStatus();
-                //        dCrnStatus.Add(DeviceNo, crnsta);
-                //        dCrnStatus[DeviceNo].io_flag = 0;
-                //        dCrnStatus[DeviceNo].ServiceName = dt.Rows[i - 1]["ServiceName"].ToString();
-                //        dCrnStatus[DeviceNo].Action = int.Parse(dt.Rows[i - 1]["State"].ToString());
-                //        dCrnStatus[DeviceNo].DeviceNo = dt.Rows[i - 1]["DeviceNo"].ToString();
-                //        dCrnStatus[DeviceNo].InStationNo = dt.Rows[i - 1]["InStationNo"].ToString();
-                //        dCrnStatus[DeviceNo].OutStationNo = dt.Rows[i - 1]["OutStationNo"].ToString();
-                //    }
-                //}
-                dtDeviceAlarm = bll.FillDataTable("WCS.SelectDeviceAlarm", new DataParameter[] { new DataParameter("{0}", "Flag in(2,3)") });                
-
+                dtDeviceAlarm = bll.FillDataTable("WCS.SelectDeviceAlarm", new DataParameter[] { new DataParameter("{0}", "Flag in(2,3)") });
+                tmWorkTimer = new Timer();
                 tmWorkTimer.Interval = 1000;
                 tmWorkTimer.Elapsed += new ElapsedEventHandler(tmWorker);
 
@@ -119,18 +78,21 @@ namespace App.Dispatching.Process
                     if (blRun)
                     {
                         tmWorkTimer.Start();
-                        Logger.Info("提升机联机");
+                        Logger.Info("换层提升机联机");
                     }
                     else
                     {
                         tmWorkTimer.Stop();
-                        Logger.Info("提升机脱机");
+                        Logger.Info("换层提升机脱机");
                     }
                     break;
                 default:
                     break;
             }
         }
+
+     
+
         #endregion
 
         /// <summary>
@@ -142,6 +104,7 @@ namespace App.Dispatching.Process
         {
             lock (this)
             {
+                
                 try
                 {
                     if (!blRun)
@@ -161,7 +124,7 @@ namespace App.Dispatching.Process
                         object objFlag = ObjectUtil.GetObject(WriteToService(serviceName, "WriteFinished"));
                         if (int.Parse(objFlag.ToString()) == 1)
                             continue;
-                         object[] CarStatus = ObjectUtil.GetObjects(WriteToService(serviceName, "CarStatus" + DeviceNo));
+                        object[] CarStatus = ObjectUtil.GetObjects(WriteToService(serviceName, "CarStatus" + DeviceNo));
                         bool IsSent = false;
                         if (Check_Car_Status_IsOk(DeviceNo, serviceName))
                         {
@@ -266,9 +229,6 @@ namespace App.Dispatching.Process
         private bool FindOutTask(DataTable dtCar, string carNo, object[] CarStatus)
         {
             //判断是否应该下穿梭车出库任务
-
-
-
             int carAisleNo = int.Parse(CarStatus[1].ToString());
             int carLayer = int.Parse(CarStatus[3].ToString());
             bool IsSendTask = false;
@@ -288,7 +248,7 @@ namespace App.Dispatching.Process
             }
             if (!IsSendTask)
             {
-                //再找不在这层的出库任务
+                //再找不在这巷道的出库任务
                 filter = string.Format("AisleNo<>'{0}'", carAisleNo); //其它巷道
                 drTasks = dtTask.Select(filter, "CellRow desc,CellColumn,Depth");
                 if (drTasks.Length > 0)
@@ -304,12 +264,22 @@ namespace App.Dispatching.Process
             {
                 DataRow drTask = drsTask[i];
                 string TaskType = drTask["TaskType"].ToString();
+                if (TaskType == "12") //判断是否出库
+                {
+ 
+
+
+                }
+
                 if (CheckOtherCarStatus(dtCar, carNo, drTask, obj))
                 {
                     //给小车下达任务
                     Send2PLC(serviceName, drTask, carNo);
-
                     IsSend = true;
+                    if (TaskType == "12") //已经出库任务，调度AGV接货
+                    {
+ 
+                    }
 
                 }
             }
@@ -437,10 +407,35 @@ namespace App.Dispatching.Process
             string DeviceNo = "Car" + carNo;
             if (WriteToService(serviceName, "WriteFinished", 1))
             {
-                bll.ExecNonQuery("WCS.UpdateTaskByFilter", new DataParameter[] { new DataParameter("{0}", string.Format("State='{0}' and DeviceNo='{1}'", NextState, DeviceNo)), new DataParameter("{1}", string.Format("TaskNo='{0}'", TaskNo)) });
+                bll.ExecNonQuery("WCS.UpdateTaskByFilter", new DataParameter[] { new DataParameter("{0}", string.Format("State='{0}', DeviceNo='{1}'", NextState, DeviceNo)), new DataParameter("{1}", string.Format("TaskNo='{0}'", TaskNo)) });
                 Logger.Info("任务:" + dr["TaskNo"].ToString() + "已下发给" + carNo + "穿梭车;起始地址:" + FromStation + ",目标地址:" + ToStation);
             }
             
-        }        
+        }
+
+        private void SendAGVTask()
+        {
+            DataTable dt = bll.FillDataTable("WCS.SelectAGVTask", new DataParameter[] { new DataParameter("{0}", string.Format("TaskType='11' and State=0 and not exists(select 1 from WCS_TASK where TaskType='11' and State in (2,3,4) ")), new DataParameter("{1}", "TaskNo,RowIndex"), new DataParameter("{2}", 4) });
+            if (dt.Rows.Count > 0)
+            {
+                ushort FromStation = ushort.Parse(dt.Rows[0]["FromStation"].ToString());
+                //获取入库巷道
+                ushort ToStation = ushort.Parse(dt.Rows[0]["ToStation"].ToString());
+                //获取AGV操作码
+                ushort AGVActionID = SendAGVMessage.GetAGVActionID();
+                //获取AGV任务号
+                ushort AGVTaskID = SendAGVMessage.GetAGVTaskID();
+                //更新WCS_Task AGVTaskID
+                string TaskNo = "";
+                for (int i = 0; i < dt.Rows.Count; i++)
+                {
+                    TaskNo += "'" + dt.Rows[0]["TaskNo"].ToString() + "',";
+                }
+                bll.ExecNonQuery("WCS.UpdateTaskState", new DataParameter[] { new DataParameter("{0}", string.Format("AGVTaskID={0},State=1,AGVStation={1}", AGVTaskID, ToStation)), new DataParameter("{1}", string.Format("TaskNo in ({0})", TaskNo.TrimEnd(','))) });
+                //获取发送信息
+                byte[] sendByte = SendAGVMessage.GetSendTask1(AGVTaskID, FromStation, ToStation, AGVActionID);
+                WriteToService("AGVService", "ACK", sendByte);
+            }
+        }
     }
 }

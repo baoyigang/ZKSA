@@ -18,10 +18,7 @@
       <!--提升机状态-->
       <OPCItem ItemName="ElevatorStatus" ClientHandler="11" OPCItemName="DB550,INT0,3"  ItemType="READ" IsActive="false"/>
       <OPCItem ItemName="ElevatorAlarm" ClientHandler="12" OPCItemName="DB550,INT6,1"  ItemType="READ" IsActive="true"/>
-      <!--提升机输送-->
-      <OPCItem ItemName="InLocation01" ClientHandler="13" OPCItemName="DB550,CHAR100,20" ItemType="READ" IsActive="true"/>
-      <OPCItem ItemName="InLocation02" ClientHandler="14" OPCItemName="DB550,CHAR120,20" ItemType="READ" IsActive="true"/>
-      <OPCItem ItemName="OutLocation02" ClientHandler="16" OPCItemName="DB550,CHAR160,20" ItemType="READ" IsActive="true"/>
+      
 
       <!--握手信号-->
       <OPCItem ItemName="HandShake" ClientHandler="17" OPCItemName="DB540,INT0,1"  ItemType="WRITE"/>
@@ -34,7 +31,7 @@
       <OPCItem ItemName="TaskNo" ClientHandler="21" OPCItemName="DB540,CHAR102,30"  ItemType="WRITE"/>
       <!--任务标识-->
       <OPCItem ItemName="WriteFinished" ClientHandler="22" OPCItemName="DB540,INT100,1"  ItemType="WRITE"/>
-      <OPCItem ItemName="OutLocation01" ClientHandler="23" OPCItemName="DB550,CHAR140,20" ItemType="WRITE"/>
+      
     </OPCGroup>
   </OPCServer>
 </Config>
