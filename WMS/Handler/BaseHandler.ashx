@@ -38,8 +38,7 @@ public class BaseHandler : IHttpHandler, IRequiresSessionState
                 break;
             case "MultiAdd":
                 strJson = MultiAdd(context);
-                break;
-           
+                break;        
             case "AddMainDetail":
                 strJson = AddMainDetail(context);
                 break;
@@ -76,8 +75,7 @@ public class BaseHandler : IHttpHandler, IRequiresSessionState
                 break;
             case "CancelCheck":
                 strJson = CancelCheck(context);
-                break;
-                
+                break;           
             case "ExecTask":
                 strJson = ExecTask(context);
                 break;
@@ -236,7 +234,6 @@ public class BaseHandler : IHttpHandler, IRequiresSessionState
     private string DelMainDetail(HttpContext context)
     {
         JsonResult jr = new JsonResult();
-
         try
         {
             string MainComd = context.Request["MainComd"].ToString();
@@ -270,7 +267,6 @@ public class BaseHandler : IHttpHandler, IRequiresSessionState
     private string Edit(HttpContext context)
     {
         JsonResult jr = new JsonResult();
-
         try
         {
             string Comd = context.Request["Comd"].ToString();
@@ -475,9 +471,6 @@ public class BaseHandler : IHttpHandler, IRequiresSessionState
         string Filter = context.Server.UrlDecode(context.Request["Filter"].ToString());
         BLL.BLLBase bll = new BLL.BLLBase();
         string strNewID = bll.GetAutoCodeByTableName(PreName, TableName, dtTime, Filter);
-
-
-
         return strNewID;
     }
     private string SessionTimeOut(HttpContext context)
@@ -576,7 +569,6 @@ public class BaseHandler : IHttpHandler, IRequiresSessionState
     private string CancelTask(HttpContext context)
     {
         JsonResult jr = new JsonResult();
-
         string FormID = context.Request["FormID"].ToString();
 
         DataTable dtMenu = (DataTable)context.Session["DT_UserOperation"];
@@ -594,7 +586,7 @@ public class BaseHandler : IHttpHandler, IRequiresSessionState
             BLL.BLLBase bll = new BLL.BLLBase();
             bll.ExecNonQueryTran(Comd, new DataParameter[] { new DataParameter("@strWhere", StrWhere), new DataParameter("@UserName", context.Session["G_user"].ToString()) });
             Common.AddOperateLog(context.Session["G_user"].ToString(), Module, "删除单号：" + StrWhere.Replace("'", ""));
-            
+
             jr.status = 1;
             jr.msg = "取消作业成功！";
 
@@ -608,6 +600,4 @@ public class BaseHandler : IHttpHandler, IRequiresSessionState
         string strJson = JsonConvert.SerializeObject(jr);
         return strJson;
     }
-
-
 }
