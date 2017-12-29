@@ -81,13 +81,13 @@
             this.dgvMain.AllowUserToAddRows = false;
             this.dgvMain.AllowUserToDeleteRows = false;
             dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.dgvMain.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.dgvMain.AutoGenerateColumns = false;
             this.dgvMain.BackgroundColor = System.Drawing.Color.WhiteSmoke;
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText;
             dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
             dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
@@ -100,7 +100,7 @@
             this.dgvMain.DataSource = this.bsMain;
             dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
             dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
             dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
@@ -113,7 +113,7 @@
             this.dgvMain.ReadOnly = true;
             dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
             dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
             dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
@@ -203,7 +203,7 @@
             this.toolStripButton_Close.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton_Close.Name = "toolStripButton_Close";
             this.toolStripButton_Close.Size = new System.Drawing.Size(60, 50);
-            this.toolStripButton_Close.Text = "關閉";
+            this.toolStripButton_Close.Text = "关闭";
             this.toolStripButton_Close.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.toolStripButton_Close.Click += new System.EventHandler(this.toolStripButton_Close_Click);
             // 
@@ -221,7 +221,7 @@
             // 
             this.colGroupName.DataPropertyName = "GroupName";
             this.colGroupName.FilteringEnabled = false;
-            this.colGroupName.HeaderText = "用戶組名稱";
+            this.colGroupName.HeaderText = "用户组名称";
             this.colGroupName.Name = "colGroupName";
             this.colGroupName.ReadOnly = true;
             this.colGroupName.Resizable = System.Windows.Forms.DataGridViewTriState.True;
@@ -231,7 +231,7 @@
             // 
             this.colmemo.DataPropertyName = "Memo";
             this.colmemo.FilteringEnabled = false;
-            this.colmemo.HeaderText = "備註";
+            this.colmemo.HeaderText = "备注";
             this.colmemo.Name = "colmemo";
             this.colmemo.ReadOnly = true;
             this.colmemo.Resizable = System.Windows.Forms.DataGridViewTriState.True;
@@ -245,7 +245,7 @@
             this.ControlBox = false;
             this.Controls.Add(this.pnlMain);
             this.Name = "frmGroupList";
-            this.Text = "用戶組管理";
+            this.Text = "用户组管理";
             this.Activated += new System.EventHandler(this.frmUserList_Activated);
             this.Load += new System.EventHandler(this.frmUserList_Load);
             this.pnlMain.ResumeLayout(false);

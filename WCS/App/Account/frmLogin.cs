@@ -48,19 +48,19 @@ namespace App.Account
                     }
                     else
                     {
-                        MessageBox.Show("對不起,您輸入的密碼有誤!", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show("对不起，您输入的密码有误!", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return;
                     }
                 }
                 else
                 {
-                    MessageBox.Show("對不起,您輸入的用戶名不存在!", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("对不起，您输入的用户名不存在!", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
             }
             else
             {
-                MessageBox.Show("請輸入用戶名!", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("请输入用户名!", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 

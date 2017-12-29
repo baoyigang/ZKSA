@@ -31,6 +31,23 @@
 
     </CommandString>
   </Command>
+  <!--获取用户权限-->
+  <Command ID="SelectUserPermission">
+    <CommandString>
+      select distinct(SubModuleCode),n.SystemName,m.ModuleID,OperatorCode,n.MenuCode,n.MenuTitle,n.MenuParent,
+      n.MenuUrl,n.MenuImage,n2.MenuImage as ParentImage,n.OrderIndex,n.ID
+      from sys_GroupOperationList o
+      left join sys_ModuleList  m on m.ModuleID=o.ModuleID
+      left join sys_GroupList g on g.GroupID=o.GroupID
+      left join sys_UserLIst  u on u.GroupID=g.GroupID
+      left join sys_Menu      n on n.MenuCode=m.SubModuleCode
+      left join sys_Menu      n2 on n2.MenuCode=substring(n.MenuCode,1,8)
+      where U.UserName=@UserName and n.SystemName=@SystemName and n.IsHide='0'
+      order by n.OrderIndex, SubModuleCode
+      <!--/* SubModuleCode='MNU_W00A_00A' and OperatorCode=1 */-->
+    </CommandString>
+  </Command>
+  
   <!--获取用户的快捷桌面-->
   <Command ID="SelectUserQuickDesktop">
     <CommandString>

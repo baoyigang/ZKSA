@@ -44,7 +44,7 @@
                 Where += " and RegionName like '%" + RegionName + "%'";
             }
             if (Pai != "") {
-                Where += " and SUBSTRING(c.cellcode,1,3) like '%" + Pai + "%'";
+                Where += " and ShelfValue=" + Pai + "";
             }
             if (Lie != "") {
                 Where += " and c.CellColumn = " + Lie + "";
@@ -511,16 +511,16 @@
                     库区名称
                     <input id="txtRegionName" class="easyui-textbox" style="width: 100px" />
                     &nbsp;&nbsp;
-                    <input id="txtPai" class="easyui-textbox" style="width: 50px" />
                     排
+                    <input id="txtPai" class="easyui-textbox" style="width: 50px" />
+                     列
                     <input id="txtLie" class="easyui-numberbox" style="width: 50px" />
-                    列
-                    <input id="txtCeng" class="easyui-numberbox" style="width: 50px" />
                     层
+                    <input id="txtCeng" class="easyui-numberbox" style="width: 50px" />
                     &nbsp;&nbsp;
                     <input id="comboCell" type="checkbox" style="width:20px;position: relative;top:2px"/>
                     空货位
-                    &nbsp;&nbsp;
+                    &nbsp;
                     <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" onclick="ReloadGrid('dg')">查询</a> 
                 </td>
                 <td style="width:*" align="right">

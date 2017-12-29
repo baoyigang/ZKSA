@@ -20,15 +20,16 @@ namespace App
         private System.Timers.Timer tmWorkTimer = new System.Timers.Timer();
         BLL.BLLBase bll = new BLL.BLLBase();
         private Dictionary<string, int> PLCShelf = new Dictionary<string, int>();
-        string AreaCode;
-        private string CurrentUser = "";
-        private DataTable dtOp = null;
+       
+       
+        
         public Main()
         {
             InitializeComponent();
         }
 
-     
+        #region Main方法
+
         private void Main_Shown(object sender, EventArgs e)
         {
             try
@@ -49,19 +50,34 @@ namespace App
                 //for (int i = 0; i < this.dgvMain.Columns.Count - 1; i++)
                 //    ((DataGridViewAutoFilterTextBoxColumn)this.dgvMain.Columns[i]).FilteringEnabled = true;
 
-                //tmWorkTimer.Interval = 3000;
-                //tmWorkTimer.Elapsed += new System.Timers.ElapsedEventHandler(tmWorker);
-                //tmWorkTimer.Start();
+                tmWorkTimer.Interval = 3000;
+                tmWorkTimer.Elapsed += new System.Timers.ElapsedEventHandler(tmWorker);
+                tmWorkTimer.Start();
             }
             catch (Exception ee)
             {
                 Logger.Error("初始化配置检查失败,原因:" + ee.Message);
             }
         }
+        private void Main_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (DialogResult.Yes == MessageBox.Show("您确定要退出调度系统吗？", "询问", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+            {
+                Logger.Info("退出系统");
+                System.Environment.Exit(0);
+            }
+            else
+                e.Cancel = true;
+        }
+
+        #endregion
+
         private void tmWorker(object sender, System.Timers.ElapsedEventArgs e)
         {
             try
             {
+               
+
                 tmWorkTimer.Stop();
                 DataTable dt = GetMonitorData();
                 MainData.TaskInfo(dt);
@@ -75,6 +91,7 @@ namespace App
                 tmWorkTimer.Start();
             }
         }
+        #region 日志
         void Logger_OnLog(MCP.LogEventArgs args)
         {
             if (InvokeRequired)
@@ -88,9 +105,9 @@ namespace App
                     string msg1 = string.Format("[{0}]", args.LogLevel);
                     string msg2 = string.Format("{0}", DateTime.Now.ToString("yy/MM/dd HH:mm:ss"));
                     string msg3 = string.Format("{0} ", args.Message);
-                    this.lbLog.BeginUpdate();
                     if (args.LogLevel != LogLevel.DEBUG)
                     {
+                        this.lbLog.BeginUpdate();
                         ListViewItem item = new ListViewItem(new string[] { msg1, msg2, msg3 });
 
                         if (msg1.Contains("[ERROR]"))
@@ -99,10 +116,8 @@ namespace App
                             item.BackColor = Color.Red;
                         }
                         lbLog.Items.Insert(0, item);
+                        this.lbLog.EndUpdate();
                     }
-
-
-                    this.lbLog.EndUpdate();
                     WriteLoggerFile(msg1 + " " + msg2 + "  " + msg3);
                 }
                  
@@ -121,8 +136,8 @@ namespace App
             try
             {
                 string path = "";
-                CreateDirectory("日志");
-                path = "日志";
+                CreateDirectory("Log");
+                path = "Log";
                 path = path + @"/" + DateTime.Now.ToString().Substring(0, 4).Trim();
                 CreateDirectory(path);
                 path = path + @"/" + DateTime.Now.ToString("yyyy-MM-dd").Substring(0, 7).Trim();
@@ -136,6 +151,8 @@ namespace App
                 System.Diagnostics.Debug.WriteLine(ex.Message);
             }
         }
+        #endregion
+
         #region 公共方法
         /// <summary>
         /// 打开一个窗体
@@ -235,13 +252,6 @@ namespace App
         }
         #endregion
 
- 
-
-        private void ToolStripMenuItem_Cell_Click(object sender, EventArgs e)
-        {
-            App.View.Dispatcher.frmCellQuery f = new App.View.Dispatcher.frmCellQuery();
-            ShowForm(f);
-        }
 
         private void toolStripButton_Close_Click(object sender, EventArgs e)
         {
@@ -252,107 +262,54 @@ namespace App
             }
         }
 
-        private void toolStripButton_InStockTask_Click(object sender, EventArgs e)
-        {
-            App.View.Dispatcher.frmWMSTaskQuery f = new App.View.Dispatcher.frmWMSTaskQuery();
-            ShowForm(f);
-        }
-
-        private void toolStripButton_OutStock_Click(object sender, EventArgs e)
-        {
-            App.View.Task.frmOutStock f = new View.Task.frmOutStock();
-            ShowForm(f);
-        }
-
-        private void OutStockToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            App.View.Task.frmOutStock f = new View.Task.frmOutStock();
-            ShowForm(f);
-        }
-
-        private void Main_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            if (DialogResult.Yes == MessageBox.Show("您确定要退出调度系统吗？", "询问", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
-            {
-                Logger.Info("退出系统");
-                System.Environment.Exit(0);
-            }
-            else
-                e.Cancel = true;
-        }
-
-        private void MoveStockToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            App.View.Task.frmMoveStock f = new View.Task.frmMoveStock();
-            ShowForm(f);
-        }
-
-        private void toolStripButton_MoveStock_Click(object sender, EventArgs e)
-        {
-            App.View.Task.frmMoveStock f = new View.Task.frmMoveStock();
-            ShowForm(f);
-        }
-
-        private void toolStripButton1_Click(object sender, EventArgs e)
-        {
-            View.Task.frmCraneTask f = new View.Task.frmCraneTask();
-            ShowForm(f);
-        }
-
         private void toolStripButton_StartCrane_Click(object sender, EventArgs e)
         {
 
             if (this.toolStripButton_StartCrane.Text == "联机自动")
             {
                 context.ProcessDispatcher.WriteToProcess("CraneProcess", "Run", 1);
-                context.ProcessDispatcher.WriteToProcess("MiniLoadProcess", "Run", 1);
-
+                context.ProcessDispatcher.WriteToProcess("ElevatorProcess", "Run", 1);
+                context.ProcessDispatcher.WriteToProcess("AGVProcess", "Run", 1);
                 this.toolStripButton_StartCrane.Image = App.Properties.Resources.process_accept;
                 this.toolStripButton_StartCrane.Text = "脱机";
             }
             else
             {
                 context.ProcessDispatcher.WriteToProcess("CraneProcess", "Run", 0);
-                context.ProcessDispatcher.WriteToProcess("MiniLoadProcess", "Run", 0);
+                context.ProcessDispatcher.WriteToProcess("ElevatorProcess", "Run", 0);
+                context.ProcessDispatcher.WriteToProcess("AGVProcess", "Run", 0);
                 this.toolStripButton_StartCrane.Image = App.Properties.Resources.process_remove;
                 this.toolStripButton_StartCrane.Text = "联机自动";
             }
         }
-
-        private void toolStripButton_Inventor_Click(object sender, EventArgs e)
+        #region 任务查询
+        private void toolStripButton_InStockTask_Click(object sender, EventArgs e)
         {
-            //App.View.Task.frmInventor f = new View.Task.frmInventor();
-            //ShowForm(f);
+            App.View.Task.frmInStock f = new App.View.Task.frmInStock();
+            ShowForm(f);
         }
+        
 
-        private void InventortoolStripMenuItem_Click(object sender, EventArgs e)
+        private void toolStripButton_OutStockTask_Click(object sender, EventArgs e)
         {
-            //App.View.Task.frmInventor f = new View.Task.frmInventor();
-            //ShowForm(f);
+            App.View.Task.frmOutStock f = new View.Task.frmOutStock();
+            ShowForm(f);
         }
 
         private void toolStripButton_CellMonitor_Click(object sender, EventArgs e)
         {
             bool blnEdit = false;
-            if (CurrentUser != "")
+            if (Program.CurrentUser != "")
             {
-                blnEdit = dtOp.Select("FormID='Cell' and OperatorCode=1").Length > 0 ? true : false;
+               // blnEdit = Program.dtUserPermission.Select("FormID='Cell' and OperatorCode=1").Length > 0 ? true : false;
             }
             App.View.Dispatcher.frmCellQuery f = new App.View.Dispatcher.frmCellQuery();
             ShowForm(f);
         }
 
-        private void ToolStripMenuItem_Param_Click(object sender, EventArgs e)
-        {
-            App.View.Param.ParameterForm f = new App.View.Param.ParameterForm();
-            ShowForm(f);
-        }
+        #endregion
 
-        private void toolStripButton_Scan_Click(object sender, EventArgs e)
-        {
-            App.View.Task.frmInStockTask f = new App.View.Task.frmInStockTask();
-            f.ShowDialog();
-        }
+
 
         #region 正执行任务处理
         void Data_OnTask(TaskEventArgs args)
@@ -378,7 +335,7 @@ namespace App
         }
         private DataTable GetMonitorData()
         {
-            DataTable dt = bll.FillDataTable("WCS.SelectTask", new DataParameter[] { new DataParameter("{0}", string.Format("WCS_TASK.AreaCode='{0}' and WCS_TASK.State not in (7,9)", AreaCode)) });
+            DataTable dt = bll.FillDataTable("WCS.SelectTask", new DataParameter[] { new DataParameter("{0}", string.Format("WCS_TASK.State not in (0,7,9,100)")) });
             return dt;
         }
 
@@ -409,13 +366,13 @@ namespace App
                     bool blnReCrane = false; //重下堆垛机任务
                     bool blnChangeState = false; //状态修改
                     bool blnReCell = false; //重新分配貨位
-                    if (CurrentUser != "")
+                    if (Program.CurrentUser != "")
                     {
-                        blnCancel = dtOp.Select("FormID='Task' and OperatorCode=1").Length > 0 ? true : false;
-                        blnReConvey = dtOp.Select("FormID='Task' and OperatorCode=4").Length > 0 ? true : false;
-                        blnReCrane = dtOp.Select("FormID='Task' and OperatorCode=2").Length > 0 ? true : false;
-                        blnChangeState = dtOp.Select("FormID='Task' and OperatorCode=5").Length > 0 ? true : false;
-                        blnReCell = dtOp.Select("FormID='Task' and OperatorCode=3").Length > 0 ? true : false;
+                        blnCancel =Program.dtUserPermission.Select("FormID='Task' and OperatorCode=1").Length > 0 ? true : false;
+                        blnReConvey = Program.dtUserPermission.Select("FormID='Task' and OperatorCode=4").Length > 0 ? true : false;
+                        blnReCrane = Program.dtUserPermission.Select("FormID='Task' and OperatorCode=2").Length > 0 ? true : false;
+                        blnChangeState = Program.dtUserPermission.Select("FormID='Task' and OperatorCode=5").Length > 0 ? true : false;
+                        blnReCell = Program.dtUserPermission.Select("FormID='Task' and OperatorCode=3").Length > 0 ? true : false;
                     }
 
 
@@ -810,263 +767,20 @@ namespace App
             }
         }
 
-        //private void Send2PLC1(DataRow dr)
-        //{
-        //    string serviceName = "CranePLC1";
-        //    string TaskNo = dr["TaskNo"].ToString();
-
-        //    int taskType = getTaskType(dr["TaskType"].ToString(), dr["State"].ToString());
-
-        //    string fromStation = dr["FromStation"].ToString();
-        //    string toStation = dr["ToStation"].ToString();
-
-        //    int[] cellAddr = new int[10];
-
-        //    cellAddr[0] = 0;
-        //    cellAddr[1] = 0;
-        //    cellAddr[2] = 0;
-
-        //    cellAddr[3] = byte.Parse(fromStation.Substring(0, 3));
-        //    cellAddr[4] = byte.Parse(fromStation.Substring(3, 3));
-        //    cellAddr[5] = byte.Parse(fromStation.Substring(6, 3));
-        //    cellAddr[6] = byte.Parse(toStation.Substring(0, 3));
-        //    cellAddr[7] = byte.Parse(toStation.Substring(3, 3));
-        //    cellAddr[8] = byte.Parse(toStation.Substring(6, 3));
-        //    cellAddr[9] = taskType;
-
-        //    int taskNo = int.Parse(TaskNo);
-
-        //    context.ProcessDispatcher.WriteToService(serviceName, "TaskAddress", cellAddr);
-        //    context.ProcessDispatcher.WriteToService(serviceName, "TaskNo", taskNo);
-        //    context.ProcessDispatcher.WriteToService(serviceName, "WriteFinished", 2);
-
-        //    //Logger.Info("任务:" + dr["TaskNo"].ToString() + "已下发给" + carNo + "穿梭车;起始地址:" + fromStation + ",目标地址:" + toStation);
-        //}
-        //private void Send2PLC2(DataRow dr)
-        //{
-        //    string CarNo = dr["CarNo"].ToString();
-        //    string serviceName = "CarPLC01" + CarNo;
-        //    string TaskNo = dr["TaskNo"].ToString();
-        //    int taskType = getTaskType(dr["TaskType"].ToString(), dr["State"].ToString());
-
-        //    string fromStation = dr["FromStation"].ToString();
-        //    string toStation = dr["ToStation"].ToString();
-
-        //    int[] cellAddr = new int[10];
-
-        //    cellAddr[0] = 0;
-        //    cellAddr[1] = 0;
-        //    cellAddr[2] = 0;
-
-        //    cellAddr[3] = byte.Parse(fromStation.Substring(0, 3));
-        //    cellAddr[4] = byte.Parse(fromStation.Substring(3, 3));
-        //    cellAddr[5] = byte.Parse(fromStation.Substring(6, 3));
-        //    cellAddr[6] = byte.Parse(toStation.Substring(0, 3));
-        //    cellAddr[7] = byte.Parse(toStation.Substring(3, 3));
-        //    cellAddr[8] = byte.Parse(toStation.Substring(6, 3));
-        //    cellAddr[9] = taskType;
-
-        //    int taskNo = int.Parse(TaskNo);
-
-        //    context.ProcessDispatcher.WriteToService(serviceName, "TaskAddress", cellAddr);
-        //    context.ProcessDispatcher.WriteToService(serviceName, "TaskNo", taskNo);
-        //    context.ProcessDispatcher.WriteToService(serviceName, "WriteFinished", 2);
-
-        //    Logger.Info("任务:" + dr["TaskNo"].ToString() + "已下发给" + CarNo + "穿梭车;起始地址:" + fromStation + ",目标地址:" + toStation);
-        //}
-        //private void Send2PLC3(DataRow dr)
-        //{
-        //    string serviceName = "MiniLoad02";
-        //    string TaskNo = dr["TaskNo"].ToString();
-        //    string TaskType = dr["TaskType"].ToString();
-        //    string state = dr["State"].ToString();
-        //    int taskType = 10;
-
-        //    if (state == "0")
-        //    {
-        //        if (TaskType == "13")
-        //        {
-        //            taskType = 9;
-        //        }
-        //        else
-        //        {
-        //            taskType = 11;
-        //        }
-        //    }
-
-        //    string fromStation = dr["FromStation"].ToString();
-        //    string toStation = dr["ToStation"].ToString();
-
-        //    int[] cellAddr = new int[10];
-
-        //    cellAddr[0] = 0;
-        //    cellAddr[1] = 0;
-        //    cellAddr[2] = 0;
-
-        //    cellAddr[3] = byte.Parse(fromStation.Substring(0, 3));
-        //    cellAddr[4] = byte.Parse(fromStation.Substring(3, 3));
-        //    cellAddr[5] = byte.Parse(fromStation.Substring(6, 3));
-        //    cellAddr[6] = byte.Parse(toStation.Substring(0, 3));
-        //    cellAddr[7] = byte.Parse(toStation.Substring(3, 3));
-        //    cellAddr[8] = byte.Parse(toStation.Substring(6, 3));
-        //    cellAddr[9] = taskType;
-
-        //    int taskNo = int.Parse(TaskNo);
-
-        //    context.ProcessDispatcher.WriteToService(serviceName, "TaskAddress", cellAddr);
-        //    context.ProcessDispatcher.WriteToService(serviceName, "TaskNo", taskNo);
-        //    context.ProcessDispatcher.WriteToService(serviceName, "WriteFinished", 2);
-
-        //    //Logger.Info("任务:" + dr["TaskNo"].ToString() + "已下发给" + carNo + "穿梭车;起始地址:" + fromStation + ",目标地址:" + toStation);
-        //}
-
-        private void ToolStripMenuItem_TaskQuery_Click(object sender, EventArgs e)
-        {
-            View.Dispatcher.frmTaskQuery f = new View.Dispatcher.frmTaskQuery();
-            ShowForm(f);
-        }
-        private void inStockToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            App.View.Dispatcher.frmWMSTaskQuery f = new View.Dispatcher.frmWMSTaskQuery();
-            ShowForm(f);
-        }
-
-        private void toolStripButton_TaskQuery_Click(object sender, EventArgs e)
-        {
-            View.Dispatcher.frmTaskQuery f = new View.Dispatcher.frmTaskQuery();
-            ShowForm(f);
-        }
-
-        private void tsb_Test_Click(object sender, EventArgs e)
-        {
-            //判斷101或者109是否有等於5的情況
-            string ConveyID = "101";
-            string BadCode1 = ObjectUtil.GetObject(context.ProcessDispatcher.WriteToService("Convey", ConveyID + "_HightFlag")).ToString();
-            ConveyID = "109";
-            string BadCode2 = ObjectUtil.GetObject(context.ProcessDispatcher.WriteToService("Convey", ConveyID + "_HightFlag")).ToString();
-            int ErrCode = 0;
-            if ((BadCode1 == "5" || BadCode1 == "6") && (BadCode2 == "5"|| BadCode2=="6"))
-            {
-                ErrCode = 1;
-            }
-            else if (BadCode1 == "5" || BadCode1 == "6")
-            {
-                ErrCode = 101;
-            }
-            else if (BadCode2 == "5" || BadCode2 == "6")
-            {
-                ErrCode = 109;
-            }
-            if (ErrCode != 0)
-            {
-                View.Task.frmInStockTask frm = new View.Task.frmInStockTask(ErrCode);
-                ((View.BaseForm)frm).Context = context;
-                frm.ShowDialog();
-            }
-            else
-            {
-                Logger.Info("掃碼儀未出現問題,不用人工掃碼！");
-            }
-        }
-
-        private void ToolStripMenuItemRConvey_Click(object sender, EventArgs e)
-        {
-            if (this.dgvMain.CurrentCell != null)
-            {
-                DataRow dr = (this.dgvMain.Rows[this.dgvMain.CurrentCell.RowIndex].DataBoundItem as DataRowView).Row;
-                string State = dr["State"].ToString();
-                string TaskNo = dr["TaskNo"].ToString();
-                if (dr["FromStation"].ToString().Trim() == "" || dr["ToStation"].ToString().Trim() == "")
-                {
-                    Logger.Info(TaskNo + "目标位置或者起始位置错误,无法重新下达任务！");
-                    return;
-                }
-                if (State == "1" || State == "6" || State == "10")
-                    SendConveyPLC(TaskNo);
-                else
-                {
-                    Logger.Info("非正在輸送線移動的任务無法重新下发");
-                    return;
-                }
-            }
-        }
-
-        private void SendConveyPLC(string TaskNo)
-        {
-            string ConverServer = "Convey";
-            if (AreaCode == "ML")
-                ConverServer = "MConvey";
-            DataParameter[] param = new DataParameter[] { new DataParameter("{0}", string.Format("TaskNo='{0}'", TaskNo)) };
-            DataTable dtConveyTask = bll.FillDataTable("WCS.SelectConveyTask", param);
-            if (dtConveyTask.Rows.Count > 0)
-            {
-                string ConveyID = dtConveyTask.Rows[0]["FromStation"].ToString();
-                string Destination = dtConveyTask.Rows[0]["ToStation"].ToString();
-
-                if (AreaCode == "ML")
-                {
-                    sbyte[] sTaskNo = new sbyte[40];
-                    Util.ConvertStringChar.stringToBytes(TaskNo, 20).CopyTo(sTaskNo, 0);
-                    Util.ConvertStringChar.stringToBytes(dtConveyTask.Rows[0]["PalletCode"].ToString(), 20).CopyTo(sTaskNo, 20);
-
-                    context.ProcessDispatcher.WriteToService(ConverServer, ConveyID + "_TaskNo", sTaskNo);
-                    context.ProcessDispatcher.WriteToService(ConverServer, ConveyID + "_Destination", 49); //目的地
-                    context.ProcessDispatcher.WriteToService(ConverServer, ConveyID + "_Request", 2);
-                    Logger.Info("任务號:" + TaskNo + "箱號:" + dtConveyTask.Rows[0]["PalletCode"].ToString() + "重下輸送線:" + ConveyID + "目的地址:" + Destination);
-                }
-                else
-                {
-                    sbyte[] sTaskNo = new sbyte[20];
-                    Util.ConvertStringChar.stringToBytes(TaskNo, 20).CopyTo(sTaskNo, 0);
-                    sbyte[] sPalletCode = new sbyte[30];
-                    Util.ConvertStringChar.stringToBytes(dtConveyTask.Rows[0]["PalletCode"].ToString(), 30).CopyTo(sPalletCode, 0);
-
-                    context.ProcessDispatcher.WriteToService(ConverServer, ConveyID + "_WTaskNo", sTaskNo);
-                    context.ProcessDispatcher.WriteToService(ConverServer, ConveyID + "_WPalletCode", sPalletCode);
-                    context.ProcessDispatcher.WriteToService(ConverServer, ConveyID + "_Destination", Destination); //目的地
-                    context.ProcessDispatcher.WriteToService(ConverServer, ConveyID + "_WTaskType", 1); //托盤類型
-                    context.ProcessDispatcher.WriteToService(ConverServer, ConveyID + "_WTaskFlag", 0); //是否并板
-                    context.ProcessDispatcher.WriteToService(ConverServer, ConveyID + "_WriteFinished", 1);
-                    Logger.Info("任务號:" + TaskNo + "托盤號:" + dtConveyTask.Rows[0]["PalletCode"].ToString() + "重下輸送線:" + ConveyID + "目的地址:" + Destination);
-                }
-            }
- 
-        }
-
+        
         private int GetPLCShelf(string CellCode)
         {
             string ShelfCode = CellCode.Substring(0,1).PadLeft(3,'0') + CellCode.Substring(1, 3);
             return PLCShelf[ShelfCode];
         }
- 
-        private void ToolStripMenuItemDeviceHandle_Click(object sender, EventArgs e)
-        {
-            App.View.Param.frmCraneHandle f = new App.View.Param.frmCraneHandle();
-            ShowForm(f);
-        }
 
-        private void ToolStripMenuItemUL_Click(object sender, EventArgs e)
-        {
-            View.frmMonitor1 f = new View.frmMonitor1();
-            ShowForm(f);
-        }
-
-        private void ToolStripMenuItemML_Click(object sender, EventArgs e)
-        {
-            View.frmMonitor2 f = new View.frmMonitor2();
-            ShowForm(f);
-        }
-
-        private void ToolStripMenuItemCrane_Click(object sender, EventArgs e)
+        private void ToolStripMenuItemMonitor_Click(object sender, EventArgs e)
         {
             View.frmMonitor f = new View.frmMonitor();
             ShowForm(f);
         }
 
-        private void toolStripButton1_Click_1(object sender, EventArgs e)
-        {
-            
-        }
+        #region 权限管理
 
         private void toolStripButton_Login_Click(object sender, EventArgs e)
         {
@@ -1075,20 +789,21 @@ namespace App
                 App.Account.frmLogin frm = new Account.frmLogin();
                 if (frm.ShowDialog() == DialogResult.OK)
                 {
-                  
-                    CurrentUser = frm.UserID;
-                    dtOp = bll.FillDataTable("Security.SelectUserRole", new DataParameter[] { new DataParameter("@UserName", CurrentUser), new DataParameter("@SystemName", "WCS") });
+
+                    Program.CurrentUser = frm.UserID;
+                    Program.dtUserPermission = bll.FillDataTable("Security.SelectUserPermission", new DataParameter[] { new DataParameter("@UserName", Program.CurrentUser), new DataParameter("@SystemName", "WCS") });
+
                     this.toolStripButton_Login.Image = App.Properties.Resources.user_remove;
                     this.toolStripButton_Login.Text = "注销用户";
                     SetBtnEnabled(true);
-                    Logger.Debug(AreaCode+"库区操作用户:"+CurrentUser+" 登录!");
+                    Logger.Debug("操作用户:" + Program.CurrentUser + " 登录!");
                 }
             }
             else
             {
-                Logger.Debug(AreaCode + "库区操作用户:" + CurrentUser + " 退出!");
-                CurrentUser = "";
-                dtOp = null;
+                Logger.Debug("操作用户:" + Program.CurrentUser + " 退出!");
+                Program.CurrentUser = "";
+                Program.dtUserPermission = null;
                 this.toolStripButton_Login.Image = App.Properties.Resources.user;
                 this.toolStripButton_Login.Text = "用户登录";
                 SetBtnEnabled(false);
@@ -1101,22 +816,22 @@ namespace App
             ToolStripMenuItem_SystemSetUp.Visible = blnValue;
             if (blnValue)
             {
-                ToolStripMenuItem_UserList.Visible = (dtOp.Select("FormID='User'").Length > 0 ? true : false);
-                ToolStripMenuItem_GroupList.Visible = (dtOp.Select("FormID='UserGroup'").Length > 0 ? true : false);
-                ToolStripMenuItem_SystemSetUp.Visible = (dtOp.Select("FormID='Power'").Length > 0 ? true : false);
+                //ToolStripMenuItem_UserList.Visible = (dtOp.Select("FormID='User'").Length > 0 ? true : false);
+                //ToolStripMenuItem_GroupList.Visible = (dtOp.Select("FormID='UserGroup'").Length > 0 ? true : false);
+                //ToolStripMenuItem_SystemSetUp.Visible = (dtOp.Select("FormID='Power'").Length > 0 ? true : false);
             }
  
         }
 
         private void ToolStripMenuItem_UserList_Click(object sender, EventArgs e)
         {
-            Account.frmUserList f = new Account.frmUserList(dtOp);
+            Account.frmUserList f = new Account.frmUserList(Program.dtUserPermission);
             ShowForm(f);
         }
 
         private void ToolStripMenuItem_GroupList_Click(object sender, EventArgs e)
         {
-            Account.frmGroupList f = new Account.frmGroupList(dtOp);
+            Account.frmGroupList f = new Account.frmGroupList(Program.dtUserPermission);
             ShowForm(f);
  
         }
@@ -1132,11 +847,23 @@ namespace App
             Account.frmChangePWD f = new Account.frmChangePWD();
             f.ShowDialog();
         }
-
-        private void toolStripButton1_Click_2(object sender, EventArgs e)
+        #endregion
+        private void toolStripButton1_Click(object sender, EventArgs e)
         {
             View.Task.frmCraneTask frm = new View.Task.frmCraneTask();
             ShowForm(frm);
+        }
+
+        private void contextMenuStrip1_VisibleChanged(object sender, EventArgs e)
+        {
+            if (contextMenuStrip1.Visible)
+            {
+                this.tmWorkTimer.Stop();
+            }
+            else
+            {
+                this.tmWorkTimer.Start();
+            }
         }
        
 
