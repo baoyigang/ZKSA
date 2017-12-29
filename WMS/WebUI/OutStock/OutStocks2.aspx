@@ -92,7 +92,7 @@
             if (SessionTimeOut(SessionUrl)) {
                 return false;
             }
-            if (!GetPermisionByFormID("Instock", 1)) {
+            if (!GetPermisionByFormID("Outstock2", 1)) {
                 alert("您没有新增权限！");
                 return false;
             }
@@ -120,7 +120,7 @@
             if (SessionTimeOut(SessionUrl)) {
                 return false;
             }
-            if (!GetPermisionByFormID("OutStock", 2)) {
+            if (!GetPermisionByFormID("OutStock2", 2)) {
                 alert("您没有修改权限！");
                 return false;
             }
@@ -622,7 +622,7 @@
         </table>
    </div>
       <%-- 弹出操作框--%>
-     <div id="AddWin" class="easyui-dialog" style="width: 630px; height: auto; padding: 5px 5px" data-options="closed:true,buttons:'#AddWinBtn',modal:true">  
+     <div id="AddWin" class="easyui-dialog" style="width: 630px; height: 500px; padding: 5px 5px" data-options="closed:true,buttons:'#AddWinBtn',modal:true">  
        <form id="fm" method="post">
             <div>
                  <table id="Table1" class="maintable"  width="100%" align="center">			
@@ -691,7 +691,7 @@
                     </tr>
 		        </table>
             </div>
-            <table id="dgSubAdd" class="easyui-datagrid" style="width:100%;height:251px" data-options="loadMsg: '正在加载数据，请稍等...',rownumbers:true,pagination:false,method:'post',striped:true,fitcolumns:true,singleSelect:true,
+            <table id="dgSubAdd" class="easyui-datagrid" style="width:100%;height:180px" data-options="loadMsg: '正在加载数据，请稍等...',rownumbers:true,pagination:false,method:'post',striped:true,fitcolumns:true,singleSelect:true,
                               selectOnCheck:false,checkOnSelect:false">
                 <thead>
                     <tr>
