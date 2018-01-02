@@ -131,7 +131,7 @@
   </Command>
   <Command ID="UpdateOutStock">
     <CommandString>
-      update WMS_BillMaster set BillDate=@BillDate, BillTypeCode=@BillTypeCode , Memo=@Memo, Updater=@Updater, UpdateDate=getdate() where BillID=@BillID
+      update WMS_BillMaster set BillDate=@BillDate, BillTypeCode=@BillTypeCode ,ProductCode=@ProductCode, BatchNo=@BatchNo,SectionID=@SectionID,Qty=@Qty,PalletQty=@PalletQty,Memo=@Memo, Updater=@Updater, UpdateDate=getdate() where BillID=@BillID
     </CommandString>
   </Command>
   <!--出库单2-->
@@ -143,7 +143,7 @@
   </Command>
   <Command ID="InsertOutStockDetail">
     <CommandString>
-      INSERT INTO WMS_BillDetail(BillID,RowID,ProductCode,Quantity,CellCode)VALUES(@BillID,@RowID,@ProductCode,@Qty,@CellCode)
+      INSERT INTO WMS_BillDetail(BillID,RowID,ProductCode,Quantity,CellCode)VALUES(@BillID,@RowID,@ProductCode,@Quantity,@CellCode)
     </CommandString>
   </Command>
   <Command ID="DeleteBillMaster">
