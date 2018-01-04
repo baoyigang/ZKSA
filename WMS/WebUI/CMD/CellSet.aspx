@@ -436,7 +436,7 @@
             var AreaCode = '';
             $('#dgSelect').datagrid({
                 url: '../../Handler/BaseHandler.ashx?Action=PageDate&Comd=' + Comd,
-                pageNumber: 1,
+                  pageNumber: 1,
                 queryParams: { Where: encodeURIComponent("1=1 ") }
             });
         }
