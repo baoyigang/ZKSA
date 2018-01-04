@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <SqlCommand>
+  <!--jjjj-->
   <Command ID="SelectBillMaster2">
     <CommandString>
       select * from View_WMS_BillMaster2
@@ -7,7 +8,7 @@
       order by {1}
     </CommandString>
   </Command>
-  <Command ID="SelectBillMaster">
+  <Command ID="SelectBillMaster">y
     <CommandString>
       select * from View_WMS_BillMaster
       where {0}
@@ -131,7 +132,7 @@
   </Command>
   <Command ID="UpdateOutStock">
     <CommandString>
-      update WMS_BillMaster set BillDate=@BillDate, BillTypeCode=@BillTypeCode , Memo=@Memo, Updater=@Updater, UpdateDate=getdate() where BillID=@BillID
+      update WMS_BillMaster set BillDate=@BillDate, BillTypeCode=@BillTypeCode ,ProductCode=@ProductCode, BatchNo=@BatchNo,SectionID=@SectionID,Qty=@Qty,PalletQty=@PalletQty,Memo=@Memo, Updater=@Updater, UpdateDate=getdate() where BillID=@BillID
     </CommandString>
   </Command>
   <!--出库单2-->
@@ -143,7 +144,7 @@
   </Command>
   <Command ID="InsertOutStockDetail">
     <CommandString>
-      INSERT INTO WMS_BillDetail(BillID,RowID,ProductCode,Quantity,CellCode)VALUES(@BillID,@RowID,@ProductCode,@Qty,@CellCode)
+      INSERT INTO WMS_BillDetail(BillID,RowID,ProductCode,Quantity,CellCode)VALUES(@BillID,@RowID,@ProductCode,@Quantity,@CellCode)
     </CommandString>
   </Command>
   <Command ID="DeleteBillMaster">
