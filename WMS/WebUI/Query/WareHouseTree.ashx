@@ -85,7 +85,7 @@ public class WareHouseTree : IHttpHandler, IRequiresSessionState
     {
         string json = "";
         BLL.BLLBase bll = new BLL.BLLBase();
-        DataTable dtArea = bll.FillDataTable("Cmd.SelectArea", new DataParameter[] { new DataParameter("{0}", string.Format("WarehouseCode='{0}'", WareHouseCode)) });
+        DataTable dtArea = bll.FillDataTable("Cmd.SelectArea", new DataParameter[] { new DataParameter("{0}", string.Format("CMD_Warehouse.WarehouseCode='{0}'", WareHouseCode)), new DataParameter("{1}", "1") });
         for (int j = 0; j < dtArea.Rows.Count; j++)
         {
             DataRow dr = dtArea.Rows[j];
@@ -146,15 +146,15 @@ public class WareHouseTree : IHttpHandler, IRequiresSessionState
     {
         string json = "";
         BLL.BLLBase bll = new BLL.BLLBase();
-        DataTable dtShelf = bll.FillDataTable("Cmd.SelectCellShelf", new DataParameter[] { new DataParameter("{0}", string.Format("AreaCode='{0}'", AreaCode)) });
+        DataTable dtShelf = bll.FillDataTable("Cmd.SelectRegion", new DataParameter[] { new DataParameter("{0}", string.Format("R.AreaCode='{0}'", AreaCode)), new DataParameter("{1}", "1") });
         for (int j = 0; j < dtShelf.Rows.Count; j++)
         {
             DataRow dr = dtShelf.Rows[j];
             if (j == 0)
             {
                 json += ",\"children\":[{";
-                json += "\"id\":\"" + dr["ShelfCode"].ToString() + "\"";
-                json += ",\"text\":\"" + dr["ShelfName"].ToString() + "\"";
+                json += "\"id\":\"" + dr["RegionCode"].ToString() + "\"";
+                json += ",\"text\":\"" + dr["RegionName"].ToString() + "\"";
 
                 if (dtShelf.Rows.Count == 1)
                 {
@@ -167,15 +167,15 @@ public class WareHouseTree : IHttpHandler, IRequiresSessionState
             }
             else if (j > 0 && j < dtShelf.Rows.Count - 1)
             {
-                json += ",{\"id\":\"" + dr["ShelfCode"].ToString() + "\"";
-                json += ",\"text\":\"" + dr["ShelfName"].ToString() + "\"";
+                json += ",{\"id\":\"" + dr["RegionCode"].ToString() + "\"";
+                json += ",\"text\":\"" + dr["RegionName"].ToString() + "\"";
                 json += "}";
           
             }
             else
             {
-                json += ",{\"id\":\"" + dr["ShelfCode"].ToString() + "\"";
-                json += ",\"text\":\"" + dr["ShelfName"].ToString() + "\"";
+                json += ",{\"id\":\"" + dr["RegionCode"].ToString() + "\"";
+                json += ",\"text\":\"" + dr["RegionName"].ToString() + "\"";
                 json += "}]";
             }
         }

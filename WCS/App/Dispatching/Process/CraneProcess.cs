@@ -30,10 +30,8 @@ namespace App.Dispatching.Process
         BLL.BLLBase bll = new BLL.BLLBase();
         private Dictionary<int, rCrnStatus> dCrnStatus = new Dictionary<int, rCrnStatus>();
         private Dictionary<string, int> PLCShelf = new Dictionary<string, int>();
-        private Timer tmWorkTimer = new Timer();
+        private Timer tmWorkTimer;
         private bool blRun = false;
-        private string AreaCode = "ML";
-        private string ConveyServer = "MConvey";
         private DataTable dtDeviceAlarm;
         public override void Initialize(Context context)
         {
@@ -54,7 +52,7 @@ namespace App.Dispatching.Process
                         dCrnStatus[i].DeviceNo = dt.Rows[i - 1]["DeviceNo"].ToString();
                     }
                 }
-               
+                tmWorkTimer = new Timer();
                 tmWorkTimer.Interval = 2000;
                 tmWorkTimer.Elapsed += new ElapsedEventHandler(tmWorker);
                 dtDeviceAlarm = bll.FillDataTable("WCS.SelectDeviceAlarm", new DataParameter[] { new DataParameter("{0}", "Flag=1") });
@@ -63,7 +61,7 @@ namespace App.Dispatching.Process
             }
             catch (Exception ex)
             {
-                Logger.Error("MiniLoadProcess堆垛机初始化出錯,原因:" + ex.Message);
+                Logger.Error("CraneProcess堆垛机初始化出錯,原因:" + ex.Message);
             }
         }
         protected override void StateChanged(StateItem stateItem, IProcessDispatcher dispatcher)
@@ -82,61 +80,34 @@ namespace App.Dispatching.Process
                         if (obj == null)
                             return;
                         string TaskFinish = obj.ToString();
-                        if (TaskFinish.Equals("True") || TaskFinish.Equals("1"))
+                        if (TaskFinish.Equals("1"))
                         {
                             int taskIndex = int.Parse(stateItem.ItemName.Substring(stateItem.ItemName.Length - 1, 1));
                             string TaskNo = Util.ConvertStringChar.BytesToString(ObjectUtil.GetObjects(Context.ProcessDispatcher.WriteToService(stateItem.Name, "CraneTaskNo" + taskIndex)));
 
                             if (TaskNo.Length == 0)
                                 return;
-                            DataParameter[] param = new DataParameter[] { new DataParameter("{0}", string.Format("TaskNo='{0}'", TaskNo)), new DataParameter("{1}", "1") };
+                            DataParameter[] param = new DataParameter[] { new DataParameter("{0}", string.Format("TaskNo='{0}'", TaskNo)), new DataParameter("{1}", "TaskNo"), new DataParameter("{2}", 1) };
                             DataTable dtTask = bll.FillDataTable("WCS.SelectCraneTask", param);
                             if (dtTask.Rows.Count > 0)
                             {
                                 string TaskType = dtTask.Rows[0]["TaskType"].ToString();
-                                int Flag = int.Parse(dtTask.Rows[0]["Flag"].ToString());
-                                string State = dtTask.Rows[0]["State"].ToString();
-                                string ConveyID = dtTask.Rows[0]["OutStationNo"].ToString(); //出庫站台
-                                string PalletCode = dtTask.Rows[0]["Palletcode"].ToString();
-                                string TaskID = dtTask.Rows[0]["TaskID"].ToString();
-                                string SubTaskID = dtTask.Rows[0]["SubTaskID"].ToString();
-                                DataTable dtConveyTask = bll.FillDataTable("WCS.SelectConveyTask", param);
-                                string Destination = dtConveyTask.Rows[0]["ToStation"].ToString();
+                                string CellCode = dtTask.Rows[0]["CellCode"].ToString();
+                               
+                                string Msg = "上架";
+                                string strState = "5";
 
-                                sbyte[] sTaskNo = new sbyte[40];
-                                Util.ConvertStringChar.stringToBytes(TaskNo, 20).CopyTo(sTaskNo, 0);
-                                Util.ConvertStringChar.stringToBytes(PalletCode, 20).CopyTo(sTaskNo, 20);
-
-                                if (TaskType == "11" || (TaskType == "13" && Flag == 3) || (TaskType == "13" && Flag == 6 && State == "3"))
+                                if (TaskType == "12")
                                 {
-                                    bll.ExecNonQuery("WCS.Sp_TaskProcess", new DataParameter[] { new DataParameter("@TaskNo", TaskNo) });
-                                    Logger.Info("ML" + stateItem.Name.Replace("MiniLoad", "") + "堆垛机上架任务完成,任务號:" + TaskNo + " 料箱號:" + PalletCode);
+                                    Msg = "下架";
+                                    strState = "13";
                                 }
-                                else if (TaskType == "12" || (TaskType == "13" && Flag == 6 && State == "4"))
-                                {
-                                    Logger.Info("ML" + stateItem.Name.Replace("MiniLoad", "") + "堆垛机下架任务完成,任务號:" + TaskNo + " 料箱號:" + PalletCode);
-                                    if (TaskType == "12")
-                                    {
-                                        bll.ExecNonQuery("WCS.UpdateCellEmpty", new DataParameter[] { new DataParameter("@CellCode", dtTask.Rows[0]["CellCode"].ToString()) });
-                                        bll.ExecNonQuery("WCS.UpdateTaskState", new DataParameter[] { new DataParameter("{0}", "State=5,Crane_FinishDate=getdate()"), new DataParameter("{1}", string.Format("TaskNo='{0}'", TaskNo)) });
-
-
-
-                                        WriteToService(ConveyServer, ConveyID + "_TaskNo", sTaskNo);
-                                        WriteToService(ConveyServer, ConveyID + "_Destination", Destination); //目的地
-                                        if (WriteToService(ConveyServer, ConveyID + "_Request", 2))
-                                        {
-                                            bll.ExecNonQuery("WCS.UpdateTaskState", new DataParameter[] { new DataParameter("{0}", "State=6,Convey_StartDate=getdate()"), new DataParameter("{1}", string.Format("TaskNo='{0}'", TaskNo)) });
-                                            Logger.Info("任务號:" + TaskNo + " 料箱號:" + PalletCode + " 已經下達輸送線:" + ConveyID + " 目的地址:" + Destination);
-                                        }
-                                      
-                                    }
-                                    
-                                }
+                                bll.ExecNonQuery("WCS.UpdateTaskState", new DataParameter[] { new DataParameter("{0}", string.Format("State={0},Crane_FinishDate=getdate()", strState)), new DataParameter("{1}", string.Format("TaskNo='{0}'", TaskNo)) });
+                                Logger.Info("载货提升机" + Msg + "任务完成,任务號:" + TaskNo + " 货位:" + CellCode);
                             }
                             else
                             {
-                                Logger.Error("MiniLoadProcess中ML堆垛机" + stateItem.ItemName + "任务完成,但WCS中找不到任务號:" + TaskNo);
+                                Logger.Error("载货提升机任务完成,但WCS中找不到任务號:" + TaskNo);
                             }
                             sbyte[] ClearTaskNo = new sbyte[20];
                             Util.ConvertStringChar.stringToBytes("", 20).CopyTo(ClearTaskNo, 0);
@@ -145,7 +116,7 @@ namespace App.Dispatching.Process
                     }
                     catch (Exception ex1)
                     {
-                        Logger.Info("MiniLoadProcess中CraneTaskFinished出錯:" + ex1.Message);
+                        Logger.Info("CraneProcess中CraneTaskFinished出錯:" + ex1.Message);
                     }
                     break;
                 case "Run":
@@ -153,16 +124,16 @@ namespace App.Dispatching.Process
                     if (blRun)
                     {
                         tmWorkTimer.Start();
-                        Logger.Info("堆垛机联机");
+                        Logger.Info("载货提升机联机");
                     }
                     else
                     {
                         tmWorkTimer.Stop();
-                        Logger.Info("堆垛机脱机");
+                        Logger.Info("载货提升机脱机");
                     }
                     break;
                 case "PLCCheck":
-                    //對現有任务進行比較,如果正常,則將標誌位制0后,堆垛机執行。
+                    
                     #region PLC CheckTask
                     try
                     {
@@ -176,7 +147,7 @@ namespace App.Dispatching.Process
                     }
                     catch (Exception ex)
                     {
-                        Logger.Error("MiniLoadProcess.StateChanged中PLCCheck出現錯誤,內容:" + ex.Message);
+                        Logger.Error("CraneProcess.StateChanged中PLCCheck出現錯誤,內容:" + ex.Message);
                     }
                     #endregion
                     break;
@@ -206,7 +177,7 @@ namespace App.Dispatching.Process
                         string TaskNo = Util.ConvertStringChar.BytesToString(ObjectUtil.GetObjects(Context.ProcessDispatcher.WriteToService(stateItem.Name, "CraneTaskNo" + k)));
                         bll.ExecNonQuery("WCS.UpdateTaskError", new DataParameter[] { new DataParameter("@AlarmCode", strWarningCode), new DataParameter("@AlarmDesc", strError), new DataParameter("@TaskNo", TaskNo) });
                     }
-                    Logger.Error("ML" + CraneNo + "堆垛机 " + strError);
+                    Logger.Error("载货提升机" + strError);
                     break;
                 default:
                     break;
@@ -222,6 +193,7 @@ namespace App.Dispatching.Process
         {
             lock (this)
             {
+               
                 try
                 {
 
@@ -301,13 +273,12 @@ namespace App.Dispatching.Process
                 return;
             }
 
-            //判断AGV是否处于空闲
             string serviceName = dCrnStatus[craneNo].ServiceName;
-            DataParameter[] parameter = new DataParameter[] { new DataParameter("{0}", string.Format("Task.TaskType='12' and Task.State in ('10','11') ")) };
+            DataParameter[] parameter = new DataParameter[] { new DataParameter("{0}", string.Format("TaskType='12' and State in ('10','11') ")), new DataParameter("{1}", "Car_StartDate"), new DataParameter("{2}", 2) };
             DataTable dt = bll.FillDataTable("WCS.SelectCraneTask", parameter);
 
-            DataRow[] drs = dt.Select("State='11'", "CellRow");
-            if (drs.Length>= 2)
+            DataRow[] drs = dt.Select("State='11'", "RowIndex,CellRow");
+            if (drs.Length == 2)
                 Send2PLC(craneNo, drs, false);
             else if (drs.Length == 1)
             {
@@ -336,101 +307,88 @@ namespace App.Dispatching.Process
             }
             catch (Exception e)
             {
-                Logger.Error("MiniLoadProcess中Craneout状态檢查錯誤:" + e.Message.ToString());
+                Logger.Error("CraneProcess中Craneout状态檢查錯誤:" + e.Message.ToString());
                 return;
             }
-            DataParameter[] parameter = new DataParameter[] { new DataParameter("{0}", string.Format("TASK.TaskType='11' and State='3'")) };
+            DataParameter[] parameter = new DataParameter[] { new DataParameter("{0}", string.Format("TaskType='11' and State='3'")), new DataParameter("{1}", "RowIndex"), new DataParameter("{2}", 2) };
             DataTable dt = bll.FillDataTable("WCS.SelectCraneTask", parameter);
             if (dt.Rows.Count > 0)
             {
 
-                DataRow[] drs = dt.Select("", "AGV_FinishDate,RowIndex");
+                DataRow[] drs = dt.Select("", "RowIndex,CellRow");
                 if (drs.Length > 0)
                     Send2PLC(craneNo, drs, true);
 
             }
         }
-        private void Send2PLC(int CraneNo, DataRow[] drs,bool blnInStock)
+        private void Send2PLC(int CraneNo, DataRow[] drs, bool blnInStock)
         {
             if (drs.Length == 0)
                 return;
 
             string strWhere = "";
-            bool blnTwo10 = false;
+
             //更新A任务,及B任务
-            if (drs.Length == 1)
-            {
-                bll.ExecNonQuery("WCS.UpdateTaskAB", new DataParameter[] { new DataParameter("@TaskAB", "A"), 
+
+            bll.ExecNonQuery("WCS.UpdateTaskAB", new DataParameter[] { new DataParameter("@TaskAB", "A"), 
                                                                            new DataParameter("@MergeTaskNo", drs[0]["TaskNo"].ToString()), 
                                                                            new DataParameter("@TaskNo", drs[0]["TaskNo"].ToString()) });
-                strWhere = string.Format("TaskNo='{0}'", drs[0]["TaskNo"].ToString());
-            }
-            else
-            {
-                bll.ExecNonQuery("WCS.UpdateTaskAB", new DataParameter[] { new DataParameter("@TaskAB", "A"), 
+            strWhere = string.Format("TaskNo='{0}'", drs[0]["TaskNo"].ToString());
+
+            bll.ExecNonQuery("WCS.UpdateTaskAB", new DataParameter[] { new DataParameter("@TaskAB", "A"), 
                                                                            new DataParameter("@MergeTaskNo",drs[0]["TaskNo"].ToString()), 
                                                                            new DataParameter("@TaskNo", drs[0]["TaskNo"].ToString()) });
+            if (drs.Length > 1)
+            {
 
-                if (drs[1]["CellRow"].ToString() == "10")
-                {
-                    blnTwo10 = true;
-                }
-                if (!blnTwo10)
-                {
-
-                    bll.ExecNonQuery("WCS.UpdateTaskAB", new DataParameter[] { new DataParameter("@TaskAB","B"), 
+                bll.ExecNonQuery("WCS.UpdateTaskAB", new DataParameter[] { new DataParameter("@TaskAB","B"), 
                                                                                new DataParameter("@MergeTaskNo",drs[0]["TaskNo"].ToString()), 
                                                                                new DataParameter("@TaskNo", drs[1]["TaskNo"].ToString()) });
 
-                }
-                strWhere = string.Format("TaskNo in ('{0}','{1}')", drs[0]["TaskNo"].ToString(), drs[1]["TaskNo"].ToString());
+
             }
-
-            DataParameter[] parameter = new DataParameter[] { new DataParameter("{0}",   strWhere) };
-            DataTable dt = bll.FillDataTable("WCS.SelectCraneTask", parameter);
             string serviceName = dCrnStatus[CraneNo].ServiceName;
-            DataRow[] Taskdrs = dt.Select("", "CellRow");
 
-            for (int i = 0; i < Taskdrs.Length; i++)
+            for (int i = 0; i < drs.Length; i++)
             {
                 int TaskIndex = i + 1;
-                if (i == 0)
-                {
-                    if (Taskdrs[0]["CellRow"].ToString() == "10")
-                        TaskIndex = 2;
-                }
-
-                string TaskNo = Taskdrs[i]["TaskNo"].ToString();
-                string TaskType = Taskdrs[i]["TaskType"].ToString();
-                string CellCode = Taskdrs[i]["CellCode"].ToString();
+                string TaskNo = drs[i]["TaskNo"].ToString();
                 int[] cellAddr = new int[6];
+                string NextState;
+                int FromColumn, FromRow, FromShelf, ToColumn, toRow, toShelf;
 
-                string NextState = "4";
-                int FromColumn = int.Parse(Taskdrs[i]["AisleNo"].ToString());
-                int FromRow = int.Parse(Taskdrs[i]["RowIndex"].ToString());
-                int FromShelf = 1;
 
-                int ToColumn = int.Parse(Taskdrs[i]["AisleNo"].ToString());
-                int toRow = int.Parse(CellCode.Substring(6, 3));
-                int toShelf = 2;
-                if (TaskType == "12")
+                if (blnInStock)
+                {
+                    NextState = "4";
+                    FromColumn = 1;
+                    if (drs[i]["AGVStation"].ToString() == "5")
+                        FromColumn = 2;
+                    FromRow = int.Parse(drs[i]["RowIndex"].ToString());
+                    FromShelf = 1;
+
+                    ToColumn = int.Parse(drs[i]["AisleNo"].ToString());
+                    toRow = int.Parse(drs[i]["CellRow"].ToString());
+                    toShelf = 2;
+                }
+                else
                 {
                     NextState = "12";
-                    FromColumn = int.Parse(Taskdrs[i]["AisleNo"].ToString());
-                    FromRow = int.Parse(CellCode.Substring(6, 3));
+                    FromColumn = int.Parse(drs[i]["AisleNo"].ToString());
+                    FromRow = int.Parse(drs[i]["CellRow"].ToString());
                     FromShelf = 2;
-                    ToColumn = int.Parse(Taskdrs[i]["AisleNo"].ToString());
-
+                    ToColumn = int.Parse(drs[i]["AisleNo"].ToString());
+                    if (drs[i]["AGVStation"].ToString() == "5")
+                        ToColumn = 2;
                     //判断前一个任务的所在的巷道
-                    DataTable dtSendCrane = bll.FillDataTable("WCS.SelectCraneTask", new DataParameter[] { new DataParameter("{0}", ""), new DataParameter("{1}", "") });
-                    if (dtSendCrane.Rows.Count > 0)
-                        ToColumn = int.Parse(dtSendCrane.Rows[0]["AisleNo"].ToString());
-                    toRow = dtSendCrane.Rows.Count + 1;
+
+                    int count = bll.GetRowCount("WCS_TASK", "TaskType='12' and State in (12,13)");
+                    toRow = count + 1;
                     toShelf = 1;
                 }
                 cellAddr[0] = FromColumn;
-                cellAddr[1] =FromRow;
-                cellAddr[2] =FromShelf;
+                cellAddr[1] = FromRow;
+                cellAddr[2] = FromShelf;
                 cellAddr[3] = ToColumn;
                 cellAddr[4] = toRow;
                 cellAddr[5] = toShelf;
@@ -444,16 +402,9 @@ namespace App.Dispatching.Process
                     bll.ExecNonQuery("WCS.UpdateTaskState", new DataParameter[] { new DataParameter("{0}", string.Format("State={0},Crane_StartDate=getdate()",NextState)),
                                                                                   new DataParameter("{1}", string.Format("TaskNo='{0}'", TaskNo))});
                 }
-                Logger.Info("任务号:" + dt.Rows[i]["TaskNo"].ToString() +"已下发载货提升机工位" + TaskIndex + "地址:" + CellCode);
-                if (blnTwo10)
-                    break;
-
+                Logger.Info("任务号:" + drs[i]["TaskNo"].ToString() + "已下发载货提升机工位" + TaskIndex + "地址:" + drs[i]["CellCode"].ToString());
             }
             WriteToService(serviceName, "WriteFinished", 1);
-
         }
-
-        
-       
     }
 }

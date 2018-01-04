@@ -47,14 +47,16 @@ var HasExists = function (Table, Filter, MsgInfo) {
         success: function (data) {
             if (data == "1") {
                 if (MsgInfo != "")
-                    alert(MsgInfo);
+                    $.messager.alert("提示", MsgInfo, "info");
+                    //alert(MsgInfo);
                 has = true;
             }
             else
                 has = false;
         },
         error: function (msg) {
-            alert(msg);
+            $.messager.alert("错误", msg, "error");
+            //alert(msg);
             has = true;
         }
     });
@@ -74,6 +76,28 @@ var GetFieldValue = function (Table, FieldName, Filter) {
         async: false,
         success: function (data) {
             Value = data;
+        },
+        error: function (msg) {
+            alert(msg);
+            Value = "";
+        }
+    });
+    return Value;
+};
+
+//获取Table表,传入查询语句，条件
+var GetTableValue = function (comd, json) {
+    var data = { Action: 'FillDataTable', Comd: comd, Json: json };
+    var Value;
+    $.ajax({
+        type: "post",
+        url: BaseUrl,
+        data: data,
+        // contentType: "application/json; charset=utf-8",
+        dataType: "text",
+        async: false,
+        success: function (data) {
+            Value = JSON.parse(data).rows;
         },
         error: function (msg) {
             alert(msg);

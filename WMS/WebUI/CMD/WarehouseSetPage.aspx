@@ -45,7 +45,7 @@
             if (SessionTimeOut(SessionUrl)) {
                 return false;
             }
-            if (!GetPermisionByFormID("WareHouse", 0)) {
+            if (!GetPermisionByFormID("WareHouse", 1)) {
                 alert("您没有新增权限！");
                 return false;
             }

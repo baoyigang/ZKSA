@@ -1,104 +1,106 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="ProductQuery.aspx.cs" Inherits="WebUI_Query_ProductQuery" %>
-<%@ Register Assembly="FastReport.Web" Namespace="FastReport.Web" TagPrefix="cc1" %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head id="Head1" runat="server">
-    <title></title> 
-        <link rel="stylesheet" type="text/css" href="~/Css/default.css" />
-        <link rel="stylesheet" type="text/css" href="~/Css/icon.css" /> 
-        <link href="../../Css/op.css" rel="stylesheet" type="text/css" />
-        <script type="text/javascript" src="../../EasyUI/jquery.min.js"></script>
-        <script src="../../JScript/Common.js" type="text/javascript"></script>
-        <script src="../../JScript/DataProcess.js" type="text/javascript"></script>
-        <script type="text/javascript">
-            $(document).ready(function () {
-                $(window).resize(function () {
-                    resize();
-                });
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" type="text/css" href="~/Css/default.css" />
+    <link rel="stylesheet" type="text/css" href="~/Css/icon.css" />
+    <link rel="stylesheet" type="text/css" href="../../EasyUI/themes/default/easyui.css" />
+    <link rel="stylesheet" type="text/css" href="../../EasyUI/themes/icon.css" />
+    <script type="text/javascript" src="../../EasyUI/jquery.min.js"></script>
+    <script type="text/javascript" src="../../EasyUI/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../../EasyUI/locale/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="../../JScript/JsAjax.js" ></script>
+    <script type="text/javascript" language="javascript">
+        var SessionUrl = '<% =ResolveUrl("~/Login.aspx")%>';
+        $(function () {
+            var data = { Action: 'FillDataTable', Comd: 'cmd.SelectProductCategory', Json: "[{\"{0}\": \"1=1\",\"{1}\": \"1\"}]" };
+            BindComboList(data, 'txtQueryCategory', 'CategoryCode', 'CategoryName');
+        });
+        function Query() {
+            var where = "1=1 ";
+            var CategoryCode = $("#txtQueryCategory").combobox("getValue");
+            var Product = $("#txtQueryProduct").textbox("getValue");
+            var BatchNo = $("#txtQueryBatchNo").textbox("getValue");
+            if (CategoryCode != "") {
+                where += " and product.CategoryCode = '" + CategoryCode + "'";
+            }
+            if (Product != "") {
+                where += " and (product.ProductName like '%" + Product + "%' or product.ProductCode like '%" + Product + "%')";
+            }
+            if (BatchNo != "") {
+                where += " and BatchNo like '%" + BatchNo + "%'";
+            }
+            where = encodeURIComponent(where);
+            var value = $('input:radio[name="QueryFlag"]:checked').val();
+            var Comd = "SelectProductDetailQuery";
+            if (value == "1") { //统计表
+                Comd = "SelectProductTotalQuery";
+
+            }
+            $('#dg').datagrid({
+                url: '../../Handler/BaseHandler.ashx?Action=PageDate&Comd=WMS.' + Comd,
+                queryParams: { Where: where }
             });
-            function resize() {
-                var h = document.documentElement.clientHeight - 30;
-                $("#rptview").css("height", h);
+            if (value == "1") {
+                $('#dg').datagrid('hideColumn', 'CellCode');
+                $('#dg').datagrid('hideColumn', 'InDate');
+
             }
-           function PrintClick() {
-                $('#HdnWH').val(document.documentElement.clientWidth + "#" + document.documentElement.clientHeight);
-                return true;
+            else {
+                $('#dg').datagrid('showColumn', 'CellCode');
+                $('#dg').datagrid('showColumn', 'InDate');
             }
-        </script>
-   
-    <style type="text/css">
-        .style1
-        {
-            width: 133px;
         }
-    </style>
-   
-    </head>
-<body  style="overflow:hidden;">
-  <form id="form1" runat="server"> 
-    <table  style="width:100%;height:100%;" >
-        <tr runat ="server" id = "rptform" valign="top">
-            <td align="left" style="width:100%; height:30px;" >
-                <table class="maintable"  width="100%" align="center" >
-                    <tr>
-                        <td  align="center" class="smalltitle" style="width:6%;">
-                            模具编码
-                        </td>
-                         <td style="width:10%;" >
-                        
-                              &nbsp;<asp:textbox id="txtProductCode" tabIndex="1" runat="server" Width="90%" CssClass="TextBox"></asp:textbox>
-                        </td>
-                        <td   align="center" class="smalltitle" style="width:6%;">
-                            托盘编码
-                        </td>
-                        <td align="left"   style="width:10%;">
-                         &nbsp;<asp:textbox id="txtPalletCode"   runat="server"  Width="90%" CssClass="TextBox" ></asp:textbox> 
-                        </td>
-                        <td   align="center" class="smalltitle" style="width:6%;">
-                            产品编号
-                        </td>
-                        <td align="left"   style="width:10%;">
-                         &nbsp;<asp:textbox id="txtProductNo"   runat="server"  Width="90%" CssClass="TextBox" ></asp:textbox>
-                        </td>
-                        <td   align="center" class="smalltitle" style="width:4%;">
-                            品名
-                        </td>
-                        <td align="left"   style="width:10%;" >
-                             &nbsp;<asp:textbox id="txtProductName" tabIndex="1" runat="server" Width="90%" CssClass="TextBox"></asp:textbox>
-                       </td>
-                       <td class="style1">
-                           <asp:CheckBox ID="CheckBox1" runat="server" Text="低于安全存量" />
-                        
-                       </td>
-                        <td align= "left" style="border-left:2px solid #ffffff;">
-                             &nbsp;<asp:Button ID="btnSearch" runat="server" CssClass="ButtonQuery" 
-                                  tabIndex="2" Text="查询" onclick="btnPreview_Click" Width="58px"  OnClientClick="return PrintClick();"/> &nbsp;&nbsp;
-                             <asp:Button ID="btnRefresh" runat="server" CssClass="ButtonReset" 
-                                 OnClientClick="return Refresh()" tabIndex="2" 
-                                 Text="重新过滤" Width="80px" />
-                        </td>  
-                                                                     
-                    </tr>
-                </table>  
-            </td>
-        </tr>
-        <tr>
-            <td runat ="server" id = "rptview" valign="top" align="left">
-                <table style="width:90%;height:100%;">
-                    <tr>
-                        <td >           
-                             <cc1:WebReport ID="WebReport1" runat="server" BackColor="White" ButtonsPath="images\buttons1"
-                                Font-Bold="False" Height = "100%" OnStartReport="WebReport1_StartReport"
-                                ToolbarColor="Lavender" Width="100%" Zoom="1" />
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-    </table>        
-        <input id="HdnProduct" type="hidden" runat="server" />
-        <input id="HdnWH" type="hidden" runat="server" value="0#0" />         
-   </form>
+        function Refresh() {
+            $("#txtQueryCategory").combobox("setValue", "");
+            $("#txtQueryProduct").textbox("setValue", "");
+            $("#txtQueryBatchNo").textbox("setValue", "");
+            document.getElementById("QueryFlag0").checked = true;
+        }
+       
+        
+ </script>  
+</head>
+<body  class="easyui-layout">
+    <table id="dg"  class="easyui-datagrid" data-options="loadMsg: '正在加载数据，请稍等...',fit:true, rownumbers:true ,
+            pagination:true,pageSize:PageSize, pageList:[15, 20, 30, 50],method:'post',striped:true,fitcolumns:true,toolbar:'#tb'">  
+        <thead data-options="frozen:true">
+			<tr>
+                <th data-options="field:'CategoryName',width:90">产品类别</th>
+                <th data-options="field:'ProductCode',width:90">产品编号</th>
+                <th data-options="field:'ProductName',width:150">产品名称</th>
+                <th data-options="field:'BatchNo',width:120">批次</th>
+                <th data-options="field:'SectionName',width:100">阶段</th>
+                <th data-options="field:'PalletQty',width:80">托盘数</th>
+                <th data-options="field:'Qty',width:80">产品数量</th>
+                <th data-options="field:'CellCode',width:120">货位</th>
+                <th data-options="field:'InDate',width:150">入库时间</th>
+            </tr>
+        </thead>
+        
+    </table>
+      
+    <div id="tb" style="padding: 5px; height: auto">  
+        <table style="width:100%" >
+            <tr>
+                 <td>
+                 产品类别
+                <input id="txtQueryCategory" class="easyui-combobox" style="width:100px" />
+                产品
+                <input id="txtQueryProduct" class="easyui-textbox" style="width:100px"/>
+                批次
+                <input id="txtQueryBatchNo" class="easyui-textbox" style="width:100px"/>
+                <input type="radio" id="QueryFlag0" name="QueryFlag" value="0" checked="checked">明细表</input>
+                <input type="radio" id="QueryFlag1" name="QueryFlag" value="1">统计表</input>
+                <a  href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" onclick="Query()" >查询</a>
+                <a  href="#" class="easyui-linkbutton" data-options="iconCls:'icon-reload'" onclick="Refresh()" >重新过滤</a>
+                </td>
+            </tr>
+        </table>
+   </div>
 </body>
 </html>

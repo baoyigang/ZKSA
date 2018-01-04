@@ -52,9 +52,11 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Lib\MCP.Service.Siemens.dll</HintPath>
     </Reference>
-    <Reference Include="MCP.Service.TCP">
+    <Reference Include="MCP.Service.TCP, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Lib\MCP.Service.TCP.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="OPC, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Lib\OPC.dll</HintPath>
@@ -62,25 +64,25 @@
     <Reference Include="OpcRcw.Comn, Version=1.10.2.0, Culture=neutral, PublicKeyToken=9a40e993cbface53, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <EmbedInteropTypes>True</EmbedInteropTypes>
-      <HintPath>..\..\..\Lib\OpcRcw.Comn.dll</HintPath>
+      <HintPath>..\..\..\Standard_Wcf\Standard_Dll\Libraries\OpcRcw.Comn.dll</HintPath>
     </Reference>
     <Reference Include="OpcRcw.Da, Version=3.0.3.0, Culture=neutral, PublicKeyToken=9a40e993cbface53, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <EmbedInteropTypes>True</EmbedInteropTypes>
-      <HintPath>..\..\..\Lib\OpcRcw.Da.dll</HintPath>
+      <HintPath>..\..\..\Standard_Wcf\Standard_Dll\Libraries\OpcRcw.Da.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="TCP">
+    <Reference Include="TCP, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Lib\TCP.dll</HintPath>
     </Reference>
     <Reference Include="Util, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -143,6 +145,8 @@
     <Compile Include="Dispatching\Process\AGVProcess.cs" />
     <Compile Include="Dispatching\Process\ElevatorProcess.cs" />
     <Compile Include="Dispatching\Process\CraneProcess.cs" />
+    <Compile Include="Dispatching\Process\SendAGVMessage.cs" />
+    <Compile Include="Dispatching\TCPMessageParse.cs" />
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -169,41 +173,11 @@
     <Compile Include="View\CheckScan.designer.cs">
       <DependentUpon>CheckScan.cs</DependentUpon>
     </Compile>
-    <Compile Include="View\Dispatcher\frmTaskQuery.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="View\Dispatcher\frmTaskQuery.designer.cs">
-      <DependentUpon>frmTaskQuery.cs</DependentUpon>
-    </Compile>
-    <Compile Include="View\Dispatcher\frmWMSTaskQuery.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="View\Dispatcher\frmWMSTaskQuery.designer.cs">
-      <DependentUpon>frmWMSTaskQuery.cs</DependentUpon>
-    </Compile>
-    <Compile Include="View\frmMonitor1.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="View\frmMonitor1.designer.cs">
-      <DependentUpon>frmMonitor1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="View\frmMonitor2.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="View\frmMonitor2.Designer.cs">
-      <DependentUpon>frmMonitor2.cs</DependentUpon>
-    </Compile>
     <Compile Include="View\Param\frmCraneHandle.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="View\Param\frmCraneHandle.designer.cs">
       <DependentUpon>frmCraneHandle.cs</DependentUpon>
-    </Compile>
-    <Compile Include="View\TaskCarNo.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="View\TaskCarNo.Designer.cs">
-      <DependentUpon>TaskCarNo.cs</DependentUpon>
     </Compile>
     <Compile Include="View\Dispatcher\frmCellDialog.cs">
       <SubType>Form</SubType>
@@ -248,12 +222,6 @@
     <Compile Include="View\frmReassignOption.Designer.cs">
       <DependentUpon>frmReassignOption.cs</DependentUpon>
     </Compile>
-    <Compile Include="View\frmTaskOption.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="View\frmTaskOption.Designer.cs">
-      <DependentUpon>frmTaskOption.cs</DependentUpon>
-    </Compile>
     <Compile Include="View\Param\Parameter.cs" />
     <Compile Include="View\Param\ParameterForm.cs">
       <SubType>Form</SubType>
@@ -267,29 +235,11 @@
     <Compile Include="View\SelectDialog.designer.cs">
       <DependentUpon>SelectDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="View\Task\frmInventor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="View\Task\frmInventor.Designer.cs">
-      <DependentUpon>frmInventor.cs</DependentUpon>
-    </Compile>
     <Compile Include="View\Task\frmCraneTask.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="View\Task\frmCraneTask.Designer.cs">
       <DependentUpon>frmCraneTask.cs</DependentUpon>
-    </Compile>
-    <Compile Include="View\Task\frmMoveStock.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="View\Task\frmMoveStock.Designer.cs">
-      <DependentUpon>frmMoveStock.cs</DependentUpon>
-    </Compile>
-    <Compile Include="View\Task\frmPalletOutTask.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="View\Task\frmPalletOutTask.Designer.cs">
-      <DependentUpon>frmPalletOutTask.cs</DependentUpon>
     </Compile>
     <Compile Include="View\Task\frmOutStock.cs">
       <SubType>Form</SubType>
@@ -303,23 +253,17 @@
     <Compile Include="View\Task\frmInStock.Designer.cs">
       <DependentUpon>frmInStock.cs</DependentUpon>
     </Compile>
-    <Compile Include="View\Task\frmInStockTask.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="View\Task\frmInStockTask.Designer.cs">
-      <DependentUpon>frmInStockTask.cs</DependentUpon>
-    </Compile>
-    <Compile Include="View\Task\frmPalletInTask.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="View\Task\frmPalletInTask.Designer.cs">
-      <DependentUpon>frmPalletInTask.cs</DependentUpon>
-    </Compile>
     <Compile Include="View\frmReassignCell.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="View\frmReassignCell.designer.cs">
       <DependentUpon>frmReassignCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\Task\frmTaskDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Task\frmTaskDialog.designer.cs">
+      <DependentUpon>frmTaskDialog.cs</DependentUpon>
     </Compile>
     <EmbeddedResource Include="Account\frmChangePWD.resx">
       <DependentUpon>frmChangePWD.cs</DependentUpon>
@@ -359,23 +303,8 @@
     <EmbeddedResource Include="View\CheckScan.resx">
       <DependentUpon>CheckScan.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="View\Dispatcher\frmTaskQuery.resx">
-      <DependentUpon>frmTaskQuery.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="View\Dispatcher\frmWMSTaskQuery.resx">
-      <DependentUpon>frmWMSTaskQuery.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="View\frmMonitor1.resx">
-      <DependentUpon>frmMonitor1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="View\frmMonitor2.resx">
-      <DependentUpon>frmMonitor2.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="View\Param\frmCraneHandle.resx">
       <DependentUpon>frmCraneHandle.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="View\TaskCarNo.resx">
-      <DependentUpon>TaskCarNo.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="View\Dispatcher\frmCellDialog.resx">
       <DependentUpon>frmCellDialog.cs</DependentUpon>
@@ -398,26 +327,14 @@
     <EmbeddedResource Include="View\frmReassignOption.resx">
       <DependentUpon>frmReassignOption.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="View\frmTaskOption.resx">
-      <DependentUpon>frmTaskOption.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="View\Param\ParameterForm.resx">
       <DependentUpon>ParameterForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="View\SelectDialog.resx">
       <DependentUpon>SelectDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="View\Task\frmInventor.resx">
-      <DependentUpon>frmInventor.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="View\Task\frmCraneTask.resx">
       <DependentUpon>frmCraneTask.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="View\Task\frmMoveStock.resx">
-      <DependentUpon>frmMoveStock.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="View\Task\frmPalletOutTask.resx">
-      <DependentUpon>frmPalletOutTask.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="View\Task\frmOutStock.resx">
       <DependentUpon>frmOutStock.cs</DependentUpon>
@@ -425,14 +342,11 @@
     <EmbeddedResource Include="View\Task\frmInStock.resx">
       <DependentUpon>frmInStock.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="View\Task\frmInStockTask.resx">
-      <DependentUpon>frmInStockTask.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="View\Task\frmPalletInTask.resx">
-      <DependentUpon>frmPalletInTask.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="View\frmReassignCell.resx">
       <DependentUpon>frmReassignCell.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\Task\frmTaskDialog.resx">
+      <DependentUpon>frmTaskDialog.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.config">
       <SubType>Designer</SubType>
@@ -449,22 +363,14 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="AGV.xml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="App.ico" />
     <Content Include="Config.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Convey.xml">
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="MConvey.xml">
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Crane.xml">
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="Resources\Shelf.png" />
     <None Include="Resources\Crane11.png" />
@@ -483,12 +389,7 @@
     <None Include="Resources\12.png" />
     <None Include="Resources\111.png" />
     <None Include="Resources\1111.png" />
-    <None Include="Resources\551fb5a24da28a97739ca06c843ac6ff.png" />
     <None Include="Resources\Barcode_32.png" />
-    <Content Include="ERP.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
-    </Content>
     <Content Include="MiniLoad01.xml">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -500,17 +401,21 @@
     <None Include="Resources\cancel.png" />
     <None Include="Resources\Add.png" />
     <None Include="Resources\del.png" />
+    <None Include="Resources\checkbox-full.png" />
     <Content Include="Resources\down.png" />
     <None Include="Resources\monitor.png" />
     <None Include="Resources\edit.png" />
+    <None Include="Resources\forward.png" />
     <Content Include="Resources\next.png" />
     <None Include="Resources\process.png" />
     <None Include="Resources\process_accept.png" />
     <None Include="Resources\process_remove.png" />
     <None Include="Resources\refresh32.png" />
     <None Include="Resources\refresh24.png" />
+    <None Include="Resources\pause_24.png" />
+    <None Include="Resources\play_24.png" />
+    <None Include="Resources\pause.png" />
     <Content Include="Resources\remove.png" />
-    <None Include="Resources\S1.jpg" />
     <None Include="Resources\S1.png" />
     <Content Include="Resources\up.png" />
     <None Include="Resources\yl.png" />

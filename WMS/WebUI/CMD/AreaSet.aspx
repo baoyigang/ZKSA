@@ -46,7 +46,7 @@
             if (SessionTimeOut(SessionUrl)) {
                 return false;
             }
-            if (!GetPermisionByFormID("Area", 0)) {
+            if (!GetPermisionByFormID("Area", 1)) {
                 alert("您没有新增权限！");
                 return false;
             }
@@ -66,7 +66,7 @@
             if (SessionTimeOut(SessionUrl)) {
                 return false;
             }
-            if (!GetPermisionByFormID("Area", 1)) {
+            if (!GetPermisionByFormID("Area",2)) {
                 alert("您没有修改权限！");
                 return false;
             }
@@ -77,7 +77,7 @@
             }
             BindDropDownList();
             if (row) {
-                var data = { Action: 'FillDataTable', Comd: 'cmd.SelectAreaEdit',  Json :"[{\"{0}\": \"AreaCode='" + row.AreaCode + "'\",\"{1}\":\"1\"}]"};
+                var data = { Action: 'FillDataTable', Comd: 'cmd.SelectArea',  Json :"[{\"{0}\": \"AreaCode='" + row.AreaCode + "'\",\"{1}\":\"1\"}]"};
                 $.post(url, data, function (result) {
                     var Product = result.rows[0];
                     $('#AddWin').dialog('open').dialog('setTitle', '区域设置--编辑');
@@ -112,7 +112,7 @@
                     $('#txtID').textbox().next('span').find('input').focus();
                     return false;
                 }
-                data = { Action: 'Add', Comd: 'cmd.InsertAreaEdit', json: query };
+                data = { Action: 'Add', Comd: 'cmd.InsertArea', json: query };
                 $.post(url, data, function (result) {
                     if (result.status == 1) {
                         ReloadGrid('dg');
@@ -125,7 +125,7 @@
 
             }
             else {
-                data = { Action: 'Edit', Comd: 'cmd.UpdateAreaEdit', json: query };
+                data = { Action: 'Edit', Comd: 'cmd.UpdateArea', json: query };
                 $.post(url, data, function (result) {
                     if (result.status == 1) {
                         ReloadGrid('dg');
@@ -143,7 +143,7 @@
             if (SessionTimeOut(SessionUrl)) {
                 return false;
             }
-            if (!GetPermisionByFormID("Area", 2)) {
+            if (!GetPermisionByFormID("Area", 3)) {
                 alert("您没有删除权限！");
                 return false;
             }
@@ -164,7 +164,7 @@
                         });
                         if (blnUsed)
                             return false;
-                        var data = { Action: 'Delete', FormID: FormID, Comd: 'cmd.DeleteAreaEdit', json: "'" + deleteCode.join("','") + "'" };
+                        var data = { Action: 'Delete', FormID: FormID, Comd: 'cmd.DeleteArea', json: "'" + deleteCode.join("','") + "'" };
                         $.post(url, data, function (result) {
                             if (result.status == 1) {
                                 ReloadGrid('dg');

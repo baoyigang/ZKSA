@@ -24,7 +24,7 @@
 
 
   <!--区域信息-->
-  <Command ID="SelectAreaEdit">
+  <Command ID="SelectArea">
     <CommandString>
       SELECT CMD_Area.*,WarehouseName
       FROM CMD_Area
@@ -34,19 +34,19 @@
     </CommandString>
   </Command>
 
-  <Command ID="UpdateAreaEdit">
+  <Command ID="UpdateArea">
     <CommandString>
       update CMD_Area set WarehouseCode=@WarehouseCode,AreaName=@AreaName,Memo=@Memo Where AreaCode=@AreaCode
     </CommandString>
   </Command>
 
-  <Command ID="DeleteAreaEdit">
+  <Command ID="DeleteArea">
     <CommandString>
       delete from  CMD_Area  Where AreaCode in({0})
     </CommandString>
   </Command>
 
-  <Command ID="InsertAreaEdit">
+  <Command ID="InsertArea">
     <CommandString>
       insert into CMD_Area(WareHouseCode,AreaCode,AreaName,Memo)
       values(@WareHouseCode,@AreaCode,@AreaName,@Memo)
@@ -54,7 +54,7 @@
   </Command>
 
   <!--库区信息-->
-  <Command ID="SelectRegionEdit">
+  <Command ID="SelectRegion">
     <CommandString>
       select R.*,a.AreaName,W.WarehouseName from CMD_Region R
       inner join CMD_Area A on A.AreaCode=r.AreaCode
@@ -64,106 +64,85 @@
     </CommandString>
   </Command>
 
-  <Command ID="InsertRegionEdit">
+  <Command ID="InsertRegion">
     <CommandString>
       insert into CMD_Region(WareHouseCode,AreaCode,RegionCode,RegionName,Memo)
       values(@WareHouseCode,@AreaCode,@RegionCode,@RegionName,@Memo)
     </CommandString>
   </Command>
 
-  <Command ID="UpdateRegionEdit">
+  <Command ID="UpdateRegion">
     <CommandString>
       update CMD_Region set AreaCode=@AreaCode,RegionCode=@RegionCode,RegionName=@RegionName,Memo=@Memo Where RegionCode=@RegionCode
     </CommandString>
   </Command>
 
-  <Command ID="DeleteRegionEdit">
+  <Command ID="DeleteRegion">
     <CommandString>
       delete from  CMD_Region  Where RegionCode in({0})
     </CommandString>
   </Command>
 
   <!--货架信息-->
-  <Command ID="SelectStation">
-    <CommandString>
-      SELECT distinct StationNo FROM CMD_Shelf ORDER BY StationNo
-    </CommandString>
-  </Command>
   <Command ID="SelectShelf">
     <CommandString>
       SELECT * FROM CMD_Shelf where {0} ORDER BY ShelfCode,AreaCode
     </CommandString>
   </Command>
-  <Command ID="SelectAisle">
-    <CommandString>
-      SELECT distinct AisleNo FROM CMD_Shelf where {0} ORDER BY AisleNo
-    </CommandString>
-  </Command>
-  <Command ID="DeleteShelf">
-    <CommandString>
-      delete from CMD_Shelf WHERE ShelfCode='{0}'
-    </CommandString>
-  </Command>
-  <Command ID="InsertShelf">
-    <CommandString>
-      Insert into CMD_Shelf (WarehouseCode,AreaCode,ShelfCode,ShelfName,Rows,Columns,Memo,IsActive) values(@WarehouseCode,@AreaCode,@ShelfCode,@ShelfName,@Rows,@Columns,@Memo,@IsActive)
-    </CommandString>
-  </Command>
-  <Command ID="UpdateShelf">
-    <CommandString>
-      update CMD_Shelf set  ShelfName=@ShelfName,Rows=@Rows,Columns=@Columns,WarehouseCode=@WarehouseCode,AreaCode=@AreaCode,IsActive=@IsActive,Memo=@Memo where ShelfCode=@ShelfCode
-    </CommandString>
-  </Command>
-
-
-  <Command ID="SelectCellRegion">
-    <CommandString>
-      SELECT * FROM VCell_CMD_Region where {0} ORDER BY RegionCode,AreaCode
-    </CommandString>
-  </Command>
-
-  <Command ID="SelectCellShelf">
-    <CommandString>
-      SELECT * FROM VCell_CMD_Shelf where {0} ORDER BY ShelfCode,AreaCode
-    </CommandString>
-  </Command>
-  <!--货架列信息-->
-  <Command ID="SelectColumn">
-    <CommandString>
-      select distinct CellColumn from CMD_Cell WHERE {0} ORDER BY CellColumn
-    </CommandString>
-  </Command>
+  
   <!--货位信息-->
   <Command ID="SelectCell">
     <CommandString>
-      select * from CMD_Cell WHERE {0} ORDER BY AreaCode,RegionCode,CellCode
+      select c.*,CMD_Area.AreaName,CMD_Region.RegionName,CMD_ProductDetail.SectionName,CMD_Product.ProductName
+      from CMD_Cell  c
+      left join CMD_Region on CMD_Region.RegionCode=c.RegionCode
+      LEFT join CMD_Area on CMD_Region.AreaCode=cmd_area.AreaCode
+      left join CMD_ProductDetail on CMD_ProductDetail.ProductCode=c.PalletBarCode and CMD_ProductDetail.RowID=c.SectionID
+      left join CMD_Product on CMD_Product.ProductCode=CMD_ProductDetail.ProductCode
+      left join cmd_Shelf on c.shelfCode=cmd_Shelf.shelfCode
+      where {0}
+      order by {1}
     </CommandString>
   </Command>
-  <!--货位信息-->
-  <Command ID="SelectCellByCar">
+  <Command ID="SelectCell2">
     <CommandString>
-      select CMD_Cell.* from CMD_Cell
-      Left Join CMD_Shelf On CMD_Cell.ShelfCode=CMD_Shelf.ShelfCode
-      WHERE {0}
-      ORDER BY CMD_Cell.AreaCode,CMD_Cell.ShelfCode,CMD_Cell.CellCode
+      select c.*,P.SectionName,S.ShelfValue from CMD_Cell c
+      left join CMD_ProductDetail P on P.ProductCode=c.PalletBarCode and P.RowID=c.SectionID
+      LEFT JOIN CMD_Shelf S ON c.ShelfCode=S.ShelfCode
+      where {0}
+      order by {1}
+    </CommandString>
+  </Command>
+  <Command ID="InsertCmdCell">
+    <CommandString>
+      if not exists(select * from Cmd_Cell where @CellCode='')
+      insert into Cmd_CEll Values(@CellCode,@CellName,'001'+SUBSTRING(@CellCode,1,3),@AreaCode,@RegionCode,SUBSTRING(@CellCode,7,3),SUBSTRING(@CellCode,4,3),SUBSTRING(@CellCode,10,1),'','',@IsActive,1,1,1,@IsLock,0,'',@Indate,@Memo,@PalletBarCode,'',@BatchNo,@SectionID,@Qty)
+    </CommandString>
+  </Command>
+  
+  <Command ID="UpdateCell">
+    <CommandString>
+      update CMD_Cell set AreaCode=@AreaCode,RegionCode=@RegionCode  where CellCode in ({0})
+    </CommandString>
+  </Command>
+  <Command ID="UpdateCmdCell">
+    <CommandString>
+      update Cmd_cell set IsActive=@IsActive,@IsLock=@IsLock,CellName=@CellName,AreaCode=@AreaCode,RegionCode=@RegionCode,PalletBarCode=@PalletBarCode,Indate=@Indate,Qty=@Qty,BatchNo=@BatchNo,SectionID=@SectionID Where CellCode=@CellCode
     </CommandString>
   </Command>
   <Command ID="DeleteCell">
     <CommandString>
-      delete from CMD_Cell WHERE CellCode='{0}'
+      delete from  CMD_Cell  Where CellCode in({0})
     </CommandString>
   </Command>
-  <Command ID="InsertCell">
+  <Command ID="SPGetChangeRegionQty">
     <CommandString>
-      Insert into CMD_Cell(CellCode,CellName,AreaCode,ShelfCode,CellRow,CellColumn,IsActive,IsLock,Memo)
-      values(@CellCode,@CellName,@AreaCode,@ShelfCode,@CellRow,@CellColumn,@IsActive,@IsLock,@Memo)
+      Sp_GetChangeRegionQty
     </CommandString>
   </Command>
-  <Command ID="UpdateCell">
-    <CommandString>
-      update CMD_Cell set AreaCode=@AreaCode,IsActive=@IsActive,Memo=@Memo where {0}
-    </CommandString>
-  </Command>
+
+
+
 
 
   <!--单号类型-->
@@ -174,69 +153,7 @@
       where {0} order by TaskType
     </CommandString>
   </Command>
-  <Command ID="DeleteBillType">
-    <CommandString>
-      delete from CMD_BillType WHERE BillTypeCode in({0})
-    </CommandString>
-  </Command>
-  <Command ID="InsertBillType">
-    <CommandString>
-      INSERT INTO CMD_BillType(Flag,BillTypeCode,BillTypeName,TaskType,TaskLevel,Memo, Creator, CreateDate, Updater, UpdateDate)
-      values(@Flag,@BillTypeCode,@BillTypeName,@TaskType,@TaskLevel,@Memo, @Creator, getdate(), @Updater, getdate())
-    </CommandString>
-  </Command>
-  <Command ID="UpdateBillType">
-    <CommandString>
-      Update CMD_BillType Set BillTypeName=@BillTypeName,Memo=@Memo,Updater=@Updater, UpdateDate=getdate() where BillTypeCode=@BillTypeCode
-    </CommandString>
-  </Command>
-
-  <Command ID="UpdateCellEdit">
-    <CommandString>
-      update CMD_Cell set AreaCode=@AreaCode,RegionCode=@RegionCode  where CellCode in ({0})
-    </CommandString> 
-  </Command>
-  <Command ID="SelectCellEdit">
-    <CommandString>
-      select c.*,CMD_Area.AreaName,CMD_Region.RegionName,CMD_ProductDetail.SectionName,CMD_Product.ProductName   from CMD_Cell  c
-      left join CMD_Region on CMD_Region.RegionCode=c.RegionCode
-      LEFT join CMD_Area on CMD_Region.AreaCode=cmd_area.AreaCode
-      left join CMD_ProductDetail on CMD_ProductDetail.ProductCode=c.PalletBarCode and CMD_ProductDetail.RowID=c.SectionID
-      left join CMD_Product on CMD_Product.ProductCode=CMD_ProductDetail.ProductCode
-      where {0}
-      order by {1}
-    </CommandString>
-  </Command>
-
-  <Command ID="SelectCellSetEdit11111">
-    <CommandString>
-      select c.CellCode,c.CellName,c.AreaCode,Cmd_area.AreaName,c.RegionCode,c.Memo,c.Depth,c.CellRow,c.CellColumn,c.DisInStation,c.DisOutStation,CMD_Region.RegionName,c.IsActive,c.IsLock,WMS_Pallet.ProductCode,WMS_Pallet.BatchNo,CMD_ProductDetail.RowID,CMD_ProductDetail.SectionName,CMD_ProductDetail.PreQty,WMS_Pallet.Indate,WMS_Pallet.PalletCode,WMS_Pallet.LockQty from CMD_Cell c
-      inner join WMS_Pallet on WMS_Pallet.CellCode=c.CellCode
-      inner join CMD_ProductDetail on CMD_ProductDetail.RowID=WMS_Pallet.RowID and CMD_ProductDetail.ProductCode=WMS_Pallet.ProductCode and c.RegionCode=CMD_ProductDetail.RegionCode
-      left join CMD_Region on CMD_Region.RegionCode=c.RegionCode
-      LEFT join CMD_Area on CMD_Region.AreaCode=cmd_area.AreaCode
-      where {0}
-    </CommandString>
-  </Command>
-
-  <Command ID="DeleteCellEdit">
-    <CommandString>
-      delete from  CMD_Cell  Where CellCode in({0})
-    </CommandString>
-  </Command>
-
-
-
-  <Command ID="SelectProductQty">
-    <CommandString>
-      select *
-      from View_ProductQty
-      where {0} order by {1}
-    </CommandString>
-  </Command>
-
-
-
+ 
   <!--产品类别-->
   <Command ID="SelectProductCategory">
     <CommandString>
@@ -286,8 +203,8 @@
   </Command>
   <Command ID="InsertProduct">
     <CommandString>
-      INSERT INTO CMD_PRODUCT(ProductCode, ProductName, CategoryCode,ModelNo,StandardNo,ProductNo,Weight,ValidPeriod,Description,Memo,PartNo,Creator, CreateDate, Updater, UpdateDate)
-      values(@ProductCode, @ProductName, @CategoryCode,'','','','','','',@Memo,'',@Creator, getdate(), @Updater, getdate())
+      INSERT INTO CMD_PRODUCT(ProductCode, ProductName, CategoryCode,Memo,Creator, CreateDate, Updater, UpdateDate)
+      values(@ProductCode, @ProductName, @CategoryCode,@Memo,@Creator, getdate(), @Updater, getdate())
     </CommandString>
   </Command>
   <Command ID="InsertProductDetail">
@@ -305,231 +222,29 @@
   </Command>
   <Command ID="SelectProductDetail">
     <CommandString>
-      Select a.AreaName,r.RegionCode as RegionName,p.* from CMD_PRODUCTDetail  p
-      left join CMD_Region as r on p.RegionCode=r.RegionCode
-      left join CMD_Area as a on a.AreaCode=r.AreaCode
+      Select a.AreaName,r.RegionName as RegionName,p.*
+      from CMD_PRODUCTDetail  p
+      left join CMD_Region  r on p.RegionCode=r.RegionCode
+      left join CMD_Area  a on a.AreaCode=r.AreaCode
       WHERE {0}
     </CommandString>
   </Command>
-  <Command ID="DeleteProductDetail">
-    <CommandString>
-      delete from CMD_PRODUCTDetail WHERE ProductCode in({0})
-    </CommandString>
-  </Command>
-  <Command ID="SelectTaskQueryProduct">
-    <CommandString>
-      select * from CMD_PRODUCT
-      where ModelNo!=''and {0}
-      order by {1}
-    </CommandString>
-  </Command>
-  
+
   <Command ID="spBatchChangeProductNo">
     <CommandString>
       sp_BatchChangeProductNo
     </CommandString>
   </Command>
-  <!--维修记录-->
-  <Command ID="SelectMaintain">
-    <CommandString>
-      Select *
-      from CMD_Maintain
-      where {0}
-      order by {1}
-    </CommandString>
-  </Command>
-  <Command ID="InsertMaintain">
-    <CommandString>
-      INSERT INTO CMD_Maintain(ProductCode, MaintainTime,MaintainProject, MaintainMan,MEMO,Creator, CreateDate, Updater, UpdateDate)
-      values(@ProductCode,@MaintainTime,@MaintainProject,@MaintainMan,@MEMO, @Creator, getdate(), @Updater, getdate())
-    </CommandString>
-  </Command>
-  <Command ID="UpdateMaintain">
-    <CommandString>
-      Update CMD_Maintain Set MaintainTime=@MaintainTime,MaintainProject=@MaintainProject,MaintainMan=@MaintainMan, MEMO=@MEMO,Updater=@Updater, UpdateDate=getdate() where ProductCode=@ProductCode
-    </CommandString>
-  </Command>
-  <Command ID="DeleteMaintain">
-    <CommandString>
-      delete from CMD_Maintain WHERE ProductCode in({0})
-    </CommandString>
-  </Command>
-  
-  
-  <!--生产厂家-->
-  <Command ID="SelectFactory">
-    <CommandString>
-      Select *
-      from CMD_Factory  
-      where {0}
-      order by {1}
-    </CommandString>
-  </Command>
-  <Command ID="DeleteFactory">
-    <CommandString>
-      delete from CMD_Factory WHERE FactoryID in({0})
-    </CommandString>
-  </Command>
-  <Command ID="InsertFactory">
-    <CommandString>
-      INSERT INTO CMD_Factory(FactoryID, Flag,FactoryName, LinkPerson, LinkPhone, Fax, Address, MEMO,Creator, CreateDate, Updater, UpdateDate)
-      values(@FactoryID,@Flag,@FactoryName,@LinkPerson,@LinkPhone,@Fax,@Address,@MEMO, @Creator, getdate(), @Updater, getdate())
-    </CommandString>
-  </Command>
-  <Command ID="UpdateFactory">
-    <CommandString>
-      Update CMD_Factory Set FactoryName=@FactoryName,Flag=@Flag,LinkPerson=@LinkPerson,LinkPhone=@LinkPhone,Fax=@Fax, Address=@Address, MEMO=@MEMO,Updater=@Updater, UpdateDate=getdate() where FactoryID=@FactoryID
-    </CommandString>
-  </Command>
 
-  <!--客户资料-->
-  <Command ID="SelectCustomer">
+  <Command ID="SelectRowID">
     <CommandString>
-      Select *
-      from V_CMD_CUSTOMER
-      where {0}
-      order by {1}
-    </CommandString>
-  </Command>
-  <Command ID="DeleteCustomer">
-    <CommandString>
-      delete from CMD_Customer WHERE CustomerCode in({0})
-    </CommandString>
-  </Command>
-  <Command ID="InsertCustomer">
-    <CommandString>
-      INSERT INTO CMD_Customer(CustomerCode, CustomerDesc, CustomerName, RouteCode, LicenseNo, SortId, TelNo, Address, Creator, CreateDate, Updater, UpdateDate)
-      values(@CustomerCode,@CustomerDesc,@CustomerName,@RouteCode,@LicenseNo,@SortId,@TelNo,@Address, @Creator, getdate(), @Updater, getdate())
-    </CommandString>
-  </Command>
-  <Command ID="UpdateCustomer">
-    <CommandString>
-      Update CMD_Customer Set CustomerDesc=@CustomerDesc, CustomerName=@CustomerName, RouteCode=@RouteCode, LicenseNo=@LicenseNo, SortId=@SortId, TelNo=@TelNo, Address=@Address,Updater=@Updater, UpdateDate=getdate() where CustomerCode=@CustomerCode
-    </CommandString>
-  </Command>
-
-  <!--小车资料-->
-  <Command ID="SelectCar">
-    <CommandString>
-      select CarNo,CarName,Car.State,CraneNo,Memo,StationNo,StateDesc from CMD_Car Car inner join(select * from  Sys_TableState  where TableName='CMD_Car')as tmp on Car.State=tmp.State
-      where {0}
-      order by {1}
-    </CommandString>
-  </Command>
-  <Command ID="DeleteCar">
-    <CommandString>
-      delete from CMD_Car  WHERE  CarNo in({0})
-    </CommandString>
-  </Command>
-  <Command ID="InsertCar">
-    <CommandString>
-      INSERT INTO CMD_Car (CarNo,CarName,State,Memo,StationNo,CraneNo)
-      values(@CarNo,@CarName,@State,@Memo,@StationNo,@CraneNo)
-    </CommandString>
-  </Command>
-  <Command ID="UpdateCar">
-    <CommandString>
-      Update CMD_Car Set CarName=@CarName,State=@State,Memo=@Memo,StationNo=@StationNo,CraneNo=@CraneNo where CarNo=@CarNo
+      select * from Cmd_ProductDetail where {0}
     </CommandString>
   </Command>
   
   
-  
-  <!--堆垛机资料-->
-  <Command ID="SelectCrane">
-    <CommandString>
-      select CraneNo,CraneName,Crane.State,Memo,StateDesc from CMD_Crane Crane inner join(select * from  Sys_TableState  where TableName='CMD_Crane')as tmp on Crane.State=tmp.State
-      where {0}
-      order by CraneNo
-    </CommandString>
-  </Command>
-  <Command ID="DeleteCrane">
-    <CommandString>
-      delete from CMD_Crane  WHERE  CraneNo in({0})
-    </CommandString>
-  </Command>
-  <Command ID="InsertCrane">
-    <CommandString>
-      INSERT INTO CMD_Crane (CraneNo,CraneName,State,Memo)
-      values(@CraneNo,@CraneName,@State,@Memo)
-    </CommandString>
-  </Command>
-  <Command ID="UpdateCrane">
-    <CommandString>
-      Update CMD_Crane Set CraneName=@CraneName,State=@State, Memo=@Memo where CraneNo=@CraneNo
-    </CommandString>
-  </Command> 
-  
-  <!--状态信息-->
-  <Command ID="SelecState">
-    <CommandString>
-      Select *
-      from Sys_TableState
-      where {0}
-      order by {1}
-    </CommandString>
-  </Command>
-
-  <Command ID="SelectHasProductCell">
-    <CommandString>
-      select cell.* ,area.AreaName,shelf.ShelfName from CMD_Cell cell
-      left join CMD_Area area On cell.AreaCode=area.AreaCode
-      left join CMD_Shelf shelf ON cell.ShelfCode=shelf.ShelfCode
-      WHERE cell.IsLock=0 and cell.IsActive=1 and cell.PalletBarCode!='' and cell.InDate is not null and {0} ORDER BY AreaCode,ShelfCode,CellCode
-    </CommandString>
-  </Command>
-  <Command ID="SelectWareHouseCellQueryByWareHouse">
-    <CommandString>
-      SELECT * FROM View_CMD_CELL_ALL WHERE WarehouseCode = @WareHouse ORDER BY SHELFCODE,CELLCODE
-    </CommandString>
-  </Command>
-  
-  <Command ID="SelectWareHouseCellQueryByShelf">
-    <CommandString>
-      SELECT * FROM View_CMD_CELL_ALL WHERE {0} ORDER BY SHELFCODE,CELLCODE
-    </CommandString>
-  </Command>
-
-  <Command ID="SelectWareHouseCellQueryByArea">
-    <CommandString>
-      SELECT * FROM View_CMD_CELL_ALL WHERE AREACODE = @AreaCode ORDER BY SHELFCODE,CELLCODE
-    </CommandString>
-  </Command>  
-  <Command ID="SelectWareHouseCellInfoByCell">
-    <CommandString>
-      select cell.WarehouseCode,cell.AreaCode,cell.AreaName,cell.ShelfCode,cell.ShelfName,cell.CellCode,cell.IsLock,cell.CellColumn,cell.CellName,cell.CellRow,Depth,
-      cell.IsActive,cell.PalletCode,Cell.InDate,Cell.ErrorFlag,pallet.ProductCode,product.ProductName,Pallet.Quantity,product.CategoryName,product.Spec,product.Unit
-      from View_CMD_CELL_ALL Cell
-      left join WMS_Pallet Pallet on Cell.PalletCode=Pallet.PalletCode
-      left join VCMD_Product Product on product.ProductCode=Pallet.ProductCode
-      WHERE Cell.CellCode =@CellCode
-    </CommandString>
-  </Command>
-
-  <Command ID="UpdateTaskProductDetail">
-      <CommandString>
-        update WCS_TaskProductDetail set SubSate='1' where TaskNo in (select detail.TaskNo from WCS_TaskProductDetail detail inner join WCS_Task task on detail.TaskNo=task.TaskNo where task.tasktype='11' and task.State=7  and detail.SubSate=0) and {0}
-      </CommandString>
-   </Command>
-  
-    <Command ID="SelectWeightProduct">
-      <CommandString>
-        select  * from CMD_Product
-        where {0}
-        order by {1}
-      </CommandString>
-    </Command>
-
-  <Command ID="SelectOutWeightProduct">
-    <CommandString>
-      select product.*,isnull(tmp.quantity,0)quantity from CMD_Product product left join (select ProductCode,SUM(Quantity) as quantity from WCS_Task task
-      inner join WCS_TaskProductDetail detail on task.TaskNo=detail.TaskNo
-      where task.TaskType='11'and State='7'and SubSate=0
-      group by ProductCode)tmp on product.ProductCode=tmp.ProductCode
-      where {0}
-      order by {1}
-    </CommandString>
-  </Command>
+ 
+   <!--设备资料-->
   <Command ID="SelectDevice">
     <CommandString>
       select * from CMD_Device where {0}
@@ -540,41 +255,23 @@
       update CMD_Device set DeviceType=@DeviceType,State=@State,DeviceName=@DeviceName,AlarmCode=@AlarmCode,ServiceName=@ServiceName,Memo=@Memo where DeviceNo=@DeviceNo
     </CommandString>
   </Command>
-  <Command ID="SelectRowID">
+
+  <!--货位查询-->
+  <Command ID="SelectWareHouseCellQueryByWareHouse">
     <CommandString>
-      select * from Cmd_ProductDetail where {0}
-    </CommandString>
-  </Command>
-  <Command ID="SelectBatchNo">
-    <CommandString>
-      select distinct BatchNo from WMS_Pallet where {0}
+      SELECT * FROM View_CMD_CELL_ALL WHERE WarehouseCode = @WareHouse ORDER BY SHELFCODE,CELLCODE
     </CommandString>
   </Command>
 
-  <Command ID="UpdateCmdCell">
+  <Command ID="SelectWareHouseCellQueryByArea">
     <CommandString>
-      update Cmd_cell set IsActive=@IsActive,@IsLock=@IsLock,CellName=@CellName,AreaCode=@AreaCode,RegionCode=@RegionCode,PalletBarCode=@PalletBarCode,Indate=@Indate,Qty=@Qty,BatchNo=@BatchNo,SectionID=@SectionID Where CellCode=@CellCode
+      SELECT * FROM View_CMD_CELL_ALL WHERE AREACODE = @AreaCode ORDER BY SHELFCODE,CELLCODE
     </CommandString>
   </Command>
-  
-  <Command ID="DeleteWmsPallet">
+  <Command ID="SelectWareHouseCellQueryByWhere">
     <CommandString>
-      delete Wms_Pallet Where CellCode = {0}
-    </CommandString>
-  </Command>
-  
-  <Command ID="InsertWmsPallet">
-    <CommandString>
-      if not exists(select * from WMS_Pallet where @ProductCode='')
-      insert into Wms_Pallet Values(@PalletCode,@RowID,@ProductCode,@BatchNo,@PreQty,@LockQty,@Indate,'',@IsLock,@CellCode,'admin',GetDate(),'admin',GetDate())
+      SELECT * FROM View_CMD_CELL_ALL WHERE {0} ORDER BY SHELFCODE,CELLCODE
     </CommandString>
   </Command>
 
-  <Command ID="InsertCmdCell">
-    <CommandString>
-      if not exists(select * from Cmd_Cell where @CellCode='')
-      insert into Cmd_CEll Values(@CellCode,@CellName,'001'+SUBSTRING(@CellCode,1,3),@AreaCode,@RegionCode,SUBSTRING(@CellCode,7,3),SUBSTRING(@CellCode,4,3),SUBSTRING(@CellCode,10,1),'','',@IsActive,1,1,1,@IsLock,0,'',@Indate,@Memo,@PalletBarCode,'',@BatchNo,@SectionID,@Qty)
-    </CommandString>
-  </Command>
-  
 </SqlCommand>

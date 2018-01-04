@@ -55,7 +55,7 @@
             if (SessionTimeOut(SessionUrl)) {
                 return false;
             }
-            if (!GetPermisionByFormID("BreakLog", 2)) {
+            if (!GetPermisionByFormID("BreakLog", 3)) {
                 alert("您没有删除权限！");
                 return false;
             }
@@ -91,7 +91,7 @@
             if (SessionTimeOut(SessionUrl)) {
                 return false;
             }
-            if (!GetPermisionByFormID("BreakLog", 2)) {
+            if (!GetPermisionByFormID("BreakLog", 3)) {
                 alert("您没有删除权限！");
                 return false;
             }

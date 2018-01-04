@@ -41,7 +41,7 @@
             var Where = "1=1 ";
             if (objname == "dg") {
                 var BillID = $("#txtQueryBillID").textbox("getValue");
-                var BillDate = $("#txtQueryBillDate").textbox("getValue");
+                var BillDate = $("#txtQueryBillDate").datebox("getValue");
                 var Product = $("#txtQueryProduct").textbox("getValue");
                 var BatchNo = $("#txtQueryBatchNo").textbox("getValue");
 
@@ -111,7 +111,7 @@
             if (SessionTimeOut(SessionUrl)) {
                 return false;
             }
-            if (!GetPermisionByFormID("InStock", 1)) {
+            if (!GetPermisionByFormID("InStock", 2)) {
                 alert("您没有修改权限！");
                 return false;
             }
@@ -182,7 +182,8 @@
                 return false;
             }
             //判断剩余多少货位
-            var PalletCount =parseInt(GetInStockProductQty());
+            var SubCell = GetTableValue("WMS.SPGetInStockProductQty", "[{ProductCode:'" + $('#txtProductCode').textbox('getValue') + "', SectionID:" + $('#ddlSectionID').combobox('getValue') + ", BatchNo:'" + $('#txtBatchNo').textbox('getValue') + "', ProductQty: " + $('#txtPalletQty').textbox('getValue') + "}]");
+            var PalletCount = parseInt(SubCell[0]["Column1"]);
             var ProductQty = parseInt($('#txtPalletQty').textbox('getValue'));
             if (PalletCount < ProductQty) {
                 $.messager.alert('错误', "剩余最大货位数量为：" + PalletCount + " ,请修改入库托盘数量.", 'error');
@@ -231,7 +232,7 @@
             if (SessionTimeOut(SessionUrl)) {
                 return false;
             }
-            if (!GetPermisionByFormID("InStock", 2)) {
+            if (!GetPermisionByFormID("InStock", 3)) {
                 alert("您没有删除权限！");
                 return false;
             }
@@ -367,105 +368,68 @@
                 return false;
             }
 
-            var checkedItems = $('#dg').datagrid('getChecked');
-
-            if (checkedItems == null || checkedItems.length == 0) {
+            var row = $('#dg').datagrid('getSelected');
+            if (row == null || row.length == 0) {
                 $.messager.alert("提示", "请选择要入库作业的行！", "info");
                 return false;
             }
-            if (checkedItems) {
-                var checkCode = [];
-                var blnUsed = false;
-                $.each(checkedItems, function (index, item) {
-                    var BillID = item.BillID;
-                    var state = GetFieldValue("View_WMS_BillMaster", "State", encodeURIComponent("BillID='" + BillID + "'"));
-                    if (state == 0) {
-                        $.messager.alert("提示", BillID + "单号还未审核，不能进行入库作业!", "info");
-                        blnUsed = true;
-                    }
-                    if (state > 1) {
-                        var StateDes = GetFieldValue("View_WMS_BillMaster", "StateDesc", "BillID='" + BillID + "'");
-                        $.messager.alert("提示", BillID + "单号已" + StateDes + "，无法再进行入库作业!", "info");
-                        blnUsed = true;
-                    }
-                    checkCode.push(item.BillID);
-                });
-                if (blnUsed)
-                    return false;
-                var data = { Action: 'ExecTask', FormID: FormID, Comd: 'WMS.SpInStockTask', json: "'" + checkCode.join("','") + "'" };
-                $.post(url, data, function (result) {
-                    if (result.status == 1) {
-                        ReloadGrid('dg');
-                    } else {
-                        $.messager.alert('错误', result.msg, 'error');
-                    }
-                }, 'json');
+            var BillID = row.BillID;
+            var state = GetFieldValue("View_WMS_BillMaster", "State", encodeURIComponent("BillID='" + BillID + "'"));
+            if (state == 0) {
+                $.messager.alert("提示", BillID + "单号还未审核，不能进行入库作业!", "info");
+                return false;
             }
+            if (state > 1) {
+                var StateDes = GetFieldValue("View_WMS_BillMaster", "StateDesc", "BillID='" + BillID + "'");
+                $.messager.alert("提示", BillID + "单号已" + StateDes + "，无法再进行入库作业!", "info");
+                return false;
+            }
+
+            var data = { Action: 'ExecTask', FormID: FormID, Comd: 'WMS.SpInStockTask', json: BillID };
+            $.post(url, data, function (result) {
+                if (result.status == 1) {
+                    ReloadGrid('dg');
+                } else {
+                    $.messager.alert('错误', result.msg, 'error');
+                }
+            }, 'json');
         }
+
         function CancelTask() {
             if (SessionTimeOut(SessionUrl)) {
                 return false;
             }
-            if (!GetPermisionByFormID("InStock", 2)) {
-                alert("您没有删除权限！");
+            if (!GetPermisionByFormID("InStock", 8)) {
+                alert("您没有取消作业权限！");
                 return false;
             }
-            var checkedItems = $('#dg').datagrid('getChecked');
+            var row = $('#dg').datagrid('getSelected');
+            if (row == null || row.length == 0) {
+                $.messager.alert("提示", "请选择要取消作业的行！", "info");
+                return false;
+            }
+            var BillID = row.BillID;
+            var state = GetFieldValue("View_WMS_BillMaster", "State", encodeURIComponent("BillID='" + BillID + "'"));
+            if (state > 2) {
+                var StateDes = GetFieldValue("View_WMS_BillMaster", "StateDesc", "BillID='" + BillID + "'");
+                $.messager.alert("提示", BillID + "单号已" + StateDes + "，不能再进行取消作业。", "info");
+                return false;
+            }
+            if (state < 2) {
+                $.messager.alert("提示", BillID + "单号还未作业，不能进行取消作业。", "info");
+                return false;
+            }
 
-            if (checkedItems == null || checkedItems.length == 0) {
-                $.messager.alert("提示", "请选择要入库作业的行！", "info");
-                return false;
-            }
-            if (checkedItems) {
-                var checkCode = [];
-                var blnUsed = false;
-                $.each(checkedItems, function (index, item) {
-                    var BillID = item.BillID;
-                    var state = GetFieldValue("View_WMS_BillMaster", "State", encodeURIComponent("BillID='" + BillID + "'"));
-                    if (state > 2) {
-                        var StateDes = GetFieldValue("View_WMS_BillMaster", "StateDesc", "BillID='" + BillID + "'");
-                        $.messager.alert("提示", BillID + "单号已" + StateDes + "，不能再进行取消作业。", "info");
-                        return false;
-                    }
-                    if (state < 2) {
-                        $.messager.alert("提示", BillID + "单号还未作业，不能进行取消作业。", "info");
-                        return false;
-                    }
-                    checkCode.push(item.BillID);
-                });
-                if (blnUsed)
-                    return false;
-                var data = { Action: 'CancelTask', FormID: FormID, Comd: 'WMS.SpCancelInstockTask', json: "'" + checkCode.join("','") + "'" };
-                $.post(url, data, function (result) {
-                    if (result.status == 1) {
-                        ReloadGrid('dg');
-                    } else {
-                        $.messager.alert('错误', result.msg, 'error');
-                    }
-                }, 'json');
-            }
-        }
-        function GetInStockProductQty() {
-            var data = { Action: 'GetInStockProductQty', ProductCode: $('#txtProductCode').textbox('getValue'), SectionID: $('#ddlSectionID').combobox('getValue'), BatchNo: $('#txtBatchNo').textbox('getValue'), ProductQty: $('#txtPalletQty').textbox('getValue') };
-            var Value = "";
-            $.ajax({
-                type: "post",
-                url: OtherUrl,
-                data: data,
-                // contentType: "application/json; charset=utf-8",
-                dataType: "text",
-                async: false,
-                success: function (data) {
-                    Value = data;
-                },
-                error: function (msg) {
-                    alert(msg);
-                    Value = "";
+            var data = { Action: 'CancelTask', FormID: FormID, Comd: 'WMS.SpCancelInstockTask', json: BillID };
+            $.post(url, data, function (result) {
+                if (result.status == 1) {
+                    ReloadGrid('dg');
+                } else {
+                    $.messager.alert('错误', result.msg, 'error');
                 }
-            });
-            return Value;
-        }
+            }, 'json');
 
+        }
 
         function BindSelectUrl(objName) {
 

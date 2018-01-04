@@ -44,7 +44,7 @@
                 Where += " and RegionName like '%" + RegionName + "%'";
             }
             if (Pai != "") {
-                Where += " and SUBSTRING(c.cellcode,1,3) like '%" + Pai + "%'";
+                Where += " and ShelfValue=" + Pai + "";
             }
             if (Lie != "") {
                 Where += " and c.CellColumn = " + Lie + "";
@@ -65,7 +65,7 @@
             if (SessionTimeOut(SessionUrl)) {
                 return false;
             }
-            if (!GetPermisionByFormID("Cell", 2)) {
+            if (!GetPermisionByFormID("Cell", 1)) {
                 alert("您没有新增权限！");
                 return false;
             }
@@ -77,7 +77,7 @@
 
 
             $('#Form1').form('clear');
-            var data = { Action: 'FillDataTable', Comd: 'cmd.SelectAreaEdit', Json: "[{\"{0}\": \"1=1\",\"{1}\":\"1\"}]" };
+            var data = { Action: 'FillDataTable', Comd: 'cmd.SelectArea', Json: "[{\"{0}\": \"1=1\",\"{1}\":\"1\"}]" };
             BindComboList(data, 'ddlAreaName', 'AreaCode', 'AreaName');
         
 
@@ -93,7 +93,7 @@
             if (SessionTimeOut(SessionUrl)) {
                 return false;
             }
-            if (!GetPermisionByFormID("Cell", 2)) {
+            if (!GetPermisionByFormID("Cell", 3)) {
                 alert("您没有删除权限！");
                 return false;
             }
@@ -114,7 +114,7 @@
                         });
                         if (blnUsed)
                             return false;
-                        var data = { Action: 'Delete', FormID: FormID, Comd: 'cmd.DeleteCellEdit', json: "'" + deleteCode.join("','") + "'" };
+                        var data = { Action: 'Delete', FormID: FormID, Comd: 'cmd.DeleteCell', json: "'" + deleteCode.join("','") + "'" };
                         $.post(url, data, function (result) {
                             if (result.status == 1) {
                                 ReloadGrid('dg');
@@ -148,7 +148,7 @@
             BindCellDrop();
             if (row) {
                 $('#Form1').form('clear');
-                var data = { Action: 'FillDataTable', Comd: 'CMD.SelectCellEdit', Json: "[{\"{0}\": \"c.CellCode='" + row.CellCode + "'\",\"{1}\":\"1\"}]" };
+                var data = { Action: 'FillDataTable', Comd: 'CMD.SelectCell', Json: "[{\"{0}\": \"c.CellCode='" + row.CellCode + "'\",\"{1}\":\"1\"}]" };
 
                     if (row.PalletBarCode != '') {
                         $("#ddlAreaName").combobox({ readonly: true });
@@ -157,7 +157,7 @@
                     $.post(url, data, function (result) {
                         var Product = result.rows[0];
                         $('#AddCell').dialog('open').dialog('setTitle', '库位--编辑');
-                        var eadata = { Action: 'FillDataTable', Comd: 'cmd.SelectRegionEdit', Json: "[{\"{0}\": \"a.AreaCode='" + Product.AreaCode + "'\",\"{1}\":\"1\"}]" };
+                        var eadata = { Action: 'FillDataTable', Comd: 'cmd.SelectRegion', Json: "[{\"{0}\": \"a.AreaCode='" + Product.AreaCode + "'\",\"{1}\":\"1\"}]" };
                         BindComboList(eadata, 'ddlRegionName', 'RegionCode', 'RegionName');
                         $('#Form1').form('load', Product);
                     }, 'json');
@@ -184,6 +184,15 @@
             }
             var checkedItems = $('#dg').datagrid('getChecked');
             var RegionCode = checkedItems[0].RegionCode;
+
+            var SubCell = GetTableValue("CMD.SPGetChangeRegionQty", "[{RegionCode:'" + RegionCode + "'}]");
+            var PalletCount = parseInt(SubCell[0]["SubCellQty"]);
+            var CellRegionCount = parseInt(GetFieldValue("CMD_Cell", "Count(1)", "RegionCode='" + RegionCode + "'"));
+            if (CellRegionCount < (PalletCount + checkedItems.length)) {
+                $.messager.alert("提示", "CellRegionCount最大变更库区数量为 " + (CellRegionCount - PalletCount).toString(), "info");
+                return false;
+            }
+
             var blnUsed = false;
             var updateCode = [];
             var blnUsed = false;
@@ -210,13 +219,13 @@
             }
             $("#SelectAreaName").combobox({
                     onSelect: function (record) {
-                        var edata = { Action: 'FillDataTable', Comd: 'cmd.SelectRegionEdit', Json: "[{\"{0}\": \"a.AreaCode='" + $('#SelectAreaName').combobox('getValue') + "'\",\"{1}\":\"1\"}]" };
+                        var edata = { Action: 'FillDataTable', Comd: 'cmd.SelectRegion', Json: "[{\"{0}\": \"a.AreaCode='" + $('#SelectAreaName').combobox('getValue') + "'\",\"{1}\":\"1\"}]" };
                     BindComboList(edata,'SelectRegionName','RegionCode','RegionName')
                     }
             });
 //            $('#SelectRegionName').combobox('setValue', '');
             aeAreaCode = checkedItems[0].AreaCode;
-            var aedata = { Action: 'FillDataTable', Comd: 'cmd.SelectRegionEdit', Json: "[{\"{0}\": \"a.AreaCode='" + aeAreaCode + "'\",\"{1}\":\"1\"}]" };
+            var aedata = { Action: 'FillDataTable', Comd: 'cmd.SelectRegion', Json: "[{\"{0}\": \"a.AreaCode='" + aeAreaCode + "'\",\"{1}\":\"1\"}]" };
             BindComboList(aedata, 'SelectRegionName', 'RegionCode', 'RegionName')
             $('#fm').form('load', checkedItems[0]);
             $('#txtPageState').val("Edit");
@@ -225,11 +234,11 @@
         }
         //绑定下拉控件
         function BindDropDownList() {
-            var data = { Action: 'FillDataTable', Comd: 'cmd.SelectAreaEdit', Json: "[{\"{0}\": \"1=1\",\"{1}\":\"1\"}]" };
+            var data = { Action: 'FillDataTable', Comd: 'cmd.SelectArea', Json: "[{\"{0}\": \"1=1\",\"{1}\":\"1\"}]" };
             BindComboList(data, 'SelectAreaName', 'AreaCode', 'AreaName');
         }
         function BindCellDrop() {
-            var data = { Action: 'FillDataTable', Comd: 'cmd.SelectAreaEdit', Json: "[{\"{0}\": \"1=1\",\"{1}\":\"1\"}]" };
+            var data = { Action: 'FillDataTable', Comd: 'cmd.SelectArea', Json: "[{\"{0}\": \"1=1\",\"{1}\":\"1\"}]" };
             BindComboList(data, 'ddlAreaName', 'AreaCode', 'AreaName');
 
             var edata = { Action: 'FillDataTable', Comd: 'cmd.SelectRowID', Json: "[{\"{0}\": \"ProductCode='" + $('#dg').datagrid('getSelected').ProductCode + "'\"}]" };
@@ -271,6 +280,15 @@
             var js = "[{AreaCode:" + $("#SelectAreaName").combobox("getValue") + "," + "RegionCode:" + $("#SelectRegionName").combobox("getValue") + ",";
             var updateCode = [];
             var blnUsed = false;
+            var RegionCode = checkedItems[0].RegionCode;
+            var SubCell = GetTableValue("CMD.SPGetChangeRegionQty", "[{RegionCode:'" + RegionCode + "'}]");
+            var PalletCount = parseInt(SubCell[0]["SubCellQty"]);
+            var CellRegionCount = parseInt(GetFieldValue("CMD_Cell", "Count(1)", "RegionCode='" + RegionCode + "'"));
+            if (CellRegionCount < (PalletCount + checkedItems.length)) {
+                $.messager.alert("提示", "CellRegionCount最大变更库区数量为 " + (CellRegionCount - PalletCount).toString(), "info");
+                return false;
+            }
+
             $.each(checkedItems, function (index, item) {
                 updateCode.push(item.CellCode);
             });
@@ -279,7 +297,7 @@
             }
             if (blnUsed)
                 return false;
-            var data = { Action: 'Edit', Comd: 'Cmd.UpdateCellEdit', json: js + "\"{0}\":'" + updateCode.join("','") + "'}]" };
+            var data = { Action: 'Edit', Comd: 'Cmd.UpdateCell', json: js + "\"{0}\":'" + updateCode.join("','") + "'}]" };
                 $.post(url, data, function (result) {
                     if (result.status == 1) {
                         ReloadGrid('dg');
@@ -448,7 +466,7 @@
             $("#ddlAreaName").combobox({
                 onSelect: function (record) {
                     var val = $('#ddlAreaName').combobox('getValue');
-                    var eadata = { Action: 'FillDataTable', Comd: 'cmd.SelectRegionEdit', Json: "[{\"{0}\": \"a.AreaCode='" + val + "'\",\"{1}\":\"1\"}]" };
+                    var eadata = { Action: 'FillDataTable', Comd: 'cmd.SelectRegion', Json: "[{\"{0}\": \"a.AreaCode='" + val + "'\",\"{1}\":\"1\"}]" };
                     BindComboList(eadata, 'ddlRegionName', 'RegionCode', 'RegionName');
                 }
             });
@@ -466,8 +484,8 @@
                 <th data-options="field:'CellName',width:100,sortable:true">货位名称</th>
                 <th data-options="field:'IsActive',width:60,formatter:formatActive">异常</th>
                 <th data-options="field:'IsLock',width:60,sortable:true,formatter:formatLock">锁定</th>
+                 <th data-options="field:'CellColumn',width:50">列</th>
                 <th data-options="field:'CellRow',width:50">层</th>
-                <th data-options="field:'CellColumn',width:50">列</th>
                 <th data-options="field:'Depth',width:50">深度</th>
                 <th data-options="field:'Memo',width:100">备注</th>
                 <th data-options="field:'AreaCode',width:80,formatter:formatSet">区域编码</th>
@@ -493,16 +511,16 @@
                     库区名称
                     <input id="txtRegionName" class="easyui-textbox" style="width: 100px" />
                     &nbsp;&nbsp;
-                    <input id="txtPai" class="easyui-textbox" style="width: 50px" />
                     排
+                    <input id="txtPai" class="easyui-textbox" style="width: 50px" />
+                     列
                     <input id="txtLie" class="easyui-numberbox" style="width: 50px" />
-                    列
-                    <input id="txtCeng" class="easyui-numberbox" style="width: 50px" />
                     层
+                    <input id="txtCeng" class="easyui-numberbox" style="width: 50px" />
                     &nbsp;&nbsp;
                     <input id="comboCell" type="checkbox" style="width:20px;position: relative;top:2px"/>
                     空货位
-                    &nbsp;&nbsp;
+                    &nbsp;
                     <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" onclick="ReloadGrid('dg')">查询</a> 
                 </td>
                 <td style="width:*" align="right">

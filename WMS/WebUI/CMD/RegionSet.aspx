@@ -82,7 +82,7 @@
             }
             BindDropDownList();
             if (row) {
-                var data = { Action: 'FillDataTable', Comd: 'cmd.SelectRegionEdit', Json: "[{\"{0}\": \"RegionCode='" + row.RegionCode + "'\",\"{1}\":\"1\"}]" };
+                var data = { Action: 'FillDataTable', Comd: 'cmd.SelectRegion', Json: "[{\"{0}\": \"RegionCode='" + row.RegionCode + "'\",\"{1}\":\"1\"}]" };
                 $.post(url, data, function (result) {
                     var Product = result.rows[0];
                     $('#AddWin').dialog('open').dialog('setTitle', '库区设置--编辑');
@@ -96,7 +96,7 @@
         }
         //绑定下拉控件
         function BindDropDownList() {
-            var data = { Action: 'FillDataTable', Comd: 'cmd.SelectAreaEdit', Json: "[{\"{0}\": \"1=1\",\"{1}\":\"1\"}]" };
+            var data = { Action: 'FillDataTable', Comd: 'cmd.SelectArea', Json: "[{\"{0}\": \"1=1\",\"{1}\":\"1\"}]" };
             BindComboList(data, 'SelectAreaName', 'AreaCode', 'AreaName');
         }
 
@@ -117,7 +117,7 @@
                     $('#txtID').textbox().next('span').find('input').focus();
                     return false;
                 }
-                data = { Action: 'Add', Comd: 'cmd.InsertRegionEdit', json: query };
+                data = { Action: 'Add', Comd: 'cmd.InsertRegion', json: query };
                 $.post(url, data, function (result) {
                     if (result.status == 1) {
                         ReloadGrid('dg');
@@ -130,7 +130,7 @@
 
             }
             else {
-                data = { Action: 'Edit', Comd: 'cmd.UpdateRegionEdit', json: query };
+                data = { Action: 'Edit', Comd: 'cmd.UpdateRegion', json: query };
                 $.post(url, data, function (result) {
                     if (result.status == 1) {
                         ReloadGrid('dg');
@@ -169,7 +169,7 @@
                         });
                         if (blnUsed)
                             return false;
-                        var data = { Action: 'Delete', FormID: FormID, Comd: 'cmd.DeleteRegionEdit', json: "'" + deleteCode.join("','") + "'" };
+                        var data = { Action: 'Delete', FormID: FormID, Comd: 'cmd.DeleteRegion', json: "'" + deleteCode.join("','") + "'" };
                         $.post(url, data, function (result) {
                             if (result.status == 1) {
                                 ReloadGrid('dg');

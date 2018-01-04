@@ -3,44 +3,35 @@
   <!--任务信息-->
   <Command ID="SelectTask">
     <CommandString>
-          SELECT WCS_TASK.*, CMD_BillType.BillTypeName,Sys_TableState.StateDesc,
-          (case when WCS_TASK.TaskType='11' or (WCS_TASK.TaskType='14' and WCS_TASK.State in('5','6'))
-          then S1.InStationAddress when WCS_TASK.TaskType in('12','13') or (WCS_TASK.TaskType='14' and
-          WCS_TASK.State in('0','1','2','3','4','7','9'))  then WCS_TASK.CellCode else '' end) FromStation,
-          (case when WCS_TASK.TaskType='11' or (WCS_TASK.TaskType='14' and WCS_TASK.State in('5','6','7','9'))
-          then WCS_TASK.CellCode when WCS_TASK.TaskType in('12') or (WCS_TASK.TaskType='14'
-          and WCS_TASK.State in('0','1','2','3','4')) then S1.OutStationAddress when WCS_TASK.TaskType='13'
-          then WCS_TASK.ToCellCode else '' end) ToStation, C1.InDate
-          FROM WCS_TASK
-          left join CMD_Cell C1 on WCS_TASK.CellCode=C1.CellCode
-          left join CMD_Shelf S1 On C1.ShelfCode=S1.ShelfCode
-          left join CMD_BillType On CMD_BillType.BillTypeCode=WCS_TASK.BillTypeCode
-          LEFT JOIN  Sys_TableState on Sys_TableState.TableName='WCS_TASK' and Sys_TableState.FieldName='State' and WCS_TASK.State=Sys_TableState.State
-          Where {0}
-          ORDER BY WCS_TASK.TaskID , WCS_TASK.TaskNo
-         
-    </CommandString>
-  </Command>
-  <Command ID="SelectCraneTask">
-    <CommandString>
-      SELECT WCS_TASK.*, CMD_BillType.BillTypeName,Sys_TableState.StateDesc,
-      (case when WCS_TASK.TaskType='11' or (WCS_TASK.TaskType='14' and WCS_TASK.State in('5','6'))
-      then S1.InStationAddress when WCS_TASK.TaskType in('12','13') or (WCS_TASK.TaskType='14' and
-      WCS_TASK.State in('0','1','2','3','4','7','9'))  then WCS_TASK.CellCode else '' end) FromStation,
-      (case when WCS_TASK.TaskType='11' or (WCS_TASK.TaskType='14' and WCS_TASK.State in('5','6','7','9'))
-      then WCS_TASK.CellCode when WCS_TASK.TaskType in('12') or (WCS_TASK.TaskType='14'
-      and WCS_TASK.State in('0','1','2','3','4')) then S1.OutStationAddress when WCS_TASK.TaskType='13'
-      then WCS_TASK.ToCellCode else '' end) ToStation, C1.InDate
+      SELECT WCS_TASK.*,c1.CellName,S1.AisleNo,CMD_BillType.BillTypeName,product.ProductName,SectionName,Region.RegionName,Sys_TableState.StateDesc,c1.CellRow,c1.CellColumn,S1.ShelfValue
       FROM WCS_TASK
       left join CMD_Cell C1 on WCS_TASK.CellCode=C1.CellCode
       left join CMD_Shelf S1 On C1.ShelfCode=S1.ShelfCode
       left join CMD_BillType On CMD_BillType.BillTypeCode=WCS_TASK.BillTypeCode
-      LEFT JOIN  Sys_TableState on Sys_TableState.TableName='WCS_TASK' and Sys_TableState.FieldName='State' and WCS_TASK.State=Sys_TableState.State
-      Where {0}
+      LEFT JOIN Sys_TableState on Sys_TableState.TableName='WCS_TASK' and Sys_TableState.FieldName='State' and WCS_TASK.State=Sys_TableState.State
+      left join CMD_ProductDetail detail on wcs_task.PalletCode=detail.ProductCode and wcs_task.SectionID=detail.RowID
+      left join CMD_Product product on detail.ProductCode=product.ProductCode
+      left join CMD_Region Region on wcs_task.RegionCode=region.RegionCode
+      where {0}
       ORDER BY WCS_TASK.TaskID , WCS_TASK.TaskNo
 
     </CommandString>
   </Command>
+  <!--载货提升机任务-->
+  <Command ID="SelectCraneTask">
+    <CommandString>
+      SELECT Top {2} WCS_TASK.*,C1.CellRow,S1.AisleNo,S1.AisleValue,
+      (case when WCS_TASK.TaskType='11'  then '001'+S1.AisleValue+dbo.PadLeft(cast(WCS_TASK.RowIndex AS varchar),'0',3) else '002'+S1.AisleValue+dbo.PadLeft(cast(C1.CellRow AS varchar),'0',3) end) FromStation,
+      (case when WCS_TASK.TaskType='11'  then '002'+S1.AisleValue+dbo.PadLeft(cast(C1.CellRow AS varchar),'0',3) else '001'+S1.AisleValue+dbo.PadLeft(cast(WCS_TASK.RowIndex AS varchar),'0',3) end) ToStation, C1.InDate
+      FROM WCS_TASK
+      left join CMD_Cell C1 on WCS_TASK.CellCode=C1.CellCode
+      left join CMD_Shelf S1 On C1.ShelfCode=S1.ShelfCode
+      Where {0}
+      ORDER BY {1}
+
+    </CommandString>
+  </Command>
+  <!--穿梭车任务-->
   <Command ID="SelectElevatorTask">
     <CommandString>
       SELECT TASK.*,C1.CellRow,c1.CellColumn,C1.Depth,
@@ -54,27 +45,30 @@
       ORDER BY WCS_TASK.TaskID , WCS_TASK.TaskNo
     </CommandString>
   </Command>
+
+  <Command ID="SelectAGVTask">
+    <CommandString>
+      SELECT Top {2}  TASK.*, C1.CellRow,c1.CellColumn,C1.Depth,
+      case when task.TaskType='11' then S.Instation else case when S1.AisleNo='01' then s.AisleNoStaion1 else s.AisleNoStaion2 end end as FromStation,
+      case when task.TaskType='11' then case when S1.AisleNo='01' then s.AisleNoStaion1 else s.AisleNoStaion2 end else  case when task.SectionID=(select MAX(RowID) from CMD_ProductDetail where ProductCode=task.PalletCode) then s.OutStation2 else s.OutStation1 end  end as ToStation
+      FROM WCS_TASK TASK
+      left join CMD_Cell C1 on TASK.CellCode=C1.CellCode
+      left join CMD_Shelf S1 On C1.ShelfCode=S1.ShelfCode
+      left join CMD_Aisle Aisle on s1.AisleNo=Aisle.AisleNo
+      cross join cmd_AGVStation S
+      Where S.Flag=1 and {0}
+      ORDER BY {1}
+    </CommandString>
+  </Command>
+  
   <Command ID="UpdateTaskByFilter">
     <CommandString>
       update WCS_Task Set {0} where {1}
     </CommandString>
   </Command>
-  
   <Command ID="UpdateCellEmpty">
     <CommandString>
       Update CMD_Cell set IsLock='0',PalletBarCode='',BillNo='',InDate=null,SectionID=0,Qty=0,BatchNo='' where CellCode=@CellCode
-    </CommandString>
-  </Command>
-  
-  
-  
-  <Command ID="SelectTaskDetail">
-    <CommandString>
-      SELECT T.*, P.ProductName,P.ModelNo,P.ProductNo,P.Spec,P.Description,P.Memo
-      FROM WCS_TaskProductDetail T
-      left join CMD_Product P on T.ProductCode=P.ProductCode
-      Where {0}
-      ORDER BY T.RowID
     </CommandString>
   </Command>
   <Command ID="sp_GetCell">
@@ -82,17 +76,7 @@
       sp_GetCell
     </CommandString>
   </Command>
-  <Command ID="sp_GetCellByAisle">
-    <CommandString>
-      sp_GetCellByAisle
-    </CommandString>
-  </Command>
-<Command ID="Sp_ExecuteInStockTask">
-  <CommandString>
-    Sp_ExecuteInStockTask
-  </CommandString>
-</Command>
-<Command ID="Sp_TaskProcess">
+  <Command ID="Sp_TaskProcess">
     <CommandString>
       Sp_TaskProcess
     </CommandString>
@@ -102,109 +86,14 @@
       Sp_UpdateTaskState
     </CommandString>
   </Command>
-  <Command ID="SpCreateInTaskByPallet">
-    <CommandString>
-      Sp_CreateInTaskByPallet
-    </CommandString>
-  </Command>
-  <Command ID="SpCreateOutStockByPallet">
-    <CommandString>
-      Sp_CreateOutStockByPallet
-    </CommandString>
-  </Command>
-  
-  <Command ID="Sp_UpdateTaskCellCode">
-    <CommandString>
-      Sp_UpdateTaskCellCode
-    </CommandString>
-  </Command>
-  <Command ID="sp_GetEmptyCellWithPallet">
-    <CommandString>
-      sp_GetEmptyCellWithPallet
-    </CommandString>
-  </Command>
-  <Command ID="sp_GetOutStockCell">
-    <CommandString>
-      sp_GetOutStockCell
-    </CommandString>
-  </Command>
-  <Command ID="Sp_CreateProductInTask">
-    <CommandString>
-      Sp_CreateProductInTask
-    </CommandString>
-  </Command>
-  <Command ID="Sp_UpdateBillTypeCode">
-    <CommandString>
-      Sp_UpdateBillTypeCode
-    </CommandString>
-  </Command>
-  <Command ID="Sp_UpdateTaskError">
-    <CommandString>
-      Sp_UpdateTaskError
-    </CommandString>
-  </Command>
-  <Command ID="UpdateCell">
-    <CommandString>
-      update CMD_Cell Set IsLock=@IsLock,ProductCode=@ProductCode,BillNo=@BillNo where CellCode=@CellCode)
-    </CommandString>
-  </Command>
-  <Command ID="UpdateErrCell">
-    <CommandString>
-      update CMD_Cell set ErrorFlag='1',Memo='盘点错误' where CellCode=@CellCode)
-    </CommandString>
-  </Command>
-  <Command ID="UpdateTaskBarcode">
-    <CommandString>
-      update WCS_TASK set CheckBarcode=@CheckBarcode where TaskNo=@TaskNo)
-    </CommandString>
-  </Command>
   <Command ID="UpdateCellByFilter">
     <CommandString>
       update CMD_Cell Set {0} where {1}
     </CommandString>
   </Command>
-  <Command ID="DeleteCellDetail">
-    <CommandString>
-      delete from WMS_Pallet where {0}
-    </CommandString>
-  </Command>
-  <Command ID="UpdateCellByTaskNo">
-    <CommandString>
-      update CMD_Cell Set IsLock='0',ProductCode=Task.ProductCode,PalletCode=Task.PalletCode,Quantity=1,InDate=Task.FinishDate,BillNo=Task.BillID
-      from CMD_Cell
-      Inner Join WCS_Task Task On CMD_Cell.CellCode=Task.CellCode
-      where Task.TaskNo=@TaskNo
-    </CommandString>
-  </Command>
-  <Command ID="GetTaskByBarcode">
-    <CommandString>
-      select WCS_TASK.*,cmd_Product.ProductName,cmd_Product.Spec from WCS_TASK left join cmd_Product on WCS_TASK.ProductCode=cmd_Product.ProductCode where WCS_TASK.TaskType='11' and WCS_TASK.State='0' and WCS_TASK.Barcode=@Barcode
-    </CommandString>
-  </Command>
-  <Command ID="UpdateTaskStateByTaskNo">
-    <CommandString>
-      update WCS_TASK set State=@State where TaskNo=@TaskNo
-    </CommandString>
-  </Command>
-  <Command ID="UpdateTaskCarNoByTaskNo">
-    <CommandString>
-      update WCS_TASK set CarNo=@CarNo where TaskNo=@TaskNo
-    </CommandString>
-  </Command>
-  <Command ID="UpdateTaskTimeByTaskNo">
-    <CommandString>
-      update WCS_TASK set State=@State,StartDate=getdate() where TaskNo=@TaskNo
-    </CommandString>
-  </Command>
-  <Command ID="UpdateBillStateByBillID">
-    <CommandString>
-      update WMS_BillMaster set State=@State where BillID in (select BillID from WCS_TaskProductDetail where TaskNo in (select TaskNo from WCS_Task where TaskID=@TaskID))
-    </CommandString>
-  </Command>
-
   <Command ID="UpdateTaskState">
     <CommandString>
-      update WCS_TASK set State=@State where TaskNo in (select top 1 TaskNo from WCS_TASK where State='1' and TaskType='11' and CarNo=@CarNo order by RequestDate)
+      update WCS_TASK set {0} where {1}
     </CommandString>
   </Command>
   <Command ID="UpdateTaskError">
@@ -212,165 +101,42 @@
       update WCS_TASK set CraneErrCode=@CraneErrCode,CraneErrDesc=@CraneErrDesc where TaskNo=@TaskNo
     </CommandString>
   </Command>
-  <Command ID="SelectStationNo">
-    <CommandString>
-      SELECT distinct StationNo from CMD_Shelf order by StationNo
-    </CommandString>
-  </Command>
-  <Command ID="SelectDistinctColumn">
-    <CommandString>
-      SELECT  CMD_Cell.CellCode, CMD_Cell.CellName, CMD_Cell.AreaCode, CMD_Area.AreaName, CMD_Cell.ShelfCode, CMD_Shelf.ShelfName, CMD_Cell.CellRow,
-      CMD_Cell.CellColumn, CMD_Cell.IsActive, CMD_Cell.Priority, CMD_Cell.PalletCode, CMD_Cell.PalletBarcode, CMD_Cell.ProductCode, CMD_Product.ProductName,
-      CMD_Cell.BillNo, WMS_BillMaster.BillTypeCode, CMD_BillType.BillTypeName, CMD_Cell.Quantity, CMD_Cell.IsLock, CMD_Cell.ErrorFlag, CMD_Cell.InDate,
-      CMD_Cell.Memo
-      FROM CMD_Cell LEFT OUTER JOIN
-      CMD_Area ON CMD_Cell.AreaCode = CMD_Area.AreaCode LEFT OUTER JOIN
-      CMD_Shelf ON CMD_Cell.ShelfCode = CMD_Shelf.ShelfCode LEFT OUTER JOIN
-      WMS_BillMaster ON CMD_Cell.BillNo = WMS_BillMaster.BillID LEFT OUTER JOIN
-      CMD_BillType ON WMS_BillMaster.BillTypeCode = CMD_BillType.BillTypeCode LEFT OUTER JOIN
-      CMD_Product ON CMD_Cell.ProductCode = CMD_Product.ProductCode
-      ORDER BY CMD_Cell.CellCode
-    </CommandString>
-  </Command>
   <Command ID="SelectCell">
     <CommandString>
-      SELECT  CMD_Cell.*, CMD_Area.AreaName, CMD_Shelf.ShelfName,CMD_Shelf.Rows,CMD_Shelf.Columns
+      SELECT  CMD_Cell.*, CMD_Region.RegionName, CMD_Shelf.ShelfName,CMD_Shelf.Rows,CMD_Shelf.Columns,CMD_Shelf.ShelfValue,detail.SectionName,cmd_product.ProductName
       FROM CMD_Cell
-      LEFT OUTER JOIN CMD_Area ON CMD_Cell.AreaCode = CMD_Area.AreaCode
+      LEFT OUTER JOIN CMD_Region ON CMD_Region.RegionCode = CMD_Cell.RegionCode
       LEFT OUTER JOIN CMD_Shelf ON CMD_Cell.ShelfCode = CMD_Shelf.ShelfCode
+      left join CMD_ProductDetail detail on cmd_cell.PalletBarCode=detail.ProductCode and detail.RowID=cmd_cell.SectionID
+      left join CMD_Product on detail.ProductCode=CMD_Product.ProductCode
       order by CMD_Cell.CellCode
     </CommandString>
   </Command>
-  <Command ID="SelectCellByFilter">
-    <CommandString>
-      SELECT CMD_Cell.*, VCMD_Product.ProductName,VCMD_Product.Spec,
-      WMS_BillMaster.BillTypeCode, CMD_BillType.BillTypeName
-      FROM CMD_Cell
-      LEFT OUTER JOIN CMD_Area ON CMD_Cell.AreaCode = CMD_Area.AreaCode
-      LEFT OUTER JOIN CMD_Shelf ON CMD_Cell.ShelfCode = CMD_Shelf.ShelfCode
-      LEFT OUTER JOIN WMS_BillMaster ON CMD_Cell.BillNo = WMS_BillMaster.BillID
-      LEFT OUTER JOIN CMD_BillType ON WMS_BillMaster.BillTypeCode = CMD_BillType.BillTypeCode
-      LEFT OUTER JOIN VCMD_Product ON CMD_Cell.ProductCode = VCMD_Product.ProductCode
-      Where {0}
-      order by CMD_Cell.CellCode
-    </CommandString>
-  </Command>
-  <Command ID="UpdateBillType">
-    <CommandString>
-      update WMS_BillMaster set BillTypeCode=@Checker,CheckDate={0},State=@State where BillID=@BillID
-    </CommandString>
-  </Command>
-  <Command ID="UpdateBillUpErp">
-    <CommandString>
-      update WMS_BillMaster set IsUpERP=@IsUpERP,ErpMSG=@ErpMSG where {0}
-    </CommandString>
-  </Command>
-
-  <Command ID="SelectWmsBillID">
-    <CommandString>
-      Select main.*,billtype.TaskType ,case when billtype.TaskType=11 then '入库'  when billtype.TaskType=12 then '出库' when billtype.TaskType=14 then '盘点' end as BillType from  WMS_BillMaster main
-      left join CMD_BillType Billtype on main.BillTypeCode=BillType.BillTypeCode   where {0}
-    </CommandString>
-  </Command>
-
-  <Command ID="SelectUpErpTable">
-    <CommandString>
-      select B.SourceBillNo as BillNo,T.Barcode as BatchNo,T.AreaCode
-      from WCS_TASK T
-      left join WMS_BillMaster B on T.BillID=B.BillID
-      where T.BillID=@BillID
-    </CommandString>
-  </Command>
-  <Command ID="SelectUpErpCheck">
-    <CommandString>
-      select T.BillID as BillNo,P.ProductNo as ProductCode ,P.Spec as Size,T.Barcode as BatchNo,-t.Weight as Weight,T.AreaCode
-      from WCS_TASK T
-      left join CMD_Product P on T.ProductCode=P.ProductCode
-      where T.BillID=@BillID and T.Barcode not in(select CheckBarcode from WCS_TASK where BillID=@BillID)
-      union all
-      select T.BillID as BillNo,P.ProductNo as ProductCode ,P.Spec as Size,T.Barcode as BatchNo,t.Weight as Weight,T.AreaCode
-      from WCS_TASK T
-      left join CMD_Product P on T.ProductCode=P.ProductCode
-      where T.BillID=@BillID and T.CheckBarcode not in(select Barcode from WCS_TASK where BillID=@BillID) and T.CheckBarcode!=''
-    </CommandString>
-  </Command>
-
-  <Command ID="UpdateTaskAreaCodeByTaskNo">
-    <CommandString>
-      update WCS_TASK set AreaCode=@AreaCode where TaskNo=@TaskNo
-    </CommandString>
-  </Command>
-  <Command ID="Sp_TaskProcessNoShelf">
-    <CommandString>
-      Sp_TaskProcessNoShelf
-    </CommandString>
-  </Command>
-
-  <Command ID="SelectCacheInventor">
-    <CommandString>
-      select * from  WCS_TASK  where State=0 and CheckBarcode='' and CellCode='' and  TaskType='14' and AreaCode=@AreaCode
-    </CommandString>
-  </Command>
-
-  <Command ID="UpdateCacheInventorBarCode">
-    <CommandString>
-      update WCS_TASK set State=7,FinishDate=GETDATE(),CheckBarcode=@BarCode where State=0 and CellCode='' and CheckBarcode='' and  TaskType='14' and AreaCode=@AreaCode  and Barcode=@BarCode
-    </CommandString>
-  </Command>
-  
-  
-  <Command ID="UpdateCacheInventorFinished">
-    <CommandString>
-      update WCS_TASK set State=7,FinishDate=GETDATE() where State=0 and CheckBarcode='' and  TaskType='14' and AreaCode=@AreaCode
-    </CommandString>
-  </Command>
-  <Command ID="Sp_TaskProcessNoShelf">
-    <CommandString>
-      Sp_TaskProcessNoShelf
-    </CommandString>
-  </Command>
-  <Command ID="DeletePalletDetail">
-    <CommandString>
-      delete from WMS_Pallet where PalletCode=@PalletCode
-    </CommandString>
-  </Command>
-
-  <Command ID="InsertPalletDetail">
-    <CommandString>
-      insert into WMS_Pallet(PalletCode,RowID,ProductCode,Quantity)
-      values(@PalletCode,@RowID,@ProductCode,1)
-    </CommandString>
-  </Command>
-
-
-  <Command ID="DeleteTaskDetail">
-    <CommandString>
-      delete from WCS_TaskProductDetail where TaskNo=@TaskNo
-    </CommandString>
-  </Command>
-
-  <Command ID="InsertTaskDetail">
-    <CommandString>
-      insert into WCS_TaskProductDetail(TaskNo, RowID, PalletCode, ProductCode, Quantity)
-      values(@TaskNo,@RowID,@PalletCode,@ProductCode,@Quantity)
-    </CommandString>
-  </Command>
-
   <Command ID="Sp_TaskCancelProcess">
     <CommandString>
       Sp_TaskCancelProcess
     </CommandString>
   </Command>
-  <Command ID="SelectMoveCount">
+  <Command ID="SelectDeviceAlarm">
     <CommandString>
-      select CraneNo from Cmd_Car where CarNo='03'
+      select * from Sys_DeviceAlarm where {0}
+    </CommandString>
+  </Command>
+  <Command ID="SelectSysTmpCode">
+    <CommandString>
+      select * from Sys_TmpCode where {0}
+    </CommandString>
+  </Command>
+  <Command ID="UpdateSysTmpCode">
+    <CommandString>
+      update Sys_TmpCode set TmpCode=@TmpCode,SysDate=@SysDate where RowIndex=@RowIndex
+    </CommandString>
+  </Command>
+  <Command ID="SpGetInStockStation">
+    <CommandString>
+      Sp_GetInstockStation
     </CommandString>
   </Command>
 
-  <Command ID="UpdateMoveCount">
-    <CommandString>
-      Update Cmd_Car set CraneNo=@CraneNo where CarNo='03'
-    </CommandString>
-  </Command>
-
+  
 </SqlCommand>
