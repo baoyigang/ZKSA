@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <SqlCommand>
-  <!--jjjj-->
   <Command ID="SelectBillMaster2">
     <CommandString>
       select * from View_WMS_BillMaster2
@@ -8,7 +7,7 @@
       order by {1}
     </CommandString>
   </Command>
-  <Command ID="SelectBillMaster">y
+  <Command ID="SelectBillMaster">
     <CommandString>
       select * from View_WMS_BillMaster
       where {0}
