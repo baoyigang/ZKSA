@@ -132,25 +132,28 @@
             var BillID = row.BillID;
             var state = GetFieldValue("WMS_BillMaster", "State", "BillID='" + BillID + "'");
             if (state >= 1) {
-                var StateDes = GetFieldValue("View_WMS_BillMaster", "StateDesc", "BillID='" + BillID + "'");
+                var StateDes = GetFieldValue("View_WMS_BillMaster2", "StateDesc", "BillID='" + BillID + "'");
                 $.messager.alert("提示", BillID + "单号已" + StateDes + "，无法修改!", "info");
                 return false;
             }
-
             if (row) {
-                var data = { Action: 'FillDataTable', Comd: 'WMS.SelectBillMaster', Json: "[{\"{0}\": \"BillID='" + row.BillID + "'\"}]" };
+                var data = { Action: 'FillDataTable', Comd: 'WMS.SelectBillMaster2', Json: "[{\"{0}\": \"BillID='" + row.BillID + "'\",\"{1}\":\"1\"}]" };
                 $.post(url, data, function (result) {
-                    blnChange = false;
                     var Product = result.rows[0];
-                    $('#AddWin').dialog('open').dialog('setTitle', '出库单--编辑');
+                    $('#AddWin').dialog('open').dialog('setTitle', '编辑');
                     $('#fm').form('load', Product);
-                    blnChange = true;
-                    BindDropDownList();
                 }, 'json');
+
+                $('#dgSubAdd').datagrid({
+                    url: '../../Handler/BaseHandler.ashx?Action=FillDataTable&Comd=WMS.SelectBillDetail2',
+                    queryParams: { Json: encodeURIComponent("[{\"{0}\": \"BillID='" + row.BillID + "'\",\"{1}\":\"1\"}]") }
+                });
             }
-            SetTextRead('txtProductName');
-            SetTextRead('txtBatchNo');
-            SetTextRead('txtSectionName');
+            $('#txtProductCode').textbox('disable', true);
+            $('#txtProductName').textbox('disable', true);
+            $('#txtBatchNo').textbox('disable', true);
+            $('#txtSectionName').textbox('disable', true);
+            
             $('#txtPageState').val("Edit");
             $('#txtBillTypeCode').val("020");
             $("#txtID").textbox("readonly", true);
@@ -167,6 +170,7 @@
             RowData.BillID = $('#txtID').textbox('getValue');
             RowData.ProductCode = $("#txtProductCode").textbox("getValue");
             RowData.CellName = '';
+            RowData.Memo = ''
         }
         //保存信息
         function Save() {
@@ -185,7 +189,7 @@
             var dgCount = $('#dgSubAdd').datagrid('getRows');
             var Qty=0;
             for (var i in dgCount) {
-                Qty += dgCount[i].Qty;
+                Qty += dgCount[i].Quantity;
             }
             $('#txtQty').val(Qty);
             $('#txtPalletQty').val(dgCount.length);
@@ -208,21 +212,12 @@
                 }, 'json');
             }
             else {
-                var data = { Action: 'Delete', FormID: FormID, Comd: 'WMS.DeleteOutStock', json: "'" + $('#txtID').textbox('getValue') + "'" };
+                data = { Action: 'EditMainDetail', MainComd: 'WMS.UpdateOutStock', SubDelComd: 'WMS.DeleteBillDetail', SubComd: 'WMS.InsertOutStockDetail', MainJson: MainQuery, SubJson: SubQuery };
                 $.post(url, data, function (result) {
                     if (result.status == 1) {
-                        debugger;
-                        var Adddata = { Action: 'CreateOutStock', SubJson: query };
-                        $.post(OtherUrl, Adddata, function (result) {
-                            if (result.status == 1) {
-                                ReloadGrid('dg');
-                                $('#AddWin').window('close');
-
-                            } else {
-                                $.messager.alert('错误', result.msg, 'error');
-                            }
-                        }, 'json');
-
+                        ReloadGrid("dg");
+                        $('#AddWin').window('close');
+                        
                     } else {
                         $.messager.alert('错误', result.msg, 'error');
                     }
@@ -532,7 +527,7 @@
                     }
                     var _exist = $.inArray(RowData.CellCode, ArrayValue);
                     if (_exist<0) {
-                        var j = { "RowID": $('#dgSubAdd').datagrid('getRows').length + 1, "CellCode": RowData.CellCode, "CellName": RowData.CellName, "Qty": RowData.Qty };
+                        var j = { "RowID": $('#dgSubAdd').datagrid('getRows').length + 1, "CellCode": RowData.CellCode, "CellName": RowData.CellName, "Quantity": RowData.Qty };
                         $('#dgSubAdd').datagrid('appendRow', j);
                     }                
             } else {
@@ -584,7 +579,6 @@
             data-options="loadMsg: '正在加载数据，请稍等...',fit:true, rownumbers:true,pagination:true,pageSize:PageSize, pageList:[15, 20, 30, 50],method:'post',striped:true,fitcolumns:true">
                  <thead>
 			        <tr>
-                        <th data-options="field:'',checkbox:true"></th> 
 		                <th data-options="field:'RowID',width:60">序号</th>
                         <th data-options="field:'CellCode',width:150">货位编号</th>
                         <th data-options="field:'CellName',width:150">货位名称</th>
@@ -610,7 +604,7 @@
                 </td>
                 <td style="width:*" align="right">
                     <a href="javascript:void(0)" onclick="Add()"   class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true">新增</a> 
-                   <%-- <a href="javascript:void(0)" onclick="Edit()" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true">修改</a>--%>
+                    <a href="javascript:void(0)" onclick="Edit()" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true">修改</a>
                     <a href="javascript:void(0)" onclick="Delete()" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true">删除</a>
                     <a href="javascript:void(0)"  onclick="CheckBill()" class="easyui-linkbutton" data-options="iconCls:'icon-man',plain:true">审核</a> 
                     <a href="javascript:void(0)" onclick="UnCheckBill()" class="easyui-linkbutton" data-options="iconCls:'icon-undo',plain:true">取消审核</a> 
@@ -627,20 +621,19 @@
             <div>
                  <table id="Table1" class="maintable"  width="100%" align="center">			
 				      <tr>
+                      <td align="center" class="musttitle"style="width:90px">
+                                出库单号
+                           </td>
+                           <td  colspan="2">
+                                &nbsp;<input id="txtID" name="BillID" class="easyui-textbox" data-options="editable:false,required:true" maxlength="20" style="width:186px"/>
+                          </td>
                             <td align="center" class="musttitle"style="width:90px">
                                 日期 </td>
                             <td style="width: 210px" >
                         
                                 &nbsp;<input id="txtBillDate" name="BillDate" class="easyui-datebox" data-options="required:true,editable:false,onSelect:function(date){ SetAutoCodeByTableName('txtID', 'OP', '1=1', 'WMS_BillMaster', date.Format('yy/MM/dd'));}" style="width:180px"/> 
-                                <input name="PageState" id="txtPageState" type="hidden" />
-                        
+                                <input name="PageState" id="txtPageState" type="hidden" />                      
                             </td>
-                           <td align="center" class="musttitle"style="width:90px">
-                                入库单号
-                           </td>
-                           <td  colspan="2">
-                                &nbsp;<input id="txtID" name="BillID" class="easyui-textbox" data-options="editable:false,required:true" maxlength="20" style="width:186px"/>
-                          </td>
                 </tr>
                       <tr>                  
                             <td align="center" class="musttitle" style="width:90px">
@@ -654,25 +647,23 @@
                                         style="width:306px; margin-left: 2px;"/>                             
                             </td>                 
                 </tr>
-                      <tr>
-                            <td align="center"  class="musttitle"  >
-                                    批次
-                            </td>
-                            <td>
-                                &nbsp;<input id="txtBatchNo" name="BatchNo" class="easyui-textbox"  maxlength="30"  data-options="editable:false" style="width:180px"/>
-                               
-                            </td>
-                               
-                            <td align="center" class="musttitle"  >
-                                阶段</td>
-                            <td colspan="2">
-                               &nbsp;<input id="txtSectionName" name="SectionName" class="easyui-textbox" data-options="editable:false" maxlength="50" style="width: 186px;" />
+                <tr>
+                      <td align="center" class="musttitle"style="width:90px">
+                                批次
+                           </td>
+                           <td  colspan="2">
+                                &nbsp;<input id="txtBatchNo" name="BatchNo" class="easyui-textbox"  maxlength="30"  data-options="editable:false" style="width:180px"/>                           
+                          </td>
+                            <td align="center" class="musttitle"style="width:90px">
+                                阶段 </td>
+                            <td style="width: 210px" >                
+                                &nbsp;<input id="txtSectionName" name="SectionName" class="easyui-textbox" data-options="editable:false" maxlength="50" style="width: 180px;" />
                                 <input type="hidden" id="txtSectionID" name="SectionID" />
                                 <input type="hidden" id="txtBillTypeCode" name="BillTypeCode" />
                                 <input type="hidden" id="txtPalletQty" name="PalletQty" />
-                                <input type="hidden" id="txtQty" name="Qty" />
+                                <input type="hidden" id="txtQty" name="Qty" />                     
                             </td>
-                     </tr>              
+                </tr>          
                       <tr style=" height:40px">
                         <td align="center"  class="smalltitle" style="width:90px;height:40px;">
                             备注
@@ -699,7 +690,7 @@
 		                <th data-options="field:'RowID',width:60">序号</th>
                         <th data-options="field:'CellCode',width:150">货位编号</th>
                         <th data-options="field:'CellName',width:150">货位名称</th>
-                        <th data-options="field:'Qty',width:100">产品数量</th>
+                        <th data-options="field:'Quantity',width:100">产品数量</th>
                     </tr>
                 </thead>
             </table>
